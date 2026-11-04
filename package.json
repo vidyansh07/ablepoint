@@ -1,0 +1,14 @@
+{
+  "name": "ablepoint",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.12.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "pnpm --filter @ablepoint/web dev",
+    "build": "pnpm --filter @ablepoint/web build",
+    "check": "pnpm -r check",
+    "test": "pnpm -r test",
+    "lint:dist": "pnpm --filter @ablepoint/web lint:dist"
+  }
+}

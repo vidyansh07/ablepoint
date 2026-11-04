@@ -1,0 +1,12 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+const { heading = 'Talk to someone', text = 'Call us or send a referral. We will reply as soon as we can.', event = 'referral_cta' } = Astro.props as { heading?: string; text?: string; event?: 'referral_cta' | 'vacancy_enquiry' };
+---
+<aside class="aside-card" aria-labelledby="contact-card-heading">
+  <span class="icon-circle tint-orange"><Icon name="phone" size={28} /></span>
+  <h2 id="contact-card-heading">{heading}</h2>
+  <p>{text}</p>
+  <a class="btn btn--primary btn--block" href="/referral/" data-event={event} data-event-location="aside">Make a referral <Icon name="arrow" size={18} /></a>
+  <a class="btn btn--secondary btn--block" href={site.phoneHref} data-event="phone_click" data-event-location="aside"><Icon name="phone" size={18} /> Call {site.phoneDisplay}</a>
+</aside>

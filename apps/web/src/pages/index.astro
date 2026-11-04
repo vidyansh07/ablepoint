@@ -1,0 +1,147 @@
+---
+import { Image } from 'astro:assets';
+import heroPhoto from '../assets/photos/hero.jpg';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import HeroArt from '../components/HeroArt.astro';
+import Icon from '../components/Icon.astro';
+import Card from '../components/Card.astro';
+import AudienceTiles from '../components/AudienceTiles.astro';
+import CtaBlock from '../components/CtaBlock.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import RegionArt from '../components/art/RegionArt.astro';
+import SupportFinder from '../components/SupportFinder.astro';
+import TestimonialCards from '../components/TestimonialCards.astro';
+import DraftBanner from '../components/DraftBanner.astro';
+import { homeBlocks } from '../data/home';
+import { isShown } from '../lib/gate';
+import { SITE_ENV } from '../lib/env';
+import { site } from '../data/site';
+import { services } from '../data/services';
+import { regions } from '../data/regions';
+import { visible } from '../lib/content';
+
+const shownServices = visible(services);
+const shownRegions = visible(regions);
+const showBlocks = isShown(homeBlocks, SITE_ENV);
+const steps = [
+  { t: 'Get in touch', d: 'Call us or send a short form. You choose how we contact you back.' },
+  { t: 'We talk with you', d: 'We listen to what you need and what matters to you.' },
+  { t: 'We are honest', d: 'We tell you whether we can help, and what the options are.' },
+  { t: 'We agree it together', d: 'If it is a good fit, we agree your supports with you, in writing.' },
+];
+---
+<Base
+  title="NDIS supports across regional NSW"
+  description="AblePoint Australia is an NDIS provider based in Gosford, NSW, supporting people with disability across the Central Coast, Newcastle, Dubbo, Orange, Tamworth and Gunnedah."
+  path="/"
+>
+  <Hero
+    eyebrow="NDIS provider · Gosford, NSW"
+    title="Disability support built around you"
+    lede="We support people with disability to live the life they choose, across regional New South Wales."
+  >
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/referral/" data-event="referral_cta" data-event-location="hero">Make a referral <Icon name="arrow" size={18} /></a>
+      <a class="btn btn--secondary" href={site.phoneHref} data-event="phone_click" data-event-location="hero"><Icon name="phone" size={18} /> Call {site.phoneDisplay}</a>
+    </div>
+    <ul class="hero__points">
+      <li><Icon name="check" size={22} /> Call us, or send a short form online</li>
+      <li><Icon name="check" size={22} /> We only ask for health details later, in a secure way</li>
+      <li><Icon name="check" size={22} /> Ask us for Easy Read or other formats</li>
+    </ul>
+    {/* <HeroArt slot="art" /> */}
+    <div slot="art" class="hero-art hero-art--photo">
+      <Image src={heroPhoto} alt="A support worker pushing a person in a wheelchair across a grassy hill at sunset." widths={[480, 720, 960, 1280]} sizes="(min-width: 60rem) 34rem, 100vw" format="webp" quality={70} loading="eager" decoding="async" />
+    </div>
+  </Hero>
+
+  <section class="section" aria-labelledby="who-heading">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="who-heading">How can we help you?</h2>
+        <p>Choose the option that sounds most like you.</p>
+      </div>
+      <AudienceTiles />
+    </div>
+  </section>
+
+  <SupportFinder />
+
+  {shownServices.length > 0 && (
+    <section class="section section--tint" aria-labelledby="services-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="services-heading">Our services</h2>
+          <p>Support at home, in the community, and when you need a break.</p>
+        </div>
+        <div class="grid grid--cards">
+          {shownServices.map((s) => <Card href={`/${s.slug}/`} title={s.title} text={s.summary} icon={s.icon} tint={s.tint} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" aria-labelledby="vacancy-heading">
+    <div class="container split">
+      <div class="stack">
+        <p class="eyebrow">Supported independent living and specialist disability accommodation</p>
+        <h2 id="vacancy-heading">Looking for a home?</h2>
+        <p class="lede">See current vacancies, or ask us what is expected to come up. Support coordinators and plan managers are welcome to ask too.</p>
+        <p><a class="btn btn--secondary" href="/vacancies/"><Icon name="home" size={20} /> See vacancies</a></p>
+      </div>
+      <div class="panel-art"><HeroArt /></div>
+    </div>
+  </section>
+
+  {shownRegions.length > 0 && (
+    <section class="section section--sand" aria-labelledby="regions-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="regions-heading">Where we work</h2>
+          <p>Our head office is in Gosford. We support people in these regions.</p>
+        </div>
+        <div class="grid grid--cards">
+          {shownRegions.map((r) => <Card href={`/locations/${r.slug}/`} title={r.name} text={r.summary} cta="See this region"><RegionArt slot="art" region={r.slug} /></Card>)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {showBlocks && (
+    <>
+      <DraftBanner doc={homeBlocks} />
+      <section class="section" aria-labelledby="safe-heading">
+        <div class="container">
+          <div class="section-head"><h2 id="safe-heading">Your safety and privacy come first</h2><p>What you can expect from us.</p></div>
+          <div class="grid grid--cards">
+            {homeBlocks.safety.map((s) => (
+              <article class="card"><span class:list={['icon-circle', `tint-${s.tint}`]}><Icon name={s.icon} size={28} /></span><h3>{s.title}</h3><p>{s.text}</p></article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section class="section section--plum" aria-labelledby="fund-heading">
+        <div class="container">
+          <div class="section-head"><h2 id="fund-heading">Funding we work with</h2><p>Ask us if you are not sure how your funding is managed.</p></div>
+          <ul class="chips">{homeBlocks.funding.map((f) => <li><span class="chip-static"><Icon name="check" size={18} /> {f}</span></li>)}</ul>
+        </div>
+      </section>
+    </>
+  )}
+
+  <TestimonialCards />
+
+  <section class="section" aria-labelledby="process-heading">
+    <div class="container">
+      <div class="section-head"><h2 id="process-heading">How it works</h2><p>Four simple steps, and you stay in charge.</p></div>
+      <ol class="steps steps--cols">{steps.map((s) => <li><div><h3>{s.t}</h3><p class="muted">{s.d}</p></div></li>)}</ol>
+    </div>
+  </section>
+
+  <section class="section" aria-label="About AblePoint">
+    <div class="container"><TrustStrip /></div>
+  </section>
+
+  <CtaBlock />
+</Base>

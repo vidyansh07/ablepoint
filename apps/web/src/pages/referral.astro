@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import BannerArt from '../components/art/BannerArt.astro';
+import { site } from '../data/site';
+---
+<Base title="Make a referral or enquiry" description="Send an enquiry to AblePoint Australia. We will contact you about the next step." path="/referral/" analytics="off" crumbs={[{ name: 'Make a referral', path: '/referral/' }]}>
+  <Hero title="Make a referral or enquiry" lede="Tell us a little about who you are and how to reach you. This takes about two minutes." compact>
+    <BannerArt slot="banner" scene="referral" />
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Make a referral', path: '/referral/' }]} />
+    <p class="measure">You can also call us on <a href={site.phoneHref} data-event="phone_click">{site.phoneDisplay}</a>. After you send this, we will contact you to talk about what happens next. We will only ask for NDIS and health details through a secure step, and only if we need them.</p>
+    <div class="form-card mt-4"><EnquiryForm /></div>
+  </div>
+</Base>

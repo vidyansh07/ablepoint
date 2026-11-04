@@ -1,0 +1,61 @@
+---
+import Hero from './Hero.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Faq from './Faq.astro';
+import Icon from './Icon.astro';
+import ContactCard from './ContactCard.astro';
+import DraftBanner from './DraftBanner.astro';
+import type { Crumb } from '../lib/jsonld';
+import type { DraftMeta, Faq as FaqT, GuideSection } from '../data/types';
+
+interface Article extends DraftMeta {
+  title: string;
+  answer: string;
+  sections: GuideSection[];
+  faqs: FaqT[];
+  sources: { label: string; url: string }[];
+  author: string;
+  reviewer?: string;
+  reviewedAt?: string;
+  publishedAt?: string;
+  updatedAt: string;
+}
+const { a, crumbs, eyebrow = 'Guide', readMinutes } = Astro.props as { a: Article; crumbs: Crumb[]; eyebrow?: string; readMinutes?: number };
+const idOf = (h: string) => 'sec-' + h.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+<div class="read-progress" aria-hidden="true"></div>
+<DraftBanner doc={a} />
+<Hero eyebrow={eyebrow} title={a.title} compact />
+<div class="container section">
+  <Breadcrumbs crumbs={crumbs} />
+  <div class="layout-aside">
+    <article class="stack-lg">
+      <div class="callout callout--answer">
+        <span class="icon-circle tint-green"><Icon name="sparkle" size={28} /></span>
+        <div><h2>Quick answer</h2><p>{a.answer}</p></div>
+      </div>
+      <div class="prose">
+        {a.sections.map((s) => (<section><h2 id={idOf(s.heading)}>{s.heading}</h2>{s.body.map((b) => <p>{b}</p>)}</section>))}
+      </div>
+      <p class="meta-line muted">
+        <Icon name="user" size={18} />
+        <span>
+          Written by {a.author}.{a.reviewer ? ` Reviewed by ${a.reviewer}${a.reviewedAt ? ` on ${a.reviewedAt}` : ''}.` : ''}
+          {a.publishedAt ? ` Published ${a.publishedAt}.` : ''} Last updated {a.updatedAt.slice(0, 10)}.{readMinutes ? ` ${readMinutes} minute read.` : ''}
+        </span>
+      </p>
+      <Faq faqs={a.faqs} />
+    </article>
+    <div class="aside stack">
+      <nav class="aside-card aside-card--plain" aria-labelledby="toc-heading">
+        <h2 id="toc-heading">On this page</h2>
+        <ul class="toc">{a.sections.map((s) => <li><a href={`#${idOf(s.heading)}`}>{s.heading}</a></li>)}</ul>
+      </nav>
+      <section class="aside-card aside-card--plain" aria-labelledby="src-heading">
+        <h2 id="src-heading">Where to read more</h2>
+        <ul class="toc">{a.sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}</ul>
+      </section>
+      <ContactCard heading="Have a question?" text="We are happy to talk it through with you." />
+    </div>
+  </div>
+</div>

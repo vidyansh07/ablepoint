@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { Image } from 'astro:assets';
+import { photos as allPhotos, photoAllowed } from '../data/photos';
+import { SITE_ENV } from '../lib/env';
+const photos = allPhotos.filter((p) => photoAllowed(p, SITE_ENV));
+const regionNames: Record<string, string> = { 'central-coast': 'Central Coast', newcastle: 'Newcastle', dubbo: 'Dubbo', orange: 'Orange', tamworth: 'Tamworth', gunnedah: 'Gunnedah' };
+---
+<Base title="Image credits" description="Credits and licences for photographs and artwork on the AblePoint Australia website." path="/image-credits/" crumbs={[{ name: 'Image credits', path: '/image-credits/' }]}>
+  <Hero title="Image credits" lede="Where the photographs and artwork on this website come from, and under what licence." compact />
+  <div class="container section stack-lg">
+    <Breadcrumbs crumbs={[{ name: 'Image credits', path: '/image-credits/' }]} />
+    <section aria-labelledby="photos-h">
+      <h2 id="photos-h">Photographs</h2>
+      <p class="measure">These landscape photographs are freely licensed. We plan to replace them with our own photographs, taken with people's written consent.</p>
+      <ul class="credit-list">
+        {photos.map((p) => (
+          <li class="credit-item">
+            <Image src={p.src} alt="" width={240} height={180} widths={[240, 480]} sizes="240px" format="webp" quality={60} loading="lazy" class="credit-item__thumb" />
+            <div>
+              <h3>{regionNames[p.id] ?? p.id}</h3>
+              <p>“{p.title.replace(/\.[a-z]+$/i, '')}” by {p.creator}. Licence: <a href={p.licenceUrl} rel="noopener">{p.licence}</a>. <a href={p.sourcePage} rel="noopener">Original on {p.source}</a>.</p>
+              {p.note && <p class="muted">{p.note}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+    <section aria-labelledby="art-h" class="measure">
+      <h2 id="art-h">Illustrations and icons</h2>
+      <p>The illustrations, banners and the ring graphic on this website were created for AblePoint Australia. Icons are from <a href="https://lucide.dev" rel="noopener">Lucide</a> (ISC licence). See the <a href="/third-party-notices.txt">open source notices</a>. The AblePoint logo is the property of AblePoint Australia.</p>
+    </section>
+  </div>
+</Base>

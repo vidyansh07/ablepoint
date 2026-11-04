@@ -1,0 +1,187 @@
+---
+/**
+ * BannerArt: wide, original, decorative banner illustrations (docs/17-brand-guidelines.md §5).
+ * Flat geometric SVG in brand tokens only. No people, faces, text, photos or traced art. Decorative: aria-hidden.
+ *
+ * Crop: viewBox 1200x300 with `xMidYMid slice`; each scene keeps its focal elements inside the middle 40% (x 360-840)
+ * so a narrow mobile crop (about the middle 50%) still reads.
+ * Motion: one-time entrance (<= 1.4 s in total, never loops), transform/opacity only, and only when the user has not
+ * asked for reduced motion. Reduced-motion users see the final static picture. No inline style attributes or <style>
+ * elements (CSP): animation lives in this component's scoped stylesheet.
+ */
+export type BannerScene = 'services' | 'locations' | 'vacancies' | 'guides' | 'referral';
+interface Props { scene: BannerScene; class?: string }
+const { scene, class: cls } = Astro.props;
+
+const ringColours = ['var(--blue-500)', 'var(--green-500)', 'var(--plum-500)', 'var(--orange-500)'];
+const ring = Array.from({ length: 8 }, (_, i) => ({ a: i * 45, c: ringColours[i % 4], l: i % 2 ? 36 : 50 }));
+
+// Map pins for the locations scene (x, tip y, scale, colour, delay class).
+const pins = [
+  { x: 250, y: 238, s: 0.8, c: 'var(--blue-700)', d: 'd3' },
+  { x: 450, y: 210, s: 0.9, c: 'var(--orange-700)', d: 'd4' },
+  { x: 600, y: 198, s: 1.2, c: 'var(--plum-700)', d: 'd5' },
+  { x: 750, y: 212, s: 0.9, c: 'var(--green-700)', d: 'd4' },
+  { x: 930, y: 206, s: 0.8, c: 'var(--blue-700)', d: 'd3' },
+  { x: 1070, y: 216, s: 0.8, c: 'var(--orange-700)', d: 'd2' },
+];
+const roadDashes = Array.from({ length: 14 }, (_, i) => 20 + i * 88);
+const rays = [-75, -45, -15, 15, 45, 75];
+---
+<div class:list={['banner-art', cls]} aria-hidden="true">
+  {scene === 'services' && (
+    <svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" role="presentation">
+      <rect width="1200" height="300" fill="var(--blue-100)" />
+      <g class="pop d1"><circle cx="170" cy="78" r="56" fill="var(--orange-100)" /><circle cx="170" cy="78" r="34" fill="var(--orange-500)" /></g>
+      <g class="fade d1" fill="var(--surface)" opacity=".92"><rect x="300" y="50" width="110" height="24" rx="12" /><rect x="334" y="80" width="80" height="18" rx="9" /><rect x="880" y="42" width="120" height="24" rx="12" /><rect x="920" y="72" width="84" height="18" rx="9" /></g>
+      <path d="M0 232C200 196 380 214 600 226S1000 196 1200 218V300H0Z" fill="var(--green-100)" />
+      <path d="M0 266C250 238 450 272 700 258S1050 244 1200 264V300H0Z" fill="var(--green-500)" opacity=".75" />
+      <g class="rise d2"><rect x="252" y="196" width="10" height="52" rx="5" fill="var(--plum-700)" /><circle cx="257" cy="184" r="34" fill="var(--green-500)" /></g>
+      <g class="rise d3"><rect x="926" y="204" width="10" height="46" rx="5" fill="var(--plum-700)" /><circle cx="931" cy="192" r="30" fill="var(--green-500)" /><rect x="1006" y="214" width="8" height="38" rx="4" fill="var(--plum-700)" /><circle cx="1010" cy="204" r="22" fill="var(--green-700)" opacity=".8" /></g>
+      <g transform="translate(1058 22) scale(.4)"><g class="pop d2">{ring.map((p) => <rect x="92" y="20" width="16" height={p.l} rx="8" fill={p.c} transform={`rotate(${p.a} 100 100)`} />)}<circle cx="100" cy="100" r="12" fill="var(--blue-700)" /></g></g>
+      <g class="rise d2">
+        <rect x="540" y="150" width="120" height="90" rx="8" fill="var(--surface)" />
+        <path d="M524 160 600 96 676 160" fill="none" stroke="var(--plum-700)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="585" y="192" width="30" height="48" rx="6" fill="var(--orange-700)" /><circle cx="607" cy="218" r="2.5" fill="var(--surface)" />
+        <rect x="555" y="172" width="22" height="22" rx="6" fill="var(--blue-100)" /><rect x="623" y="172" width="22" height="22" rx="6" fill="var(--blue-100)" />
+        <path d="M468 242 585 226V242Z" fill="var(--blue-500)" /><path d="M480 214 585 198M480 214v26M585 198v26" stroke="var(--blue-900)" stroke-width="4" stroke-linecap="round" fill="none" />
+      </g>
+      <g class="pop d3">
+        <rect x="366" y="224" width="76" height="24" rx="12" fill="var(--plum-500)" /><rect x="432" y="210" width="14" height="34" rx="7" fill="var(--plum-500)" transform="rotate(28 439 227)" />
+        <path d="M404 220C374 200 374 172 393 172C401 172 404 178 404 182C404 178 407 172 415 172C434 172 434 200 404 220Z" fill="var(--orange-700)" />
+      </g>
+      <g><rect class="rise d3" x="716" y="226" width="36" height="18" rx="3" fill="var(--blue-500)" /><rect class="rise d4" x="752" y="208" width="36" height="36" rx="3" fill="var(--blue-700)" /><rect class="rise d5" x="788" y="190" width="36" height="54" rx="3" fill="var(--blue-900)" />
+        <g class="pop d6"><rect x="810" y="150" width="4" height="40" rx="2" fill="var(--blue-900)" /><path d="M814 150 844 160 814 170Z" fill="var(--orange-700)" /></g></g>
+    </svg>
+  )}
+
+  {scene === 'locations' && (
+    <svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" role="presentation">
+      <rect width="1200" height="300" fill="var(--blue-100)" />
+      <g class="pop d1"><circle cx="1090" cy="66" r="44" fill="var(--orange-100)" /><circle cx="1090" cy="66" r="26" fill="var(--orange-500)" /></g>
+      <g class="fade d1" fill="var(--surface)" opacity=".92"><rect x="520" y="40" width="120" height="24" rx="12" /><rect x="556" y="70" width="86" height="18" rx="9" /><rect x="820" y="62" width="100" height="22" rx="11" /></g>
+      <path d="M0 190C140 150 260 170 380 160S620 120 760 150 1020 140 1200 160V300H0Z" fill="var(--blue-500)" opacity=".35" />
+      <path d="M0 188H330C350 210 360 260 380 300H0Z" fill="var(--blue-500)" opacity=".7" />
+      <path d="M330 188C350 210 360 260 380 300H402C382 260 374 210 354 186Z" fill="var(--orange-100)" />
+      <g class="fade d2" fill="var(--surface)" opacity=".85"><rect x="40" y="222" width="52" height="6" rx="3" /><rect x="130" y="240" width="64" height="6" rx="3" /><rect x="214" y="212" width="46" height="6" rx="3" /><rect x="70" y="266" width="60" height="6" rx="3" /><rect x="236" y="262" width="56" height="6" rx="3" /></g>
+      <path d="M300 222C420 172 520 192 640 206S880 182 1000 202 1120 212 1200 202V300H300Z" fill="var(--green-500)" opacity=".65" />
+      <path d="M390 264C530 242 700 272 880 252S1100 252 1200 260V300H390Z" fill="var(--green-100)" />
+      <g fill="none" stroke="var(--green-500)" stroke-width="3" opacity=".6" stroke-linecap="round"><path d="M430 282C560 266 700 284 860 270" /><path d="M900 276C1000 266 1100 276 1180 270" /></g>
+      <g class="rise d2"><circle cx="520" cy="196" r="12" fill="var(--green-700)" opacity=".7" /><circle cx="838" cy="198" r="14" fill="var(--green-700)" opacity=".7" /><circle cx="1010" cy="204" r="11" fill="var(--green-700)" opacity=".7" /></g>
+      <path class="fade d5" d="M250 238Q350 232 450 210T600 198T750 212T930 206T1070 216" fill="none" stroke="var(--surface)" stroke-width="3" stroke-dasharray="1 9" stroke-linecap="round" />
+      {pins.map((p) => (
+        <g transform={`translate(${p.x} ${p.y}) scale(${p.s})`}><g class={`pin ${p.d}`}><path d="M0 0C-8-10-15-19-15-29a15 15 0 1 1 30 0C15-19 8-10 0 0Z" fill={p.c} /><circle cy="-29" r="6" fill="var(--surface)" /></g></g>
+      ))}
+    </svg>
+  )}
+
+  {scene === 'vacancies' && (
+    <svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" role="presentation">
+      <rect width="1200" height="300" fill="var(--orange-100)" />
+      <g class="pop d1"><circle cx="600" cy="206" r="104" fill="var(--orange-500)" opacity=".3" /><circle cx="600" cy="206" r="74" fill="var(--orange-500)" opacity=".55" /></g>
+      <g class="fade d1" fill="var(--surface)" opacity=".85"><rect x="180" y="58" width="120" height="22" rx="11" /><rect x="214" y="86" width="84" height="16" rx="8" /><rect x="900" y="48" width="110" height="22" rx="11" /></g>
+      <path d="M0 212C200 172 380 202 600 192S1000 172 1200 202V300H0Z" fill="var(--plum-500)" opacity=".25" />
+      <path d="M0 246H1200V300H0Z" fill="var(--green-500)" opacity=".6" />
+      <rect y="258" width="1200" height="14" fill="var(--surface)" /><rect y="272" width="1200" height="28" fill="var(--blue-700)" />
+      <g fill="var(--surface)" opacity=".85">{roadDashes.map((x) => <rect x={x} y="284" width="40" height="4" rx="2" />)}</g>
+      <g class="rise d2"><rect x="318" y="206" width="9" height="46" rx="4" fill="var(--plum-700)" /><circle cx="322" cy="194" r="26" fill="var(--green-700)" opacity=".8" /><rect x="878" y="210" width="9" height="42" rx="4" fill="var(--plum-700)" /><circle cx="882" cy="198" r="24" fill="var(--green-700)" opacity=".8" /></g>
+      <g class="rise d1"><g transform="translate(-15 0)">
+        <rect x="420" y="170" width="100" height="88" rx="8" fill="var(--surface)" /><path d="M408 178 470 124 532 178" fill="none" stroke="var(--plum-700)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="458" y="214" width="24" height="44" rx="5" fill="var(--orange-700)" /><rect x="432" y="190" width="20" height="20" rx="5" fill="var(--orange-500)" /><rect x="490" y="190" width="20" height="20" rx="5" fill="var(--orange-500)" />
+      <g class="fade d4"><path d="M388 258 458 244V258Z" fill="var(--blue-500)" /><path d="M398 232 458 218M398 232v24M458 218v24" stroke="var(--blue-900)" stroke-width="4" stroke-linecap="round" fill="none" /></g>
+      </g></g>
+      <g class="rise d2">
+        <rect x="550" y="170" width="100" height="88" rx="8" fill="var(--surface)" /><path d="M538 178 600 124 662 178" fill="none" stroke="var(--blue-700)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="584" y="214" width="32" height="44" rx="5" fill="var(--plum-500)" /><rect x="562" y="190" width="18" height="18" rx="5" fill="var(--orange-500)" /><rect x="620" y="190" width="18" height="18" rx="5" fill="var(--orange-500)" />
+        <rect x="576" y="256" width="48" height="4" rx="2" fill="var(--blue-100)" />
+      </g>
+      <g class="rise d3"><g transform="translate(15 0)">
+        <rect x="680" y="170" width="100" height="88" rx="8" fill="var(--surface)" /><path d="M668 178 730 124 792 178" fill="none" stroke="var(--green-700)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+        <rect x="718" y="214" width="24" height="44" rx="5" fill="var(--orange-700)" /><rect x="692" y="190" width="20" height="20" rx="5" fill="var(--orange-500)" /><rect x="750" y="190" width="20" height="20" rx="5" fill="var(--orange-500)" />
+      <g class="fade d5"><path d="M742 258 812 258 742 244Z" fill="var(--blue-500)" /><path d="M802 232 742 218M802 232v24M742 218v24" stroke="var(--blue-900)" stroke-width="4" stroke-linecap="round" fill="none" /></g>
+      </g></g>
+    </svg>
+  )}
+
+  {scene === 'guides' && (
+    <svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" role="presentation">
+      <rect width="1200" height="300" fill="var(--plum-100)" />
+      <g class="fade d1" fill="var(--surface)" opacity=".9"><rect x="150" y="54" width="120" height="24" rx="12" /><rect x="186" y="84" width="84" height="18" rx="9" /><rect x="920" y="46" width="130" height="24" rx="12" /></g>
+      <path d="M0 214C200 174 420 214 640 196S1000 168 1200 200V300H0Z" fill="var(--green-500)" opacity=".4" />
+      <path d="M0 262C260 232 460 270 720 254S1050 240 1200 258V300H0Z" fill="var(--green-100)" />
+      <path d="M560 252H640L706 300H494Z" fill="var(--surface)" opacity=".9" />
+      <g class="rise d2"><rect x="196" y="204" width="9" height="46" rx="4" fill="var(--plum-700)" /><circle cx="200" cy="192" r="28" fill="var(--green-700)" opacity=".75" /><rect x="1000" y="208" width="9" height="42" rx="4" fill="var(--plum-700)" /><circle cx="1004" cy="196" r="24" fill="var(--green-500)" /></g>
+      <g transform="translate(120 130) scale(.34)"><g class="pop d3">{ring.map((p) => <rect x="92" y="20" width="16" height={p.l} rx="8" fill={p.c} transform={`rotate(${p.a} 100 100)`} />)}<circle cx="100" cy="100" r="12" fill="var(--blue-700)" /></g></g>
+      <g class="rise d1">
+        <path d="M600 168 478 152 464 236 600 252 736 236 722 152Z" fill="var(--plum-700)" />
+        <path d="M600 160 505 146 492 222 600 238Z" fill="var(--surface)" /><path d="M600 160 695 146 708 222 600 238Z" fill="var(--surface)" />
+        <path d="M600 160V238" stroke="var(--blue-100)" stroke-width="3" /><g fill="var(--blue-100)"><rect x="518" y="164" width="64" height="6" rx="3" /><rect x="516" y="180" width="60" height="6" rx="3" /><rect x="514" y="196" width="52" height="6" rx="3" /><rect x="618" y="164" width="64" height="6" rx="3" /><rect x="624" y="180" width="58" height="6" rx="3" /><rect x="628" y="196" width="48" height="6" rx="3" /></g>
+      </g>
+      <g class="pop d3"><circle cx="600" cy="92" r="44" fill="var(--orange-100)" /><circle cx="600" cy="92" r="23" fill="var(--orange-500)" /><rect x="591" y="112" width="18" height="12" rx="3" fill="var(--blue-900)" /></g>
+      <g class="fade d5" fill="var(--orange-500)">{rays.map((a) => <rect x="597" y="34" width="6" height="14" rx="3" transform={`rotate(${a} 600 92)`} />)}</g>
+      <g class="rise d3"><rect x="406" y="170" width="8" height="84" rx="3" fill="var(--blue-900)" /><path d="M384 176H438L450 186 438 196H384Z" fill="var(--orange-700)" /><path d="M436 206H388L376 216 388 226H436Z" fill="var(--blue-700)" /></g>
+      <g class="rise d4"><rect x="786" y="176" width="8" height="78" rx="3" fill="var(--blue-900)" /><path d="M764 184H818L830 194 818 204H764Z" fill="var(--green-700)" /><path d="M816 214H768L756 224 768 234H816Z" fill="var(--plum-500)" /></g>
+    </svg>
+  )}
+
+  {scene === 'referral' && (
+    <svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" role="presentation">
+      <rect width="1200" height="300" fill="var(--blue-100)" />
+      <g class="fade d1" fill="var(--surface)" opacity=".92"><rect x="150" y="60" width="120" height="24" rx="12" /><rect x="188" y="90" width="84" height="18" rx="9" /><rect x="930" y="228" width="120" height="24" rx="12" /><rect x="960" y="258" width="84" height="18" rx="9" /></g>
+      <g class="fade d2"><circle cx="330" cy="80" r="7" fill="var(--orange-500)" /><circle cx="880" cy="238" r="9" fill="var(--plum-500)" /><circle cx="360" cy="262" r="6" fill="var(--green-500)" /><circle cx="1010" cy="110" r="8" fill="var(--blue-500)" /></g>
+      <g transform="translate(1040 36) scale(.5)"><g class="pop d2">{ring.map((p) => <rect x="92" y="20" width="16" height={p.l} rx="8" fill={p.c} transform={`rotate(${p.a} 100 100)`} />)}<circle cx="100" cy="100" r="12" fill="var(--blue-700)" /></g></g>
+      <g transform="translate(70 120) scale(.34)"><g class="pop d3">{ring.map((p) => <rect x="92" y="20" width="16" height={p.l} rx="8" fill={p.c} transform={`rotate(${p.a} 100 100)`} />)}<circle cx="100" cy="100" r="12" fill="var(--blue-700)" /></g></g>
+      <path class="fade d3" d="M420 214C470 214 500 160 556 132" fill="none" stroke="var(--blue-700)" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity=".6" />
+      <g class="rise d1">
+        <rect x="376" y="176" width="76" height="96" rx="10" fill="var(--surface)" /><g fill="var(--blue-100)"><rect x="390" y="196" width="48" height="6" rx="3" /><rect x="390" y="212" width="40" height="6" rx="3" /><rect x="390" y="228" width="46" height="6" rx="3" /></g>
+        <circle cx="452" cy="180" r="16" fill="var(--green-700)" /><path d="M444 180l6 6 11-12" fill="none" stroke="var(--surface)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+      <g class="rise d2">
+        <rect x="496" y="196" width="112" height="70" rx="10" fill="var(--surface)" /><path d="M500 202 552 240 604 202" fill="none" stroke="var(--blue-700)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /><circle cx="552" cy="240" r="9" fill="var(--orange-700)" />
+      </g>
+      <g class="plane">
+        <path d="M704 92 560 128 612 140Z" fill="var(--surface)" /><path d="M704 92 612 140 632 176Z" fill="var(--blue-500)" opacity=".6" /><path d="M704 92 632 176 650 150Z" fill="var(--surface)" />
+      </g>
+      <g class="pop d4"><rect x="672" y="186" width="104" height="56" rx="20" fill="var(--orange-700)" /><path d="M692 238 682 262 714 242Z" fill="var(--orange-700)" /><g fill="var(--surface)"><circle cx="702" cy="214" r="6" /><circle cx="724" cy="214" r="6" /><circle cx="746" cy="214" r="6" /></g></g>
+      <g class="pop d5"><rect x="736" y="132" width="84" height="44" rx="16" fill="var(--plum-700)" /><path d="M800 172 816 192 786 174Z" fill="var(--plum-700)" /><g fill="var(--surface)"><circle cx="762" cy="154" r="5" /><circle cx="778" cy="154" r="5" /><circle cx="794" cy="154" r="5" /></g></g>
+    </svg>
+  )}
+</div>
+
+<style>
+  .banner-art {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--blue-100);
+    aspect-ratio: 2 / 1;
+  }
+  @media (min-width: 48rem) {
+    .banner-art { aspect-ratio: 4 / 1; }
+  }
+  .banner-art svg { display: block; width: 100%; height: 100%; }
+
+  /* High contrast: the picture stays decorative; give it a clear edge instead of relying on colour. */
+  :global(html[data-contrast='high']) .banner-art { border: 2px solid #000; background: #fff; }
+
+  /* One-time entrance only. Reduced-motion users get the final static picture. */
+  @keyframes banner-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes banner-pop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+  @keyframes banner-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes banner-fly { from { opacity: 0; transform: translate(-36px, 22px); } to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rise, .pop, .fade, .pin, .plane { animation-duration: 0.8s; animation-timing-function: cubic-bezier(0.22, 0.8, 0.3, 1); animation-fill-mode: both; }
+    .rise { animation-name: banner-rise; }
+    .pop { animation-name: banner-pop; transform-box: fill-box; transform-origin: center; }
+    .pin { animation-name: banner-pop; transform-box: fill-box; transform-origin: 50% 100%; }
+    .fade { animation-name: banner-fade; animation-timing-function: ease-out; }
+    .plane { animation-name: banner-fly; animation-delay: 0.2s; animation-duration: 1s; }
+    .d1 { animation-delay: 0.05s; }
+    .d2 { animation-delay: 0.15s; }
+    .d3 { animation-delay: 0.25s; }
+    .d4 { animation-delay: 0.35s; }
+    .d5 { animation-delay: 0.45s; }
+    .d6 { animation-delay: 0.55s; }
+  }
+</style>

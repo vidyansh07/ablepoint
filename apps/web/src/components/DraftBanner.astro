@@ -1,0 +1,13 @@
+---
+import { draftMarked } from '../lib/content';
+import type { DraftMeta } from '../data/types';
+const { doc } = Astro.props as { doc: DraftMeta };
+---
+{draftMarked(doc) && (
+  <div class="container mt-4">
+    <div class="notice notice--draft" role="note">
+      <p><strong>Draft, not approved.</strong> This content has not been approved by AblePoint's compliance reviewer and will not appear on the production site.</p>
+      {doc.missingFacts?.length ? (<><p>Needed before approval:</p><ul>{doc.missingFacts.map((f) => <li>{f}</li>)}</ul></>) : null}
+    </div>
+  </div>
+)}

@@ -1,0 +1,238 @@
+{
+  "name": "Site health monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Site health monitor\n\n**NOT imported into or tested on a running n8n instance.** Written from n8n documentation and source.\n\nEvery 30 minutes it checks a short list of paths on SITE_BASE_URL: HTTP 200, the indexing rules for the expected environment (SITE_EXPECTED_ENV: production pages must not be noindex, staging pages must be noindex in both the header and the meta tag, the staging robots.txt must block everything and staging must publish no sitemap), and that /api/v1/index.json is valid JSON for the expected environment. The API is noindex in every environment by design.\n\nAlert rules follow packages/automation/src/monitoring.ts: alert after 2 failures in a row (evaluateUptime), any 5xx at once (evaluateVitals), no repeat for the same check within 60 minutes (shouldNotify). Indexing and environment mismatches also alert at once. Failure counts are kept in workflow static data, which n8n saves only for production (active) executions.\n\nA staging site behind deployment protection will answer 401 or 403 and will alert. Monitor production, or an unprotected staging.\n\nEnvironment variables: SITE_BASE_URL, SITE_EXPECTED_ENV, NOTIFY_FROM_ADDRESS, ALERT_NOTIFY_ADDRESS.",
+        "height": 380,
+        "width": 760,
+        "color": 4
+      },
+      "id": "32ea6ddd-6e54-4e8d-83d4-c4d07a6a1f80",
+      "name": "Note: purpose",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "3e3a29a4-d029-491b-8326-8cd2f6d0cb0d",
+      "name": "Every 30 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const base = String($env.SITE_BASE_URL || '').trim().replace(/\\/+$/, '');\nconst expectedEnv = String($env.SITE_EXPECTED_ENV || '').trim();\nif (!/^https:\\/\\/[^/\\s]+$/.test(base) && !/^http:\\/\\/localhost(:\\d+)?$/.test(base)) throw new Error('SITE_BASE_URL must be an https origin (scheme and host only, no path)');\nif (expectedEnv !== 'production' && expectedEnv !== 'staging') throw new Error('SITE_EXPECTED_ENV must be production or staging');\n\nconst checks = [\n  { id: 'home', path: '/', type: 'page' },\n  { id: 'locations', path: '/locations/', type: 'page' },\n  { id: 'referral', path: '/referral/', type: 'page' },\n  { id: 'contact', path: '/contact-us/', type: 'page' },\n  { id: 'robots-txt', path: '/robots.txt', type: 'robots' },\n  { id: 'sitemap', path: '/sitemap.xml', type: 'sitemap' },\n  { id: 'api-index', path: '/api/v1/index.json', type: 'api' },\n];\nreturn checks.map((c) => ({ json: { ...c, url: base + c.path, expectedEnv } }));"
+      },
+      "id": "5e30b76d-ff0d-4d25-81f9-33062c666476",
+      "name": "Build check list",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "site-health-monitor/1.0 (n8n)"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d10419af-7106-4cd8-8e5e-349d44d48103",
+      "name": "Fetch page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        300
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Failure rules follow packages/automation/src/monitoring.ts:\n//   - evaluateUptime: a check fails on a timeout or an unexpected status; alert after MIN_CONSECUTIVE (2) failures in a row, to avoid flapping\n//   - evaluateVitals: any 5xx is critical and alerts at once\n//   - shouldNotify: no repeat notification for the same check inside COOLDOWN_MINUTES (60); at exactly 60 minutes it notifies again\n// Added here: environment mismatches (production page noindex, staging page indexable, wrong API environment) are critical and alert at once.\nconst MIN_CONSECUTIVE = 2;\nconst COOLDOWN_MINUTES = 60;\nconst nowMs = Date.now();\n\nconst checks = $('Build check list').all().map((i) => i.json);\nconst results = $input.all().map((i) => i.json);\nconst state = $getWorkflowStaticData('global');\nstate.failures = state.failures || {};\nstate.lastNotified = state.lastNotified || {};\n\nconst bodyText = (r) => {\n  const b = r.body;\n  if (typeof b === 'string') return b;\n  if (b && typeof b === 'object' && typeof b.data === 'string') return b.data;\n  return null;\n};\nconst header = (r, name) => {\n  const h = r.headers || {};\n  const key = Object.keys(h).find((k) => k.toLowerCase() === name);\n  const v = key ? h[key] : '';\n  return Array.isArray(v) ? v.join(',') : String(v || '');\n};\n\nconst alerts = [];\nconst summary = [];\nchecks.forEach((c, idx) => {\n  const r = results[idx] || {};\n  const sc = Number(r.statusCode);\n  const status = r.statusCode === undefined || r.statusCode === null || !Number.isFinite(sc) ? null : sc;\n  const text = bodyText(r);\n  const problems = [];\n  let critical = false;\n  const expectStatus = c.type === 'sitemap' && c.expectedEnv === 'staging' ? 404 : 200;\n\n  if (status === null) problems.push('no_response_or_timeout');\n  else if (status !== expectStatus) {\n    problems.push('unexpected_status_' + status + '_expected_' + expectStatus);\n    if (status >= 500 && status <= 599) critical = true;\n    if (c.type === 'sitemap' && c.expectedEnv === 'staging' && status === 200) critical = true; // staging must not publish a sitemap\n  }\n\n  if (status === expectStatus && c.type === 'api') {\n    let json = null;\n    if (text !== null) {\n      try { json = JSON.parse(text); } catch (e) { json = null; }\n    } else if (r.body && typeof r.body === 'object') {\n      json = r.body; // already parsed by the HTTP node, so it was valid JSON\n    }\n    if (json === null || typeof json !== 'object') problems.push('api_index_is_not_valid_json');\n    else {\n      if (json.apiVersion !== '1') problems.push('api_version_not_1');\n      if (json.environment !== c.expectedEnv) { problems.push('api_environment_is_' + json.environment + '_expected_' + c.expectedEnv); critical = true; }\n    }\n    if (!/\\bnoindex\\b/i.test(header(r, 'x-robots-tag'))) problems.push('api_response_is_missing_noindex');\n  } else if (status === expectStatus && text === null) {\n    problems.push('response_body_unreadable');\n  } else if (status === expectStatus && c.type === 'page') {\n    const headerNoindex = /\\bnoindex\\b/i.test(header(r, 'x-robots-tag'));\n    const metaMatch = text.match(/<meta[^>]+name=[\"']robots[\"'][^>]*>/i);\n    const metaNoindex = metaMatch ? /\\bnoindex\\b/i.test(metaMatch[0]) : false;\n    if (c.expectedEnv === 'production' && (headerNoindex || metaNoindex)) { problems.push('production_page_is_noindex'); critical = true; }\n    if (c.expectedEnv === 'staging' && !(headerNoindex && metaNoindex)) {\n      problems.push('staging_page_missing_noindex_' + [!headerNoindex && 'header', !metaNoindex && 'meta'].filter(Boolean).join('_and_'));\n      critical = true;\n    }\n  } else if (status === expectStatus && c.type === 'robots') {\n    const starGroup = text.split(/\\n\\s*\\n/).find((g) => /^user-agent:\\s*\\*\\s*$/im.test(g)) || '';\n    const blocksAll = /^disallow:\\s*\\/\\s*$/im.test(starGroup);\n    if (c.expectedEnv === 'production' && (blocksAll || !/^sitemap:/im.test(text))) { problems.push(blocksAll ? 'production_robots_blocks_everything' : 'production_robots_has_no_sitemap_line'); critical = true; }\n    if (c.expectedEnv === 'staging' && !blocksAll) { problems.push('staging_robots_does_not_block_everything'); critical = true; }\n  } else if (status === expectStatus && c.type === 'sitemap') {\n    if (c.expectedEnv === 'production' && text.indexOf('<urlset') < 0) problems.push('production_sitemap_is_not_a_urlset');\n  }\n\n  if (problems.length === 0) {\n    state.failures[c.id] = 0;\n    summary.push(c.id + ': ok');\n    return;\n  }\n  state.failures[c.id] = (state.failures[c.id] || 0) + 1;\n  summary.push(c.id + ': ' + problems.join(', '));\n  const due = critical || state.failures[c.id] >= MIN_CONSECUTIVE;\n  const last = state.lastNotified[c.id];\n  const cooledDown = !last || nowMs - last >= COOLDOWN_MINUTES * 60000;\n  if (due && cooledDown) {\n    state.lastNotified[c.id] = nowMs;\n    alerts.push({ id: c.id, path: c.path, severity: critical ? 'critical' : 'warning', consecutiveFailures: state.failures[c.id], problems });\n  }\n});\n\nreturn [{\n  json: {\n    hasAlerts: alerts.length > 0,\n    alerts,\n    checked: checks.length,\n    summary,\n    notifySubject: 'Site health: ' + alerts.length + ' check(s) failing' + (alerts.some((a) => a.severity === 'critical') ? ' (critical)' : ''),\n    notifyText: [\n      'These site checks are failing:',\n      ...alerts.map((a) => '- ' + a.id + ' ' + a.path + ' [' + a.severity + ', ' + a.consecutiveFailures + ' in a row]: ' + a.problems.join(', ')),\n      '',\n      'A 5xx status or an environment mismatch (indexing rules, wrong environment) alerts at once. Other failures alert after ' + MIN_CONSECUTIVE + ' in a row. The same check is not reported again for ' + COOLDOWN_MINUTES + ' minutes.',\n    ].join('\\n'),\n  },\n}];"
+      },
+      "id": "8dc02395-903a-4e49-8c85-39ecd535a806",
+      "name": "Evaluate checks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "64ee9907-d3ed-4027-8483-6af27bf339ee",
+              "leftValue": "={{ $json.hasAlerts }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cc299091-1adc-424e-818b-3e8348d3b85d",
+      "name": "Any alerts?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.NOTIFY_FROM_ADDRESS }}",
+        "toEmail": "={{ $env.ALERT_NOTIFY_ADDRESS }}",
+        "subject": "={{ $json.notifySubject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.notifyText }}",
+        "options": {}
+      },
+      "id": "eacab6ec-2244-43f1-849b-d0db4e63d6f4",
+      "name": "Send alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "PLACEHOLDER",
+          "name": "SMTP - internal notifications - PLACEHOLDER"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every 30 minutes": {
+      "main": [
+        [
+          {
+            "node": "Build check list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build check list": {
+      "main": [
+        [
+          {
+            "node": "Fetch page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch page": {
+      "main": [
+        [
+          {
+            "node": "Evaluate checks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate checks": {
+      "main": [
+        [
+          {
+            "node": "Any alerts?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any alerts?": {
+      "main": [
+        [
+          {
+            "node": "Send alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Australia/Sydney",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false,
+    "executionTimeout": 180
+  }
+}

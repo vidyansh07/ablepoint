@@ -1,0 +1,65 @@
+{
+  "apiVersion": "1",
+  "environment": "production",
+  "generatedAt": "2026-11-03T10:00:00.000Z",
+  "publisher": "FIXTURE Example Provider (not real content)",
+  "data": [
+    {
+      "id": "fixture-sil",
+      "type": "service",
+      "name": "Fixture supported independent living (SIL)",
+      "url": "https://fixtures.example.invalid/fixture-sil/",
+      "summary": "FIXTURE ONLY. Placeholder text about a made-up shared-home service used for tests.",
+      "whoFor": "FIXTURE ONLY. Invented audience.",
+      "provides": [
+        "Placeholder item one",
+        "Placeholder item two"
+      ],
+      "process": [
+        "Placeholder step one",
+        "Placeholder step two"
+      ],
+      "faqs": [
+        {
+          "q": "Do I need a plan manager to start with Fixture SIL?",
+          "a": "FIXTURE ONLY. Placeholder answer about a made-up service."
+        }
+      ],
+      "regions": [
+        "exampleton"
+      ],
+      "related": [
+        "fixture-core"
+      ],
+      "status": "approved",
+      "updatedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "fixture-core",
+      "type": "service",
+      "name": "Fixture core support",
+      "url": "https://fixtures.example.invalid/fixture-core/",
+      "summary": "FIXTURE ONLY. Placeholder text about everyday help used for tests.",
+      "whoFor": "FIXTURE ONLY. Invented audience.",
+      "provides": [
+        "Placeholder item"
+      ],
+      "process": [],
+      "faqs": [
+        {
+          "q": "Can Fixture core support be arranged on weekends?",
+          "a": "FIXTURE ONLY. Placeholder answer. No real timetable exists."
+        }
+      ],
+      "regions": [
+        "exampleton",
+        "sampleville"
+      ],
+      "related": [
+        "fixture-sil"
+      ],
+      "status": "approved",
+      "updatedAt": "2026-10-29T00:00:00Z"
+    }
+  ]
+}

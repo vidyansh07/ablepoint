@@ -1,0 +1,19 @@
+---
+import Ring from './Ring.astro';
+interface Props { eyebrow?: string; title: string; lede?: string; compact?: boolean; }
+const { eyebrow, title, lede, compact = false } = Astro.props;
+const split = Astro.slots.has('art');
+---
+<section class:list={['hero', { 'hero--compact': compact }]}>
+  <Ring class="hero__ring-bg" size={448} />
+  <div class:list={['container', 'hero__grid', { 'hero__grid--split': split }]}>
+    <div>
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {lede && <p class="lede">{lede}</p>}
+      <slot />
+    </div>
+    {split && <slot name="art" />}
+  </div>
+  {Astro.slots.has('banner') && <div class="container hero__banner"><slot name="banner" /></div>}
+</section>

@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleBody from '../../components/ArticleBody.astro';
+import { guides } from '../../data/guides';
+import { visible } from '../../lib/content';
+import { article, faqPage } from '../../lib/jsonld';
+import { metaDescription } from '../../lib/meta';
+
+export function getStaticPaths() {
+  return visible(guides).map((g) => ({ params: { slug: g.slug }, props: { slug: g.slug } }));
+}
+const { slug } = Astro.props;
+const g = guides.find((x) => x.slug === slug)!;
+const path = `/guides/${g.slug}/`;
+const origin = Astro.site?.origin ?? 'http://localhost:4321';
+const crumbs = [{ name: 'Guides', path: '/guides/' }, { name: g.title, path }];
+---
+<Base title={g.title} description={metaDescription(g.answer)} path={path} crumbs={crumbs}
+  jsonld={[article({ headline: g.title, description: g.answer, path, author: g.author, datePublished: g.publishedAt, dateModified: g.updatedAt, reviewedBy: g.reviewer }, origin), ...(g.faqs.length ? [faqPage(g.faqs)] : [])]}>
+  <ArticleBody a={g} crumbs={crumbs} eyebrow="Guide" />
+</Base>

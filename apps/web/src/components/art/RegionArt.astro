@@ -1,0 +1,276 @@
+---
+/**
+ * Regional spot illustrations (docs/17-brand-guidelines.md §5). Original, flat, geometric, decorative.
+ * 320x200 (8:5). Palette via CSS variables only. No people, no faces, no text, no traced imagery.
+ * Cues are stylised and make no factual claim; regional staff should review them before publication.
+ * Motion: one-time entrance (<= 1.2 s), transform and opacity only, disabled under prefers-reduced-motion.
+ * Dominant hue per region so a grid of six reads as a set: central-coast blue, newcastle plum, dubbo orange,
+ * orange green, tamworth deep blue, gunnedah light plum.
+ */
+export type RegionArtName = 'central-coast' | 'newcastle' | 'dubbo' | 'orange' | 'tamworth' | 'gunnedah' | 'default';
+interface Props { region?: RegionArtName | string; class?: string; }
+const { region = 'default', class: cls } = Astro.props as Props;
+const known = ['central-coast', 'newcastle', 'dubbo', 'orange', 'tamworth', 'gunnedah'];
+const r = known.includes(region) ? region : 'default';
+---
+<svg class:list={['region-art', cls]} viewBox="0 0 320 200" width="320" height="200" role="presentation" aria-hidden="true" focusable="false" data-region={r}>
+  {r === 'central-coast' && (
+    <>
+      <rect width="320" height="200" fill="var(--blue-100)" />
+      <g class="ra-fade">
+        <circle cx="248" cy="48" r="32" fill="var(--orange-100)" />
+        <circle cx="248" cy="48" r="19" fill="var(--orange-500)" />
+        <rect x="150" y="34" width="56" height="14" rx="7" fill="var(--surface)" opacity=".9" />
+        <rect x="170" y="52" width="40" height="12" rx="6" fill="var(--surface)" opacity=".9" />
+      </g>
+      <path d="M0 106H320V200H0Z" fill="var(--blue-500)" />
+      <path d="M0 106H320V116H0Z" fill="var(--blue-700)" opacity=".35" />
+      <g class="ra-rise d1">
+        <path d="M0 118C26 90 74 84 108 104C128 115 150 124 168 136C156 146 146 154 132 160H0Z" fill="var(--green-700)" />
+        <path d="M0 134C30 112 66 110 96 124C112 131 130 134 148 140C140 148 134 154 124 160H0Z" fill="var(--green-500)" />
+      </g>
+      <g class="ra-rise d2" fill="none" stroke="var(--surface)" stroke-linecap="round">
+        <path d="M168 130c14-5 28-5 42 0s28 5 42 0 28-5 42 0" stroke-width="3" opacity=".55" />
+        <path d="M150 146c18-6 36-6 54 0s36 6 54 0 36-6 54 0" stroke-width="3" opacity=".45" />
+        <path d="M176 160c14-4 28-4 42 0s28 4 42 0" stroke-width="3" opacity=".35" />
+      </g>
+      <g class="ra-rise d3">
+        <path d="M0 200V164C66 146 150 152 236 170C276 178 302 186 320 190V200Z" fill="var(--orange-100)" />
+        <path d="M236 170C276 178 302 186 320 190" fill="none" stroke="var(--surface)" stroke-width="4" stroke-linecap="round" />
+        <circle cx="64" cy="184" r="4" fill="var(--orange-500)" />
+        <circle cx="92" cy="190" r="3" fill="var(--plum-500)" />
+        <circle cx="150" cy="180" r="3.5" fill="var(--orange-500)" />
+      </g>
+      <g class="ra-fade d3" fill="none" stroke="var(--blue-900)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M196 70l6 -6 6 6" />
+        <path d="M214 82l5 -5 5 5" />
+      </g>
+    </>
+  )}
+
+  {r === 'newcastle' && (
+    <>
+      <rect width="320" height="200" fill="var(--plum-100)" />
+      <g class="ra-fade">
+        <circle cx="76" cy="72" r="30" fill="var(--orange-100)" />
+        <circle cx="76" cy="72" r="17" fill="var(--orange-500)" />
+      </g>
+      <path d="M0 116H320V200H0Z" fill="var(--blue-700)" />
+      <g class="ra-rise d1">
+        <path d="M176 120C206 98 266 94 320 110V130H176Z" fill="var(--plum-500)" />
+        <path d="M232 116C250 100 286 100 304 116V124H232Z" fill="var(--plum-700)" />
+        <path d="M262 50h12l4 52H258Z" fill="var(--surface)" stroke="var(--plum-700)" stroke-width="2" stroke-linejoin="round" />
+        <rect x="259" y="68" width="18" height="8" fill="var(--plum-700)" />
+        <rect x="261" y="38" width="14" height="12" rx="2" fill="var(--blue-900)" />
+        <path d="M259 38l9 -10 9 10Z" fill="var(--plum-700)" />
+      </g>
+      <g class="ra-rise d2">
+        <path d="M110 116h58l-9 11h-40Z" fill="var(--blue-900)" />
+        <rect x="128" y="104" width="22" height="12" rx="2" fill="var(--blue-900)" />
+        <rect x="136" y="96" width="6" height="8" rx="1" fill="var(--plum-700)" />
+      </g>
+      <g class="ra-fade d2" fill="var(--orange-500)" opacity=".55">
+        <rect x="56" y="128" width="40" height="5" rx="2.5" />
+        <rect x="64" y="140" width="26" height="5" rx="2.5" />
+        <rect x="70" y="152" width="14" height="5" rx="2.5" />
+      </g>
+      <g class="ra-fade d1" fill="none" stroke="var(--surface)" stroke-width="3" stroke-linecap="round" opacity=".3">
+        <path d="M150 146c14-4 28-4 42 0s28 4 42 0" />
+        <path d="M196 164c14-4 28-4 42 0s28 4 42 0" />
+      </g>
+      <g class="ra-rise d3">
+        <path d="M0 200V170C60 156 130 164 200 178S292 192 320 186V200Z" fill="var(--plum-500)" />
+        <circle cx="44" cy="186" r="9" fill="var(--plum-700)" />
+        <circle cx="66" cy="192" r="6" fill="var(--plum-700)" />
+        <path d="M232 192h54" stroke="var(--plum-700)" stroke-width="4" stroke-linecap="round" />
+      </g>
+    </>
+  )}
+
+  {r === 'dubbo' && (
+    <>
+      <rect width="320" height="200" fill="var(--orange-100)" />
+      <g class="ra-fade">
+        <circle cx="232" cy="92" r="40" fill="var(--orange-500)" opacity=".35" />
+        <circle cx="232" cy="92" r="26" fill="var(--orange-500)" />
+        <rect x="40" y="32" width="64" height="14" rx="7" fill="var(--surface)" opacity=".9" />
+        <rect x="62" y="50" width="44" height="12" rx="6" fill="var(--surface)" opacity=".9" />
+      </g>
+      <path d="M0 114C60 106 120 110 180 112S280 108 320 112V124H0Z" fill="var(--orange-500)" opacity=".4" />
+      <g class="ra-rise d1">
+        <path d="M0 122H320V138C220 134 100 134 0 138Z" fill="var(--green-100)" />
+        <path d="M0 138C100 134 220 134 320 138V156C220 150 100 150 0 156Z" fill="var(--orange-500)" opacity=".7" />
+        <path d="M0 156C100 150 220 150 320 156V178C220 170 100 170 0 178Z" fill="var(--green-500)" />
+        <path d="M0 178C100 170 220 170 320 178V200H0Z" fill="var(--orange-500)" opacity=".9" />
+      </g>
+      <g class="ra-rise d2">
+        <path d="M94 148C96 132 92 116 97 100" fill="none" stroke="var(--plum-700)" stroke-width="7" stroke-linecap="round" />
+        <path d="M96 114C88 108 82 102 78 94M96 108C106 102 112 96 116 90" fill="none" stroke="var(--plum-700)" stroke-width="4" stroke-linecap="round" />
+        <ellipse cx="76" cy="88" rx="19" ry="10" fill="var(--green-700)" />
+        <ellipse cx="118" cy="84" rx="18" ry="10" fill="var(--green-700)" />
+        <ellipse cx="97" cy="76" rx="22" ry="11" fill="var(--green-700)" />
+        <ellipse cx="94" cy="150" rx="16" ry="3.5" fill="var(--plum-700)" opacity=".3" />
+      </g>
+    </>
+  )}
+
+  {r === 'orange' && (
+    <>
+      <rect width="320" height="200" fill="var(--green-100)" />
+      <g class="ra-fade">
+        <circle cx="60" cy="52" r="26" fill="var(--orange-100)" />
+        <circle cx="60" cy="52" r="14" fill="var(--orange-500)" />
+      </g>
+      <path d="M0 112C60 84 120 86 176 104S280 96 320 100V160H0Z" fill="var(--green-500)" opacity=".85" />
+      <g class="ra-rise d1">
+        <circle cx="70" cy="110" r="9" fill="var(--green-700)" />
+        <circle cx="120" cy="104" r="9" fill="var(--green-700)" />
+        <circle cx="170" cy="108" r="9" fill="var(--green-700)" />
+        <circle cx="220" cy="106" r="9" fill="var(--green-700)" />
+        <circle cx="270" cy="104" r="9" fill="var(--green-700)" />
+      </g>
+      <path d="M0 140C80 118 180 120 320 136V200H0Z" fill="var(--green-100)" />
+      <g class="ra-rise d2">
+        <rect x="45" y="136" width="5" height="12" rx="2" fill="var(--plum-700)" />
+        <circle cx="48" cy="130" r="14" fill="var(--green-700)" />
+        <circle cx="52" cy="127" r="3.5" fill="var(--orange-500)" />
+        <circle cx="42" cy="133" r="3.5" fill="var(--orange-500)" />
+        <rect x="117" y="132" width="5" height="12" rx="2" fill="var(--plum-700)" />
+        <circle cx="120" cy="126" r="14" fill="var(--green-500)" />
+        <circle cx="125" cy="124" r="3.5" fill="var(--orange-500)" />
+        <circle cx="114" cy="130" r="3.5" fill="var(--orange-500)" />
+        <rect x="197" y="134" width="5" height="12" rx="2" fill="var(--plum-700)" />
+        <circle cx="200" cy="128" r="14" fill="var(--green-700)" />
+        <circle cx="205" cy="125" r="3.5" fill="var(--orange-500)" />
+        <circle cx="194" cy="131" r="3.5" fill="var(--orange-500)" />
+        <rect x="277" y="136" width="5" height="12" rx="2" fill="var(--plum-700)" />
+        <circle cx="280" cy="130" r="14" fill="var(--green-500)" />
+        <circle cx="285" cy="127" r="3.5" fill="var(--orange-500)" />
+      </g>
+      <path d="M0 172C80 156 190 160 320 176V200H0Z" fill="var(--green-500)" opacity=".6" />
+      <g class="ra-rise d3">
+        <rect x="82" y="170" width="6" height="16" rx="3" fill="var(--plum-700)" />
+        <circle cx="85" cy="162" r="20" fill="var(--green-700)" />
+        <circle cx="93" cy="158" r="4.5" fill="var(--orange-500)" />
+        <circle cx="78" cy="168" r="4.5" fill="var(--orange-500)" />
+        <circle cx="88" cy="171" r="4.5" fill="var(--orange-500)" />
+        <rect x="222" y="172" width="6" height="16" rx="3" fill="var(--plum-700)" />
+        <circle cx="225" cy="164" r="20" fill="var(--green-500)" />
+        <circle cx="233" cy="160" r="4.5" fill="var(--orange-500)" />
+        <circle cx="218" cy="170" r="4.5" fill="var(--orange-500)" />
+        <circle cx="228" cy="173" r="4.5" fill="var(--orange-500)" />
+      </g>
+    </>
+  )}
+
+  {r === 'tamworth' && (
+    <>
+      <rect width="320" height="200" fill="var(--blue-700)" />
+      <g class="ra-fade">
+        <circle cx="250" cy="48" r="26" fill="var(--blue-500)" opacity=".5" />
+        <circle cx="250" cy="48" r="15" fill="var(--orange-100)" />
+        <circle cx="60" cy="34" r="1.8" fill="var(--surface)" />
+        <circle cx="104" cy="58" r="1.5" fill="var(--surface)" />
+        <circle cx="168" cy="28" r="1.8" fill="var(--surface)" />
+        <circle cx="30" cy="70" r="1.5" fill="var(--surface)" />
+        <circle cx="196" cy="62" r="1.5" fill="var(--surface)" />
+      </g>
+      <path d="M0 116C70 92 140 96 200 108S290 100 320 106V140H0Z" fill="var(--blue-900)" />
+      <g class="ra-rise d1">
+        <path d="M0 146C60 124 120 130 190 144S290 146 320 136V180H0Z" fill="var(--green-700)" />
+      </g>
+      <g class="ra-rise d2">
+        <g transform="rotate(12 124 150)">
+          <rect x="121" y="72" width="6" height="40" rx="2" fill="var(--plum-700)" />
+          <rect x="118" y="62" width="12" height="12" rx="3" fill="var(--plum-700)" />
+          <circle cx="124" cy="122" r="10" fill="var(--orange-500)" />
+          <circle cx="124" cy="141" r="14" fill="var(--orange-500)" />
+          <circle cx="124" cy="137" r="4.5" fill="var(--blue-900)" />
+        </g>
+      </g>
+      <g class="ra-rise d3">
+        <path d="M0 172C80 154 160 164 240 176S300 180 320 174V200H0Z" fill="var(--blue-900)" />
+        <path d="M200 160v22M236 164v22M272 168v22" stroke="var(--surface)" stroke-width="5" stroke-linecap="round" opacity=".7" />
+        <path d="M196 168h82" stroke="var(--surface)" stroke-width="3" stroke-linecap="round" opacity=".7" />
+      </g>
+    </>
+  )}
+
+  {r === 'gunnedah' && (
+    <>
+      <rect width="320" height="200" fill="var(--plum-100)" />
+      <g class="ra-fade">
+        <circle cx="56" cy="50" r="26" fill="var(--orange-100)" />
+        <circle cx="56" cy="50" r="14" fill="var(--orange-500)" />
+        <rect x="150" y="32" width="52" height="13" rx="6.5" fill="var(--surface)" opacity=".9" />
+      </g>
+      <path d="M0 118C60 100 130 104 200 118S290 108 320 114V150H0Z" fill="var(--plum-500)" opacity=".5" />
+      <g class="ra-rise d1">
+        <path d="M0 144C80 124 170 132 250 148S310 150 320 146V200H0Z" fill="var(--green-500)" />
+      </g>
+      <g class="ra-rise d2">
+        <path d="M0 176C70 162 150 170 230 182S300 188 320 184V200H0Z" fill="var(--green-700)" />
+        <circle cx="52" cy="178" r="9" fill="var(--green-500)" />
+        <circle cx="70" cy="182" r="6" fill="var(--green-500)" />
+        <circle cx="116" cy="186" r="5" fill="var(--plum-500)" />
+      </g>
+      <g class="ra-rise d2">
+        <path d="M222 178C224 158 220 144 222 126" fill="none" stroke="var(--plum-700)" stroke-width="9" stroke-linecap="round" />
+        <path d="M222 144C212 136 206 118 202 100M222 140C234 130 242 114 248 98" fill="none" stroke="var(--plum-700)" stroke-width="6" stroke-linecap="round" />
+        <ellipse cx="200" cy="90" rx="20" ry="11" fill="var(--green-700)" />
+        <ellipse cx="252" cy="86" rx="20" ry="11" fill="var(--green-700)" />
+        <ellipse cx="224" cy="76" rx="22" ry="12" fill="var(--green-700)" />
+      </g>
+      <g class="ra-fade d4" fill="var(--blue-500)">
+        <ellipse cx="222" cy="130" rx="9" ry="12" />
+        <circle cx="222" cy="113" r="8" />
+        <circle cx="213" cy="107" r="5" />
+        <circle cx="231" cy="107" r="5" />
+      </g>
+    </>
+  )}
+
+  {r === 'default' && (
+    <>
+      <rect width="320" height="200" fill="var(--blue-100)" />
+      <g class="ra-fade">
+        <rect x="40" y="48" width="56" height="14" rx="7" fill="var(--surface)" opacity=".9" />
+        <rect x="58" y="66" width="40" height="12" rx="6" fill="var(--surface)" opacity=".9" />
+      </g>
+      <g class="ra-rise d1">
+        <g transform="translate(204 18) scale(.36)">
+          <rect x="92" y="20" width="16" height="50" rx="8" fill="var(--blue-500)" />
+          <rect x="92" y="20" width="16" height="36" rx="8" fill="var(--green-500)" transform="rotate(45 100 100)" />
+          <rect x="92" y="20" width="16" height="50" rx="8" fill="var(--plum-500)" transform="rotate(90 100 100)" />
+          <rect x="92" y="20" width="16" height="36" rx="8" fill="var(--orange-500)" transform="rotate(135 100 100)" />
+          <rect x="92" y="20" width="16" height="50" rx="8" fill="var(--blue-500)" transform="rotate(180 100 100)" />
+          <rect x="92" y="20" width="16" height="36" rx="8" fill="var(--green-500)" transform="rotate(225 100 100)" />
+          <rect x="92" y="20" width="16" height="50" rx="8" fill="var(--plum-500)" transform="rotate(270 100 100)" />
+          <rect x="92" y="20" width="16" height="36" rx="8" fill="var(--orange-500)" transform="rotate(315 100 100)" />
+          <circle cx="100" cy="100" r="12" fill="var(--blue-700)" />
+        </g>
+      </g>
+      <path d="M0 120C70 98 150 106 230 122S300 120 320 116V160H0Z" fill="var(--green-100)" />
+      <g class="ra-rise d2">
+        <path d="M0 146C80 126 170 136 250 152S310 156 320 152V200H0Z" fill="var(--green-500)" />
+        <path d="M0 176C70 162 150 170 230 182S300 188 320 184V200H0Z" fill="var(--green-700)" opacity=".45" />
+      </g>
+      <path class="ra-fade d3" d="M150 200C158 182 172 170 196 158C214 150 222 142 236 134L246 138C232 150 220 156 204 166C184 176 176 188 172 200Z" fill="var(--surface)" opacity=".8" />
+    </>
+  )}
+</svg>
+
+<style>
+  .region-art { display: block; width: 100%; height: auto; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ra-rise { animation: ra-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+    .ra-fade { animation: ra-fade 0.7s ease-out both; }
+    .d1 { animation-delay: 0.1s; }
+    .d2 { animation-delay: 0.25s; }
+    .d3 { animation-delay: 0.35s; }
+    .d4 { animation-delay: 0.45s; }
+    @keyframes ra-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @keyframes ra-fade { from { opacity: 0; } to { opacity: 1; } }
+  }
+</style>

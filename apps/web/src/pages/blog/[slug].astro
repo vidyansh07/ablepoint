@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleBody from '../../components/ArticleBody.astro';
+import { posts, CATEGORY_LABELS } from '../../data/posts';
+import { visible } from '../../lib/content';
+import { article, faqPage } from '../../lib/jsonld';
+import { metaDescription } from '../../lib/meta';
+
+export function getStaticPaths() {
+  return visible(posts).map((p) => ({ params: { slug: p.slug }, props: { slug: p.slug } }));
+}
+const { slug } = Astro.props;
+const p = posts.find((x) => x.slug === slug)!;
+const path = `/blog/${p.slug}/`;
+const origin = Astro.site?.origin ?? 'http://localhost:4321';
+const words = [p.answer, ...p.sections.flatMap((s) => s.body)].join(' ').split(/\s+/).length;
+const crumbs = [{ name: 'Blog', path: '/blog/' }, { name: p.title, path }];
+---
+<Base title={p.title} description={metaDescription(p.summary)} path={path} crumbs={crumbs}
+  jsonld={[article({ headline: p.title, description: p.summary, path, author: p.author, datePublished: p.publishedAt, dateModified: p.updatedAt, reviewedBy: p.reviewer }, origin), ...(p.faqs.length ? [faqPage(p.faqs)] : [])]}>
+  <ArticleBody a={p} crumbs={crumbs} eyebrow={CATEGORY_LABELS[p.category]} readMinutes={Math.max(1, Math.round(words / 200))} />
+</Base>

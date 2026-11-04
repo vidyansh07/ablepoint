@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /wp-admin/
+
+https://ablepointaustralia.com.au/page-sitemap.xml

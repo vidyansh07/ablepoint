@@ -1,0 +1,62 @@
+name: Lighthouse CI
+
+# Verification only, on pull requests. Builds the STAGING site, serves it locally with apps/web/scripts/serve-dist.mjs
+# (started by Lighthouse CI itself, see apps/web/lighthouserc.json) and audits five pages on the mobile form factor.
+#
+# Budgets: performance >= 0.9, accessibility = 1, best practices >= 0.95, LCP <= 2500 ms, CLS <= 0.1 (monitoring.ts targets).
+# The SEO category is deliberately NOT asserted: staging is noindex on purpose, so Lighthouse's crawlability audit would always fail.
+#
+# No secrets are needed. Reports are kept as a workflow artifact (filesystem upload). They are not sent to Lighthouse CI's
+# temporary public storage, because the staging site is not meant to be public.
+#
+# Not run anywhere yet: there is no repository. The first real run will show whether the budgets hold on the real build.
+# The local server sends no compression and no CDN caching, so scores can differ from the deployed site: use this as a regression guard.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+  CI: "true"
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI (mobile, staging build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from the root package.json "packageManager" field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web (staging)
+        run: pnpm --filter @ablepoint/web build:staging
+
+      - name: Run Lighthouse CI (collect, assert, save reports to disk)
+        working-directory: apps/web
+        run: npx --yes @lhci/cli@0.16.0 autorun --config=./lighthouserc.json
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: apps/web/.lighthouseci
+          if-no-files-found: ignore
+          retention-days: 7

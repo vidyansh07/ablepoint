@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+<div class="utility">
+  <div class="container utility__bar">
+    <p class="utility__note">Supporting people across regional NSW</p>
+    <a class="utility__phone" href={site.phoneHref} aria-label={`Call ${site.phoneDisplay}`} data-event="phone_click" data-event-location="utility"><Icon name="phone" size={18} /><span>{site.phoneDisplay}</span></a>
+    <div class="utility__tools" role="group" aria-label="Reading tools">
+      <div class="tool-group" role="group" aria-label="Text size">
+        <span aria-hidden="true">Text size</span>
+        <button class="tool-btn" type="button" data-text-size="100" aria-pressed="true">A<span class="visually-hidden"> normal text size</span></button>
+        <button class="tool-btn" type="button" data-text-size="115" aria-pressed="false">A+<span class="visually-hidden"> larger text size</span></button>
+        <button class="tool-btn" type="button" data-text-size="130" aria-pressed="false">A++<span class="visually-hidden"> largest text size</span></button>
+      </div>
+      <button class="tool-btn" type="button" id="contrast-toggle" aria-label="High contrast" aria-pressed="false"><Icon name="contrast" size={20} /> Contrast</button>
+      <a class="tool-btn" href="/easy-read/"><Icon name="book" size={20} /> Easy Read</a>
+    </div>
+  </div>
+</div>

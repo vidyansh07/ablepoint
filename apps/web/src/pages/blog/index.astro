@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PostCard from '../../components/PostCard.astro';
+import CtaBlock from '../../components/CtaBlock.astro';
+import { posts, CATEGORY_LABELS } from '../../data/posts';
+import { visible } from '../../lib/content';
+const list = visible(posts);
+const cats = [...new Set(list.map((p) => p.category))];
+---
+<Base title="Blog" description="Practical, plain-English articles for support coordinators, families and participants about supported accommodation and the NDIS in regional NSW." path="/blog/" crumbs={[{ name: 'Blog', path: '/blog/' }]}>
+  <Hero title="Blog" lede="Practical articles for support coordinators, families and participants." compact />
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Blog', path: '/blog/' }]} />
+    {cats.length > 1 && <ul class="chips" aria-label="Topics">{cats.map((c) => <li><a href={`/blog/topic/${c}/`}>{CATEGORY_LABELS[c]}</a></li>)}</ul>}
+    {list.length ? <div class="grid grid--cards mt-4">{list.map((p) => <PostCard post={p} />)}</div> : <p class="measure">New articles are on the way. In the meantime, see our <a href="/guides/">guides</a>.</p>}
+  </div>
+  <CtaBlock />
+</Base>

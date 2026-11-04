@@ -1,0 +1,13 @@
+---
+import Icon from './Icon.astro';
+interface Props { href: string; title: string; text: string; cta?: string; level?: 2 | 3; icon?: string; tint?: 'blue' | 'plum' | 'orange' | 'green'; }
+const { href, title, text, cta = 'Find out more', level = 3, icon, tint = 'blue' } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+---
+<article class:list={['card', 'card--link', { 'card--art': Astro.slots.has('art') }]}>
+  {Astro.slots.has('art') && <div class="card__art"><slot name="art" /></div>}
+  {icon && !Astro.slots.has('art') && <span class:list={['icon-circle', `tint-${tint}`]}><Icon name={icon} size={28} /></span>}
+  <H><a class="stretched" href={href}>{title}</a></H>
+  <p>{text}</p>
+  <span class="card__link" aria-hidden="true">{cta} <Icon name="arrow" size={18} /></span>
+</article>

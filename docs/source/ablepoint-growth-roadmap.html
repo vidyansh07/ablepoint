@@ -1,0 +1,718 @@
+<title>AblePoint Growth Roadmap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a fixed left index on desktop, one long scannable column of checklists and tables; on phones the index becomes a scrolling chip row. Colors: green-biased neutrals with a deep forest accent; semantic reds/ambers reserved for severity. */
+:root{
+  --bg:#F4F6F3; --surface:#FFFFFF; --surface-2:#EDF1EC; --fg:#1B2420; --muted:#5A665E; --line:#D6DDD7; --line-strong:#B9C4BC;
+  --accent:#2C6A4D; --accent-ink:#1F4F39; --accent-soft:#E1EEE6;
+  --crit:#A8281C; --crit-soft:#F9E6E3; --warn:#9A5A08; --warn-soft:#F8EEDC; --ok:#2C6A4D; --ok-soft:#E1EEE6; --info:#355A8C; --info-soft:#E4EBF5;
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --radius:6px; --shadow:0 1px 2px rgba(20,30,25,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121715; --surface:#1A211D; --surface-2:#212A25; --fg:#E6ECE7; --muted:#A2AEA6; --line:#2B352F; --line-strong:#3E4B43;
+    --accent:#7CC7A0; --accent-ink:#A9DDC2; --accent-soft:#1E3A2C;
+    --crit:#F0918A; --crit-soft:#3A1F1C; --warn:#E6AA5E; --warn-soft:#3A2B14; --ok:#7CC7A0; --ok-soft:#1E3A2C; --info:#93B3E3; --info-soft:#1C2A3E;
+    --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121715; --surface:#1A211D; --surface-2:#212A25; --fg:#E6ECE7; --muted:#A2AEA6; --line:#2B352F; --line-strong:#3E4B43;
+  --accent:#7CC7A0; --accent-ink:#A9DDC2; --accent-soft:#1E3A2C;
+  --crit:#F0918A; --crit-soft:#3A1F1C; --warn:#E6AA5E; --warn-soft:#3A2B14; --ok:#7CC7A0; --ok-soft:#1E3A2C; --info:#93B3E3; --info-soft:#1C2A3E;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+.wrap{max-width:1240px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;align-items:start}
+@media (max-width:900px){.shell{grid-template-columns:minmax(0,1fr);gap:16px}}
+
+/* index */
+.index{position:sticky;top:env(safe-area-inset-top,0px);padding-top:8px}
+.index h2{font-family:var(--font-display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+.index ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.index a{display:block;padding:6px 8px;border-radius:4px;text-decoration:none;color:var(--fg);font-size:14px;border-left:2px solid transparent}
+.index a:hover{background:var(--surface-2)}
+.index .count{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-left:6px}
+@media (max-width:900px){
+  .index{position:static;overflow-x:auto;padding-bottom:4px}
+  .index h2{display:none}
+  .index ol{flex-direction:row;gap:6px;min-width:max-content}
+  .index a{border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:13px;white-space:nowrap;background:var(--surface)}
+}
+
+/* header */
+.eyebrow{font-family:var(--font-mono);font-size:12px;color:var(--muted);letter-spacing:.02em;margin:0 0 10px}
+h1{font-family:var(--font-display);font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0 0 10px;font-weight:700;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-size:18px;max-width:68ch;margin:0 0 20px;color:var(--fg)}
+.assume{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 24px}
+.assume div{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;min-width:0}
+.assume dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:600;margin:0 0 4px}
+.assume dd{margin:0;font-size:15px}
+
+/* progress meters */
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:0 0 8px}
+.meter{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;min-width:0}
+.meter .label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);margin-bottom:8px}
+.meter .label b{font-family:var(--font-mono);font-size:13px;color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .25s ease}
+.meter-note{font-size:12px;color:var(--muted);margin:0 0 28px}
+.meter-note button{font:inherit;color:var(--accent-ink);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
+.meter-note .confirm{display:inline-flex;gap:8px;margin-left:6px}
+.meter-note .confirm button{text-decoration:none;border:1px solid var(--line-strong);border-radius:4px;padding:1px 8px;color:var(--fg)}
+
+/* sections */
+section{margin:0 0 48px;scroll-margin-top:16px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--fg);padding-bottom:6px;margin:0 0 14px}
+.sec-head h2{font-family:var(--font-display);font-size:22px;margin:0;font-weight:700;letter-spacing:-.005em}
+.sec-head .tally{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+h3{font-family:var(--font-display);font-size:16px;margin:26px 0 10px;font-weight:600;text-wrap:balance}
+h3 .hrs{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-weight:400;margin-left:8px}
+p{max-width:68ch;margin:0 0 12px}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 var(--radius) var(--radius) 0;margin:0 0 16px;max-width:76ch}
+.note p:last-child{margin:0}
+.callout{border:1px solid var(--line);background:var(--surface);padding:12px 14px;border-radius:var(--radius);margin:0 0 16px;max-width:76ch}
+ul.plain{margin:0 0 12px;padding-left:20px;max-width:72ch}
+ul.plain li{margin:0 0 4px}
+
+/* chips */
+.chip{display:inline-block;font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:3px;line-height:1.5;white-space:nowrap}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.high{background:var(--warn-soft);color:var(--warn)}
+.chip.med{background:var(--info-soft);color:var(--info)}
+.chip.low{background:var(--surface-2);color:var(--muted)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.phase{background:var(--surface-2);color:var(--fg);font-weight:600}
+
+/* tasks */
+.tasks{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.tasks li{border-top:1px solid var(--line)}
+.tasks li:first-child{border-top:0}
+.task{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;padding:10px 14px;cursor:pointer;align-items:start}
+.task:hover{background:var(--surface-2)}
+.task input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent);cursor:pointer}
+.task-title{display:block;font-weight:600;font-size:15px;line-height:1.35}
+.task-meta{display:block;font-size:13px;color:var(--muted);margin-top:3px;line-height:1.45}
+.task-meta code{font-family:var(--font-mono);font-size:12px;background:var(--surface-2);padding:0 4px;border-radius:3px}
+.task input:checked ~ .task-main .task-title{text-decoration:line-through;color:var(--muted);font-weight:400}
+.task-main{min-width:0}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);margin:0 0 14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-family:var(--font-display);font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:left;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:var(--font-mono);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.mono{font-family:var(--font-mono);font-size:13px}
+td .sub{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+td input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);margin:2px 0 0}
+.tbl .w-ev{min-width:260px}
+.tbl .w-fix{min-width:240px}
+
+/* gantt */
+.gantt{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:12px 12px 6px;margin:0 0 14px}
+.g-grid{display:grid;grid-template-columns:150px repeat(13,minmax(44px,1fr));gap:4px 0;min-width:760px;font-size:13px}
+.g-grid .g-h{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:center;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.g-grid .g-h:first-child{text-align:left}
+.g-grid .g-l{padding:6px 8px 6px 0;font-weight:600;font-size:13px;line-height:1.3;border-top:1px solid var(--line);display:flex;align-items:center}
+.g-grid .g-bar{margin:6px 2px;height:22px;border-radius:3px;background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent-ink);font-family:var(--font-mono);font-size:11px;display:flex;align-items:center;padding:0 6px;white-space:nowrap;overflow:hidden;align-self:center}
+.g-grid .g-bar.light{background:var(--surface-2);border-color:var(--line-strong);color:var(--fg)}
+.g-grid .g-row{display:contents}
+.g-grid .g-cell{border-top:1px solid var(--line)}
+.g-key{font-size:12px;color:var(--muted);margin:0 0 14px}
+
+/* automations */
+.auto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.auto{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start}
+.auto input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--accent)}
+.auto h4{font-family:var(--font-display);font-size:15px;margin:0 0 6px;font-weight:600}
+.auto .flow{font-family:var(--font-mono);font-size:12.5px;line-height:1.5;color:var(--fg);background:var(--surface-2);padding:6px 8px;border-radius:4px;margin:0 0 8px;white-space:normal}
+.auto dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:13px}
+.auto dt{color:var(--muted)}
+.auto dd{margin:0}
+.auto input:checked ~ div h4{color:var(--muted);text-decoration:line-through}
+
+/* sources */
+.sources ol{padding-left:20px;margin:0;font-size:14px;columns:2;column-gap:32px}
+.sources li{margin:0 0 6px;break-inside:avoid}
+@media (max-width:760px){.sources ol{columns:1}}
+
+.foot{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:40px}
+</style>
+
+<div class="wrap">
+<div class="shell">
+<nav class="index" aria-label="Sections">
+  <h2>Index</h2>
+  <ol>
+    <li><a href="#verdict">Verdict</a></li>
+    <li><a href="#weak">Weaknesses<span class="count" data-count="weak"></span></a></li>
+    <li><a href="#guard">Guardrails<span class="count" data-count="guard"></span></a></li>
+    <li><a href="#plan">90-day plan<span class="count" data-count="plan"></span></a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#tools">Tools &amp; costs</a></li>
+    <li><a href="#budget">Ad budget</a></li>
+    <li><a href="#auto">Automations<span class="count" data-count="auto"></span></a></li>
+    <li><a href="#kpi">KPIs</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+</nav>
+
+<main>
+<p class="eyebrow">Working roadmap · prepared 30 Oct 2026 · for the engineer, not the owners</p>
+<h1>AblePoint Growth Roadmap</h1>
+<p class="lede">Ninety days of site repair, local SEO, paid search and intake automation for a registered NDIS provider in regional NSW, sized to 20–30 hours a week. Tick items as you go; progress is saved in this browser.</p>
+
+<dl class="assume">
+  <div><dt>Site path</dt><dd>Fix WordPress this week, rebuild in Astro in parallel, launch with 301s around week 5–6</dd></div>
+  <div><dt>Capacity</dt><dd>25 h/week × 12 weeks ≈ 300 h; plan uses 292 h</dd></div>
+  <div><dt>Ad budget</dt><dd>Not approved. Plan shows three levels and what each buys</dd></div>
+  <div><dt>Company</dt><dd>Registered NDIS provider, HQ Gosford; Central Coast, Newcastle, Dubbo, Orange, Tamworth, Gunnedah</dd></div>
+  <div><dt>Primary conversion</dt><dd>A phone call or referral form from a family, support coordinator or plan manager</dd></div>
+</dl>
+
+<div class="meters">
+  <div class="meter"><div class="label"><span>Overall</span><b data-meter-text="all">0 / 0</b></div><div class="bar"><i data-meter="all"></i></div></div>
+  <div class="meter"><div class="label"><span>Weaknesses fixed</span><b data-meter-text="weak">0 / 0</b></div><div class="bar"><i data-meter="weak"></i></div></div>
+  <div class="meter"><div class="label"><span>Plan tasks</span><b data-meter-text="plan">0 / 0</b></div><div class="bar"><i data-meter="plan"></i></div></div>
+  <div class="meter"><div class="label"><span>Automations live</span><b data-meter-text="auto">0 / 0</b></div><div class="bar"><i data-meter="auto"></i></div></div>
+</div>
+<p class="meter-note">Checkbox state lives only in this browser. <span id="reset-wrap"><button type="button" id="reset-btn">Reset all checkboxes</button></span></p>
+
+<!-- ===================== VERDICT ===================== -->
+<section id="verdict">
+  <div class="sec-head"><h2>Verdict</h2></div>
+  <p><strong>Yes, you can do this, and the first wins are mechanical.</strong> The current site has template placeholders in its footer on every page, a referral form that collects NDIS numbers with no privacy statement, two H1s on key pages, no structured data, location pages with about 300 words of generic copy, and a SIL page with no vacancies, photos or funding explanation. None of that needs talent; it needs an afternoon and a checklist. The hard part starts after: proving cost per qualified enquiry with real numbers.</p>
+  <p>The order matters more than the tools. Measurement goes in before content, content before ads, ads before automation that scales them. The rebuild runs beside the content work, not ahead of it, because the content is the actual constraint.</p>
+  <div class="note">
+    <p><strong>What the owners should hear from you in week one:</strong> three numbers you will report every Friday (qualified enquiries, cost per enquiry, time to first response), one compliance fix you made the same day (the "approved provider" wording), and a date for the new site.</p>
+  </div>
+  <h3>How the 292 hours are spent</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Phase</th><th>Weeks</th><th class="num">Hours</th><th>What it buys</th></tr></thead>
+    <tbody>
+      <tr><td>0 · Access, baseline, guardrails</td><td class="mono">0</td><td class="num">18</td><td>Tracking that works, a baseline, a signed-off 90-day target</td></tr>
+      <tr><td>1 · WordPress repair</td><td class="mono">1–2</td><td class="num">40</td><td>A site a support coordinator can trust; referral form wired to a CRM</td></tr>
+      <tr><td>2 · Content, local SEO, AEO/GEO</td><td class="mono">2–6</td><td class="num">60</td><td>Six real location pages, vacancy pages, GBP per location, citations, schema</td></tr>
+      <tr><td>2b · Astro rebuild in parallel</td><td class="mono">3–6</td><td class="num">45</td><td>Fast, editable site with CMS, launched with a complete 301 map</td></tr>
+      <tr><td>3 · Paid search, then Meta tests</td><td class="mono">3–8</td><td class="num">45</td><td>A known cost per qualified enquiry; vacancy and recruitment campaigns tested</td></tr>
+      <tr><td>4 · Automation, referral engine, reporting</td><td class="mono">6–12</td><td class="num">60</td><td>Minutes-not-days intake, partner outreach system, weekly dashboard</td></tr>
+      <tr><td>Ongoing · Reporting and owner meeting</td><td class="mono">1–12</td><td class="num">24</td><td>2 h/week: numbers, decisions, course corrections</td></tr>
+      <tr><td><strong>Total</strong></td><td></td><td class="num"><strong>292</strong></td><td>8 h buffer against a 300 h budget</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================== WEAKNESSES ===================== -->
+<section id="weak" data-progress="weak">
+  <div class="sec-head"><h2>Current weaknesses</h2><span class="tally" data-tally="weak"></span></div>
+  <p>From reading the homepage, referral page, SIL page and Dubbo location page on 30 Oct 2026. Severity is about business and regulatory impact, not technical difficulty. Tick each once it is fixed on the live site.</p>
+
+  <h3>Trust and compliance</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Done</th><th>Sev.</th><th class="w-ev">Finding and evidence</th><th class="w-fix">Fix</th><th class="num">Effort</th></tr></thead>
+    <tbody>
+      <tr><td><input type="checkbox" id="w-01"></td><td><span class="chip crit">Critical</span></td><td>Footer on every page shows template placeholders: address "Street Name, FL 54785", phone "621-254-2147", email "contact@support.com", plus stray text "Opens in your application".<span class="sub">Seen on home, referral, SIL and Dubbo pages.</span></td><td>Replace with real NAP: Gosford head office, 1300 088 549, hello@ablepointaustralia.com.au. Same string everywhere, including Google Business Profile and directories.</td><td class="num">0.5 h</td></tr>
+      <tr><td><input type="checkbox" id="w-02"></td><td><span class="chip crit">Critical</span></td><td>Homepage FAQ says AblePoint is an "approved NDIS Provider". The ACCC and NDIS Commission are actively pursuing advertising that implies NDIS approval or endorsement.</td><td>Change to "registered NDIS provider" and show the registration number and registration groups. Remove "approved" everywhere, including meta descriptions.</td><td class="num">0.5 h</td></tr>
+      <tr><td><input type="checkbox" id="w-03"></td><td><span class="chip high">High</span></td><td>Referral form collects participant name, NDIS number, phone and email with no privacy statement, no consent checkbox, and the "Term &amp; Private Policy" footer link points to "#".</td><td>Publish a real privacy policy and collection notice (Australian Privacy Principles; NDIS Practice Standards on privacy). Add a short collection statement above the form and a consent checkbox.</td><td class="num">3 h</td></tr>
+      <tr><td><input type="checkbox" id="w-04"></td><td><span class="chip high">High</span></td><td>Unsupported superlatives: "one of the most trusted organisations", "leading NDIS service provider", "the obvious choice", meta descriptions starting "Get the best…".</td><td>Replace with verifiable facts: years operating, registration groups, CALD stats already on the page (60% of clients, 80% of workers), response-time SLA, real testimonials with consent.</td><td class="num">2 h</td></tr>
+      <tr><td><input type="checkbox" id="w-05"></td><td><span class="chip med">Medium</span></td><td>Dead links: all "Useful Links" (About Us, Term &amp; Private Policy, FAQ's, Our Story, Our Latest Products) and all four social icons point to "#".</td><td>Link to real pages or remove. Add complaints and feedback page (a Practice Standards expectation) to the footer.</td><td class="num">1 h</td></tr>
+      <tr><td><input type="checkbox" id="w-06"></td><td><span class="chip med">Medium</span></td><td>Spelling and grammar in trust-sensitive places: "Austrialia" in the Open Graph site name and logo alt text, "Accomodation" in navigation and URLs, "We offers", "nedd", "healtcare".</td><td>Fix copy; for the "accomodation" URL slug, rename and 301 the old slug.</td><td class="num">1 h</td></tr>
+      <tr><td><input type="checkbox" id="w-07"></td><td><span class="chip low">Low</span></td><td>Meta telephone "013 000 88549" is malformed; body shows 1300 088 549.</td><td>One canonical format: 1300 088 549. Add it to Organization schema as +61 1300 088 549.</td><td class="num">0.2 h</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Technical SEO</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Done</th><th>Sev.</th><th class="w-ev">Finding and evidence</th><th class="w-fix">Fix</th><th class="num">Effort</th></tr></thead>
+    <tbody>
+      <tr><td><input type="checkbox" id="w-08"></td><td><span class="chip high">High</span></td><td>No structured data on any page checked: no Organization, LocalBusiness, Service or FAQPage JSON-LD.</td><td>Add Organization + LocalBusiness (one per service area) + Service + FAQPage. Validate with Google's Rich Results Test.</td><td class="num">3 h</td></tr>
+      <tr><td><input type="checkbox" id="w-09"></td><td><span class="chip high">High</span></td><td>Blog posts dated 1 Feb 2017 with URLs under /2017/02/01/ carry titles like "(2026 Guide)". Reads as backdated to readers and crawlers.</td><td>Correct publish dates, move to clean slugs with 301s, add named author with NDIS experience and a "reviewed on" date.</td><td class="num">1.5 h</td></tr>
+      <tr><td><input type="checkbox" id="w-10"></td><td><span class="chip med">Medium</span></td><td>Two H1 tags on the SIL page and on the Dubbo page; heading levels skip (H2 → H4 → H5); an empty duplicated "Our process" heading on SIL.</td><td>One H1 per page, ordered H2/H3 outline. Elementor heading widgets set to the right tag.</td><td class="num">1 h</td></tr>
+      <tr><td><input type="checkbox" id="w-11"></td><td><span class="chip med">Medium</span></td><td>"Central Coast" in Areas We Serve links to the Newcastle page; the hello@ email link is a broken path on the site domain rather than a working address.</td><td>Create a Central Coast page (it is the home region) and fix the email link; show the address as selectable text too.</td><td class="num">0.5 h</td></tr>
+      <tr><td><input type="checkbox" id="w-12"></td><td><span class="chip low">Low</span></td><td>Truncated meta descriptions on referral and Dubbo pages; title casing "Ndis Service Provider Dubbo"; meta keywords tag stuffed with "Best NDIS Service provider in Dubbo".</td><td>Rewrite titles and descriptions per page; delete meta keywords.</td><td class="num">1 h</td></tr>
+      <tr><td><input type="checkbox" id="w-13"></td><td><span class="chip med">Medium</span></td><td>Speed unmeasured. Stack is Elementor 4.2 on OceanWP, which usually means heavy CSS/JS and slow mobile LCP.</td><td>Measure Core Web Vitals (PageSpeed Insights, Search Console CWV report) in week 0. Caching plugin, image compression, plugin prune, Cloudflare in front. Target LCP &lt; 2.5 s on mobile.</td><td class="num">4 h</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Content and local relevance</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Done</th><th>Sev.</th><th class="w-ev">Finding and evidence</th><th class="w-fix">Fix</th><th class="num">Effort</th></tr></thead>
+    <tbody>
+      <tr><td><input type="checkbox" id="w-14"></td><td><span class="chip high">High</span></td><td>Homepage and SIL page target "Sydney" while head office is Gosford and service areas are Central Coast, Newcastle, Dubbo, Orange (plus Tamworth and Gunnedah in directories). Local SEO is aimed at the most competitive market the business does not primarily serve.</td><td>Re-centre on actual regions. Homepage names the regions; each region gets a real page; Sydney kept only if they take Sydney participants.</td><td class="num">in content plan</td></tr>
+      <tr><td><input type="checkbox" id="w-15"></td><td><span class="chip high">High</span></td><td>Dubbo page: ~300 words, no local detail, no map, no photos, phrases like "multifarious" and "in conjecture of our philosophy", a Sydney blog post in the sidebar. Other location pages likely share the template.</td><td>Rewrite each location page: local staff, suburbs covered, SIL/SDA properties, local referral partners, map, photos, FAQ, LocalBusiness schema. 600–900 words of real content.</td><td class="num">5 h / page</td></tr>
+      <tr><td><input type="checkbox" id="w-16"></td><td><span class="chip high">High</span></td><td>SIL page (highest-intent page in this sector): no vacancies, no property photos, no explanation of how SIL is funded, no FAQ, keyword repetition, group (2–5 residents) and 1:1 content blurred together, respite paragraph cut off.</td><td>Split into SIL overview, current vacancies (with property cards), and a plain-English funding section. Add FAQ with FAQPage schema.</td><td class="num">8 h</td></tr>
+      <tr><td><input type="checkbox" id="w-17"></td><td><span class="chip med">Medium</span></td><td>Only two blog posts, both Sydney-focused, both dated 2017. "Understanding the NDIS" hub has nothing to rank with.</td><td>Four guides in weeks 2–6 answering real questions (changing providers, SIL vs SDA, STA/respite, support coordination). Named author, reviewed date, FAQ blocks.</td><td class="num">4 h / guide</td></tr>
+      <tr><td><input type="checkbox" id="w-18"></td><td><span class="chip low">Low</span></td><td>Strengths to keep: CALD statistics, clear service menu, 1300 number, referral page exists, "referral response under a week" promise, named service areas.</td><td>Keep and sharpen: turn "under a week" into a measured SLA you can beat.</td><td class="num">—</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Conversion and measurement</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Done</th><th>Sev.</th><th class="w-ev">Finding and evidence</th><th class="w-fix">Fix</th><th class="num">Effort</th></tr></thead>
+    <tbody>
+      <tr><td><input type="checkbox" id="w-19"></td><td><span class="chip high">High</span></td><td>Weak calls to action: "connect with us today", "call us without any delay" with no button, no clickable phone, no sticky contact bar on mobile.</td><td>Sticky mobile bar: Call · Refer. Phone as text plus link. One primary CTA per page. Referral button in the header.</td><td class="num">2 h</td></tr>
+      <tr><td><input type="checkbox" id="w-20"></td><td><span class="chip high">High</span></td><td>Referral form: no required-field markers, no confirmation message, no stated response time, no evidence of routing to anyone.</td><td>Required markers, inline validation, confirmation page with what happens next, SLA stated. Submissions to CRM + instant acknowledgement (Automation A1).</td><td class="num">4 h</td></tr>
+      <tr><td><input type="checkbox" id="w-21"></td><td><span class="chip high">High</span></td><td>No vacancy listing anywhere, yet SIL/SDA vacancies are what coordinators search for.</td><td>Vacancy page in week 1 (manual), vacancy board fed from a sheet by week 8 (Automation A6). List vacancies on housing platforms too.</td><td class="num">in plan</td></tr>
+      <tr><td><input type="checkbox" id="w-22"></td><td><span class="chip high">High</span></td><td>No visible GA4/GTM or call tracking; cannot verify until admin access. Without it, nothing you do can be proven.</td><td>Week 0: GTM, GA4, Search Console, call tracking on the 1300 number, form events, GBP insights export.</td><td class="num">4 h</td></tr>
+      <tr><td><input type="checkbox" id="w-23"></td><td><span class="chip med">Medium</span></td><td>Google Business Profile not yet audited: one listing or one per region, categories, photos, hours, services, Q&amp;A, review count.</td><td>Audit in week 0. Claim or create per-region profiles only where there is a real staffed address or a legitimate service-area business.</td><td class="num">2 h</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================== GUARDRAILS ===================== -->
+<section id="guard" data-progress="guard">
+  <div class="sec-head"><h2>Guardrails before any campaign</h2><span class="tally" data-tally="guard"></span></div>
+  <p>The audience is vulnerable and the regulators are active. These are not optional and they are cheap. Confirm each with whoever owns compliance at AblePoint and keep the email.</p>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="g-01"><span class="task-main"><span class="task-title">No "NDIS-approved", "NDIS-endorsed" or "fully covered by NDIS" language anywhere</span><span class="task-meta">The ACCC, with the NDIA and NDIS Commission, has been pursuing advertising that implies NDIS affiliation or approval since 2024. Use "registered NDIS provider" plus the registration number.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-02"><span class="task-main"><span class="task-title">No inducements, gifts or referral payments to participants, families or coordinators</span><span class="task-meta">Treated as coercion under the Code of Conduct. This also rules out "refer a friend" promotions and incentives for reviews.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-03"><span class="task-main"><span class="task-title">No pricing to participants above what others pay for the same service</span><span class="task-meta">Code of Conduct Rules were amended in December 2023 to prohibit it. Keep any pricing content aligned to the NDIS Pricing Arrangements.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-04"><span class="task-main"><span class="task-title">Testimonials only with written consent, never implying outcomes or eligibility</span><span class="task-meta">No "we got X approved" stories. Participant privacy and dignity first; use first names or initials.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-05"><span class="task-main"><span class="task-title">Privacy: collection notice on every form, data in an Australian-region CRM, retention rule written down</span><span class="task-meta">Referral forms collect NDIS numbers. Keep the Meta pixel off any page that handles participant data (also protects you from Meta's health-data restrictions).</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-06"><span class="task-main"><span class="task-title">Check Meta Events Manager data-source category before spending</span><span class="task-meta">Since January 2025 Meta restricts lower-funnel events, website custom audiences and retargeting for domains it classes as health and wellness. Plan on custom events via server-side tagging or on-platform lead forms.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-07"><span class="task-main"><span class="task-title">Accessibility is a trust signal here: WCAG 2.1 AA basics, an Easy Read page, captions on video</span><span class="task-meta">Many visitors have a disability or support someone who does. Contrast, focus states, labels, alt text, keyboard navigation.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="g-08"><span class="task-main"><span class="task-title">AI drafts, humans publish</span><span class="task-meta">Nothing about eligibility, funding or clinical matters goes live without review by someone who knows the NDIS. Keep a named author and a reviewed date on every guide.</span></span></label></li>
+  </ul>
+</section>
+
+<!-- ===================== PLAN ===================== -->
+<section id="plan" data-progress="plan">
+  <div class="sec-head"><h2>The 90-day plan</h2><span class="tally" data-tally="plan"></span></div>
+  <p>Hours are estimates at your speed with Claude Code doing the typing. Each task names the tool it depends on and what it produces, so you can tell when it is actually done.</p>
+
+  <h3>Phase 0 · Access, baseline, guardrails <span class="hrs">Week 0 · 18 h</span></h3>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-00-01"><span class="task-main"><span class="task-title">Send the owner the access list and get it back</span><span class="task-meta">1 h · WordPress admin + hosting + DNS, Google Business Profile (all locations), GA4/GTM/Search Console (create if missing), Meta Business Manager, Google Ads, domain registrar, rostering/CRM software, past enquiry log · Output: a shared doc listing what you hold.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-02"><span class="task-main"><span class="task-title">Install GTM → GA4 with form and click events</span><span class="task-meta">3 h · GTM, GA4 · Events: referral_submit, contact_submit, phone_click, vacancy_view, gbp_click · Output: events visible in GA4 DebugView.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-03"><span class="task-main"><span class="task-title">Call tracking on the 1300 number with source attribution</span><span class="task-meta">2 h · WildJar or CallRail (AU numbers), dynamic number insertion for paid vs organic · Output: calls over 60 s counted as conversions, recordings for QA.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-04"><span class="task-main"><span class="task-title">Baseline the last 90 days</span><span class="task-meta">2 h · Search Console, GBP Insights, any existing analytics, the enquiry log · Output: a one-page baseline: enquiries/month, sources, response time, vacancies filled.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-05"><span class="task-main"><span class="task-title">Measure Core Web Vitals and crawl the site</span><span class="task-meta">2 h · PageSpeed Insights, Screaming Frog (free tier), Search Console · Output: CWV scores per template, list of 404s, redirect chains, duplicate titles, thin pages.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-06"><span class="task-main"><span class="task-title">Audit Google Business Profile(s)</span><span class="task-meta">2 h · GBP · Check: how many listings, categories (Disability services, Home health care service, Social services organization), service areas, photos, hours, reviews, Q&amp;A · Output: GBP fix list.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-07"><span class="task-main"><span class="task-title">Read the rules once, properly</span><span class="task-meta">2 h · NDIS Code of Conduct and Practice Standards (advertising, privacy, complaints), ACCC guidance for NDIS providers, Meta health-data restriction notice · Output: the Guardrails section signed off by their compliance lead.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-08"><span class="task-main"><span class="task-title">Pick the CRM and stand it up</span><span class="task-meta">2 h · HubSpot free tier (pipeline: New → Contacted → Intake call → Service agreement → Active / Lost) with region and service properties · Output: pipeline exists, you and intake lead have logins.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-09"><span class="task-main"><span class="task-title">Agree the 90-day target in writing</span><span class="task-meta">1 h · Email to owners · Propose: qualified enquiries per month (baseline × 2 as a starting point), first-response time under 15 minutes in business hours, cost per qualified enquiry under A$90 once ads run, N SIL/SDA vacancies filled · Output: their reply saying yes.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-00-10"><span class="task-main"><span class="task-title">Check capacity before you generate demand</span><span class="task-meta">1 h · Conversation with operations · Can they take 10 more participants next month? Which regions have staff? Which SIL houses have rooms? · Output: a capacity note that decides where ads point first.</span></span></label></li>
+  </ul>
+
+  <h3>Phase 1 · WordPress repair, no rebuild <span class="hrs">Weeks 1–2 · 40 h</span></h3>
+  <div class="note"><p>Everything here ships on the live site in days. The rebuild (Phase 2b) does not excuse leaving any of this broken while coordinators are looking.</p></div>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-01-01"><span class="task-main"><span class="task-title">Day-one fixes: placeholders, "approved" wording, dead links, spelling, phone format</span><span class="task-meta">3 h · WordPress, Elementor · Covers weaknesses W-01, W-02, W-05, W-06, W-07, W-11, W-12 · Output: no placeholder text anywhere; a crawl shows zero "#" links in the footer.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-02"><span class="task-main"><span class="task-title">Privacy policy, collection notice, complaints and feedback page</span><span class="task-meta">4 h · WordPress · Draft from the Australian Privacy Principles and NDIS Practice Standards, owner to approve · Output: three published pages linked from the footer and the form.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-03"><span class="task-main"><span class="task-title">Referral and contact forms: validation, consent, confirmation, routing</span><span class="task-meta">5 h · Elementor Forms or Fluent Forms, GTM, CRM webhook · Required markers, NDIS-number format check, Cloudflare Turnstile, confirmation page that states the SLA · Output: a test submission appears in the CRM within one minute (feeds Automation A1).</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-04"><span class="task-main"><span class="task-title">Sticky mobile action bar and one primary CTA per page</span><span class="task-meta">2 h · Elementor · "Call 1300 088 549" and "Make a referral" · Output: phone_click events rising in GA4.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-05"><span class="task-main"><span class="task-title">Heading outline and on-page basics on every template</span><span class="task-meta">3 h · Elementor · One H1, ordered H2/H3, titles and descriptions rewritten, meta keywords removed · Output: Screaming Frog shows one H1 per URL.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-06"><span class="task-main"><span class="task-title">Speed pass</span><span class="task-meta">5 h · WP Rocket or LiteSpeed Cache, image compression, plugin prune, Cloudflare free plan in front (cache, WAF, Turnstile) · Output: mobile LCP under 2.5 s on home, SIL and one location page.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-07"><span class="task-main"><span class="task-title">Accessibility pass on the templates</span><span class="task-meta">3 h · WAVE or axe DevTools, manual keyboard run · Contrast, focus states, form labels, alt text, logo alt text fixed · Output: zero errors in axe on the main templates.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-08"><span class="task-main"><span class="task-title">Schema v1: Organization + LocalBusiness + Service</span><span class="task-meta">3 h · JSON-LD via a code snippet plugin or Rank Math · Include registration number in Organization description, sameAs to directories and GBP · Output: Rich Results Test passes.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-09"><span class="task-main"><span class="task-title">Vacancies page v1 (manual)</span><span class="task-meta">3 h · WordPress · Property cards: region, type (SIL/SDA), rooms available, accessibility features, photo, "enquire about this vacancy" · Output: page live and linked from SIL, SDA and every location page.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-10"><span class="task-main"><span class="task-title">Fix the blog: dates, slugs, author, review dates</span><span class="task-meta">2 h · WordPress · 301 old /2017/ URLs to clean slugs · Output: no 2017 dates anywhere; author bio page live.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-11"><span class="task-main"><span class="task-title">Search Console hygiene</span><span class="task-meta">2 h · Search Console · Submit sitemap, fix coverage errors, request indexing on changed pages, set the preferred domain · Output: coverage report clean of errors.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-01-12"><span class="task-main"><span class="task-title">Central Coast page and homepage re-centred on real regions</span><span class="task-meta">5 h · WordPress · Homepage names Central Coast, Newcastle, Dubbo, Orange, Tamworth, Gunnedah; Sydney claim removed unless they serve it · Output: Areas We Serve links all resolve to the right pages.</span></span></label></li>
+  </ul>
+
+  <h3>Phase 2 · Content, local SEO, AEO and GEO <span class="hrs">Weeks 2–6 · 60 h</span></h3>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-02-01"><span class="task-main"><span class="task-title">Keyword map: service × region</span><span class="task-meta">3 h · Keyword Planner, Search Console, Ahrefs Webmaster Tools · Rows: SIL vacancies, SDA vacancy, support coordination, STA/respite, community access, NDIS provider, for each of six regions · Output: a sheet with volume, top-of-page bid range, target URL, status. "NDIS provider" alone shows about 6,600 AU searches a month.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-02-02"><span class="task-main"><span class="task-title">Six location pages, written like a local would</span><span class="task-meta">30 h (5 h each) · Interviews with regional staff, photos, CMS · Each: who runs the region, suburbs covered, services available there, SIL/SDA properties, local referral partners (hospital social work, LAC partner, plan managers), map, FAQ, LocalBusiness schema · Output: 600–900 words of specific content per page, zero template sentences shared between pages.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-02-03"><span class="task-main"><span class="task-title">SIL and SDA rebuilt as the highest-intent pages</span><span class="task-meta">8 h · CMS, photographer or staff phone photos · SIL overview, how SIL is funded in plain English, current vacancies, what a house visit involves, FAQ with FAQPage schema · Output: time on page up, vacancy enquiries tracked separately.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-02-04"><span class="task-main"><span class="task-title">Four guides for the "Understanding the NDIS" hub</span><span class="task-meta">10 h · Claude Code drafts, NDIS-experienced reviewer approves · Changing providers, SIL vs SDA, STA and respite, what support coordination does · Question-shaped H2s with short direct answers, named author, reviewed date · Output: four guides live, each with a FAQ block.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-02-05"><span class="task-main"><span class="task-title">Google Business Profile per legitimate location</span><span class="task-meta">4 h · GBP · Categories, services list, service areas, photos, hours, Q&amp;A seeded with real questions, weekly posts queue · Output: profiles complete; calls and direction requests tracked monthly.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-02-06"><span class="task-main"><span class="task-title">Citations and directories with identical NAP</span><span class="task-meta">3 h · NDIS Provider Finder, Clickability, Karista, MyCareSpace, Disability Support Guide, WayAhead, regional council directories, housing/vacancy platforms for SIL/SDA · Output: a citation sheet with URLs and the date each was verified.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-02-07"><span class="task-main"><span class="task-title">GEO baseline and monthly check</span><span class="task-meta">2 h · ChatGPT, Perplexity, Google AI Mode, Gemini · Twelve prompts such as "SIL provider Dubbo", "NDIS respite Central Coast", "support coordination Orange NSW" · Output: a log of whether AblePoint is mentioned and which sources are cited, repeated monthly (Automation A14).</span></span></label></li>
+  </ul>
+
+  <h3>Phase 2b · Astro rebuild in parallel <span class="hrs">Weeks 3–6 · 45 h</span></h3>
+  <div class="callout"><strong>Decision rule:</strong> the rebuild launches only when the content is written, the 301 map covers every indexed URL, staff can edit vacancies and posts without you, and mobile Core Web Vitals are green on the staging URL. Otherwise it waits; the WordPress site keeps earning in the meantime.</div>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-2b-01"><span class="task-main"><span class="task-title">Scaffold Astro + CMS, deploy to staging</span><span class="task-meta">6 h · Astro, Keystatic (Git-backed) or Sanity, Cloudflare Pages or Vercel · Content types: page, region, service, vacancy, guide, team member, FAQ · Output: staging URL with the design system and tokens in place.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-2b-02"><span class="task-main"><span class="task-title">Templates: home, service, region, vacancy, guide, referral</span><span class="task-meta">14 h · Astro components · Schema generated from content fields, FAQ blocks, sticky CTA, accessible forms · Output: every template passes axe and Lighthouse mobile ≥ 90 performance.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-2b-03"><span class="task-main"><span class="task-title">Forms and intake through a serverless function</span><span class="task-meta">5 h · Cloudflare Worker or Vercel function → CRM API, Turnstile, honeypot · No participant data stored in the site repo or build · Output: test referral lands in CRM and triggers Automation A1.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-2b-04"><span class="task-main"><span class="task-title">Migrate content and media</span><span class="task-meta">8 h · WP export → CMS import script, image optimisation · Output: content parity checklist signed off against the old site.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-2b-05"><span class="task-main"><span class="task-title">301 map, analytics parity, launch</span><span class="task-meta">8 h · Screaming Frog crawl of old site → redirect table, GTM container reused, Search Console change-of-address not needed (same domain) · Output: zero 404s in Search Console seven days after launch.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-2b-06"><span class="task-main"><span class="task-title">Handover kit</span><span class="task-meta">4 h · README, 20-minute screen recording for staff: add a vacancy, publish a guide, change a phone number · Output: a staff member edits a vacancy without asking you.</span></span></label></li>
+  </ul>
+
+  <h3>Phase 3 · Paid search first, Meta tests second <span class="hrs">Weeks 3–8 · 45 h</span></h3>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-03-01"><span class="task-main"><span class="task-title">Google Ads account structure</span><span class="task-meta">6 h · Google Ads · One campaign per region, ad groups per service, phrase and exact match, a 150+ negative list (jobs, courses, "what is", other states), call assets, location assets from GBP, conversion actions: calls &gt; 60 s, referral_submit, contact_submit · Output: account passes a self-audit against the structure checklist.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-03-02"><span class="task-main"><span class="task-title">Landing pages per service and region</span><span class="task-meta">8 h · Existing region/service pages, tightened for ads · Above the fold: region, service, registration status, phone, form; no navigation distractions · Output: landing-page conversion rate tracked separately from organic.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-03-03"><span class="task-main"><span class="task-title">Launch Google Search in the one region with capacity</span><span class="task-meta">3 h · Google Ads · Manual CPC or Maximise Clicks with a CPC cap until 30 conversions exist, then Target CPA · Output: first qualified enquiry attributed to paid within 14 days.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-03-04"><span class="task-main"><span class="task-title">Weekly optimisation routine</span><span class="task-meta">16 h (2 h/week × 8) · Search terms report → negatives, bid caps by region, ad copy tests, call recordings reviewed for lead quality · Output: cost per qualified enquiry trending toward A$40–90.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-03-05"><span class="task-main"><span class="task-title">Meta: vacancy campaign test</span><span class="task-meta">6 h · Meta Ads, lead forms on-platform · Radius targeting around SIL/SDA properties, carousel of real property photos, instant form with "I'm a coordinator / family member / participant" · Output: cost per vacancy enquiry compared against Google.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-03-06"><span class="task-main"><span class="task-title">Meta: support-worker recruitment test</span><span class="task-meta">6 h · Meta Ads, application form → CRM/ATS stage · Staffing is usually the growth ceiling for providers; ads that fill rosters unlock the participant ads · Output: cost per qualified applicant.</span></span></label></li>
+  </ul>
+
+  <h3>Phase 4 · Automation, referral engine, reporting <span class="hrs">Weeks 6–12 · 60 h</span></h3>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-04-01"><span class="task-main"><span class="task-title">Build the intake automations A1–A5</span><span class="task-meta">18 h · n8n (self-hosted) or Make, CRM, SMS provider · Acknowledgement, missed-call text-back, routing, follow-up cadence, call logging · Output: first-response time under 15 minutes in business hours, measured.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-04-02"><span class="task-main"><span class="task-title">Vacancy board and GBP posting (A6, A7)</span><span class="task-meta">12 h · Sheet or CRM object → site via CMS API, GBP API · Output: vacancies update nightly with a "last updated" stamp; a weekly GBP post goes out without anyone logging in.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-04-03"><span class="task-main"><span class="task-title">Referral-partner engine (A12)</span><span class="task-meta">12 h · CRM companies list, outreach sequences, monthly capacity sheet · Build the list: support coordination organisations, plan managers, LAC partners, hospital social work teams per region · Output: 60+ partners logged, monthly capacity email sent by intake lead, meetings booked tracked.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-04-04"><span class="task-main"><span class="task-title">Compliant review flow (A8)</span><span class="task-meta">4 h · CRM stage trigger → SMS with GBP link, opt-out, no incentive · Output: review velocity up without any inducement.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-04-05"><span class="task-main"><span class="task-title">Dashboard and Friday report (A9)</span><span class="task-meta">8 h · Looker Studio on GA4 + Ads + call tracking + CRM export · Enquiries by source, cost per qualified enquiry, response time, enquiry → service agreement, vacancy fill, GBP actions · Output: owners open one link every Friday; you spend 30 minutes with them on it.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-04-06"><span class="task-main"><span class="task-title">Monitoring (A10, A13, A14)</span><span class="task-meta">6 h · Uptime check, CWV weekly, rank and GBP position tracking, AI-visibility prompts · Output: alerts reach you before the owners notice.</span></span></label></li>
+  </ul>
+
+  <h3>Ongoing · Weekly operating rhythm <span class="hrs">Weeks 1–12 · 24 h</span></h3>
+  <ul class="tasks">
+    <li><label class="task"><input type="checkbox" id="p-on-01"><span class="task-main"><span class="task-title">Friday: numbers, decisions, next week (30 min with owners, 90 min prep)</span><span class="task-meta">2 h/week · The three numbers, what changed, one decision needed · Output: a dated note after every meeting.</span></span></label></li>
+    <li><label class="task"><input type="checkbox" id="p-on-02"><span class="task-main"><span class="task-title">Day-90 review and the case study</span><span class="task-meta">Counts within the 24 h · Baseline vs now on every KPI, what worked, what to stop, the next 90 days · Output: a two-page case study you can reuse for Wopro's organisations page.</span></span></label></li>
+  </ul>
+</section>
+
+<!-- ===================== TIMELINE ===================== -->
+<section id="timeline">
+  <div class="sec-head"><h2>Timeline</h2></div>
+  <p>Column 0 is the access week. Phases overlap on purpose: content runs under the rebuild, ads start in one region before the new site launches.</p>
+  <div class="gantt">
+    <div class="g-grid">
+      <div class="g-h">Phase</div>
+      <div class="g-h">0</div><div class="g-h">1</div><div class="g-h">2</div><div class="g-h">3</div><div class="g-h">4</div><div class="g-h">5</div><div class="g-h">6</div><div class="g-h">7</div><div class="g-h">8</div><div class="g-h">9</div><div class="g-h">10</div><div class="g-h">11</div><div class="g-h">12</div>
+
+      <div class="g-l">0 · Access &amp; baseline</div>
+      <div class="g-bar" style="grid-column:2 / span 1">18 h</div>
+      <div class="g-cell" style="grid-column:3 / span 12"></div>
+
+      <div class="g-l">1 · WP repair</div>
+      <div class="g-cell" style="grid-column:2 / span 1"></div>
+      <div class="g-bar" style="grid-column:3 / span 2">40 h</div>
+      <div class="g-cell" style="grid-column:5 / span 10"></div>
+
+      <div class="g-l">2 · Content &amp; local SEO</div>
+      <div class="g-cell" style="grid-column:2 / span 2"></div>
+      <div class="g-bar" style="grid-column:4 / span 5">60 h</div>
+      <div class="g-cell" style="grid-column:9 / span 6"></div>
+
+      <div class="g-l">2b · Astro rebuild</div>
+      <div class="g-cell" style="grid-column:2 / span 3"></div>
+      <div class="g-bar light" style="grid-column:5 / span 4">45 h · launch wk 5–6</div>
+      <div class="g-cell" style="grid-column:9 / span 6"></div>
+
+      <div class="g-l">3 · Paid search → Meta</div>
+      <div class="g-cell" style="grid-column:2 / span 3"></div>
+      <div class="g-bar" style="grid-column:5 / span 6">45 h</div>
+      <div class="g-cell" style="grid-column:11 / span 4"></div>
+
+      <div class="g-l">4 · Automation &amp; reporting</div>
+      <div class="g-cell" style="grid-column:2 / span 6"></div>
+      <div class="g-bar" style="grid-column:8 / span 7">60 h</div>
+
+      <div class="g-l">Weekly rhythm</div>
+      <div class="g-cell" style="grid-column:2 / span 1"></div>
+      <div class="g-bar light" style="grid-column:3 / span 12">2 h / week</div>
+    </div>
+  </div>
+  <p class="g-key">Solid bars are on the critical path; light bars run in parallel and can slip a week without hurting the numbers.</p>
+
+  <h3>Milestones you can show the owners</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>End of week</th><th>Milestone</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">0</td><td>Tracking live, baseline written, target agreed</td><td>GA4 events, call-tracking dashboard, the baseline page, their reply email</td></tr>
+      <tr><td class="mono">2</td><td>Site trustworthy; referral form wired</td><td>Crawl with zero placeholders or dead links; CRM shows test referral; privacy pages live</td></tr>
+      <tr><td class="mono">4</td><td>First paid enquiry; three location pages live</td><td>Google Ads conversion with call recording; pages indexed</td></tr>
+      <tr><td class="mono">6</td><td>New site launched; all six regions live; vacancies page real</td><td>Lighthouse mobile ≥ 90; Search Console 404s = 0; vacancy enquiries tracked</td></tr>
+      <tr><td class="mono">8</td><td>Known cost per qualified enquiry; Meta tests read out</td><td>8 weeks of data; recommendation to scale or stop each channel</td></tr>
+      <tr><td class="mono">10</td><td>Intake automated; partner engine running</td><td>First-response time &lt; 15 min; 60+ partners in CRM; first partner meeting booked via the sequence</td></tr>
+      <tr><td class="mono">12</td><td>Dashboard, case study, next-90 plan</td><td>Looker Studio link; two-page case study; a budget request grounded in CPL</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================== TOOLS ===================== -->
+<section id="tools">
+  <div class="sec-head"><h2>Tools and what they cost</h2></div>
+  <p>Prices checked on 30 Oct 2026 against official pricing pages; a tilde (~) marks a figure that only a third-party source showed. Currencies are as the vendor lists them, so AUD, USD, EUR and GBP are mixed on purpose. "Core" is what the plan needs; "Optional" buys speed or convenience; "Only if" has a trigger named in the row.</p>
+
+  <h3>Two stacks, priced</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Stack</th><th>What is in it</th><th class="num">Per month</th><th>Compare</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Lean</strong> (recommended to start)</td><td>WildJar Starter · HubSpot Free · n8n self-hosted · Cloudflare Pages Free · Keystatic · Resend Free · Twilio SMS pay-as-you-go · WP Rocket · Stape Free · Screaming Frog Free · GA4, GTM, Search Console, GBP, Looker Studio, Clarity, Turnstile</td><td class="num">A$150 + about US$25</td><td>Agencies quote A$1,500–5,000 a month for management alone, before ad spend.</td></tr>
+      <tr><td><strong>Standard</strong> (from week 6 if the numbers justify it)</td><td>Lean, plus HubSpot Starter (2 seats) · n8n Cloud Starter · Sinch Engage Basics instead of Twilio · Local Falcon Starter · Ahrefs Lite · Stape Pro · Otterly Lite</td><td class="num">A$195 + about US$250 + €20</td><td>Still under a tenth of the low end of agency fees, with better tracking than most of them run.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="g-key">Lean figure: WildJar A$150; Twilio about US$19 at 200 SMS a month plus the number; WP Rocket US$4; everything else free. Standard adds HubSpot US$40, Local Falcon US$24.99, Ahrefs US$129, Stape US$20, Otterly US$29, n8n €20 and swaps Twilio for Sinch at A$45. Convert at the day's rate; none of these is large enough for the rate to matter.</p>
+
+  <h3>Measurement and free foundations</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>GA4 + Google Tag Manager</td><td>Free</td><td class="num">$0</td><td>Events for calls, forms, vacancy views; the container moves to the new site unchanged.</td><td>Week 0</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Google Search Console</td><td>Free</td><td class="num">$0</td><td>Indexing, CWV report, the only reliable view of AI Overview traffic (it shows as google.com).</td><td>Week 0</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Google Business Profile</td><td>Free</td><td class="num">$0</td><td>Local pack rankings, calls and direction requests; one profile per legitimate location.</td><td>Week 0</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Looker Studio</td><td>Free (Pro US$9/user/project)</td><td class="num">$0</td><td>The Friday dashboard on GA4, Ads, call tracking and a CRM export.</td><td>Week 6</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Microsoft Clarity</td><td>Free</td><td class="num">$0</td><td>Heatmaps and session recordings for the referral form and SIL page; replaces Hotjar entirely.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Cloudflare Turnstile</td><td>Free</td><td class="num">$0</td><td>Form spam without a CAPTCHA the audience struggles with.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Screaming Frog SEO Spider</td><td>Free up to 500 URLs; licence £199/yr</td><td class="num">$0</td><td>Crawl for H1s, titles, 404s, redirect chains; the 301 map for the rebuild. The site is well under 500 URLs.</td><td>Week 0</td><td><span class="chip ok">Core</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Call tracking</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>WildJar</td><td>Starter</td><td class="num">A$150</td><td>Australian; 4 tracking numbers, 500 minutes, dynamic number insertion, transcription, Google Ads and HubSpot integrations. First month's invoice is waived. Works with the 1300 number.</td><td>Week 0</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>WildJar</td><td>Growth</td><td class="num">A$89 + usage</td><td>Numbers A$8.50 each, calls A$0.10/min, SMS A$0.06. Cheaper than Starter below about 400 minutes; worth re-pricing after a month of real volume.</td><td>Month 2</td><td><span class="chip low">Optional</span></td></tr>
+      <tr><td>CallRail</td><td>Lead Tracking (AU page)</td><td class="num">$70 (AU page; US page $50)</td><td>4 numbers, 350 minutes. Cheaper, but CallRail cannot forward to 1300 numbers, so it only fits if calls route to a landline or mobile. Currency code not stated on the AU page.</td><td>—</td><td><span class="chip med">Only if</span></td></tr>
+      <tr><td>Delacon</td><td>Quote only</td><td class="num">—</td><td>Enterprise Australian call tracking; no public pricing. Not needed at this size.</td><td>—</td><td><span class="chip low">Skip</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>CRM</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>HubSpot</td><td>Free CRM</td><td class="num">$0</td><td>2 users, 1,000 contacts, pipelines, forms, basic automation. Enough for 90 days.</td><td>Week 0</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>HubSpot</td><td>Starter Customer Platform</td><td class="num">US$20/seat (promo US$10 monthly for new customers)</td><td>Removes branding, 50 workflows, 15 pipelines, 500 calling minutes, 30 dashboards. Needed for sequences in A5 and A12.</td><td>Week 6</td><td><span class="chip low">Optional</span></td></tr>
+      <tr><td>Pipedrive</td><td>Lite (was Essential)</td><td class="num">US$14/seat annual (~US$24 monthly)</td><td>Simpler pipeline tool if HubSpot feels heavy; Growth tier (US$39 annual) adds automations and email sync.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>GoHighLevel</td><td>Starter</td><td class="num">US$97</td><td>All-in-one CRM, SMS, pipelines, funnels, automations. A credible single replacement for HubSpot + n8n + SMS provider if you prefer one bill; heavier to maintain.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Automation, SMS and email</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>n8n</td><td>Self-hosted Community Edition</td><td class="num">$0 + your server</td><td>Runs every automation A1–A17. Needs a small VPS or an existing server; you can operate it.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>n8n Cloud</td><td>Starter</td><td class="num">€20 annual (~€24 monthly)</td><td>2,500 executions a month, hosted. Take it if you do not want to run a server; Pro is €50 for 10,000.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Make</td><td>Core</td><td class="num">US$9 annual (~US$10.59–12 monthly)</td><td>10,000 credits; free tier 1,000. Easier UI than n8n, dearer at volume.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Zapier</td><td>Professional</td><td class="num">from US$19.99 (annual basis)</td><td>Free tier is 100 tasks and 2-step Zaps, too small for intake flows. Most expensive per task of the three.</td><td>—</td><td><span class="chip low">Skip</span></td></tr>
+      <tr><td>Twilio SMS (Australia)</td><td>Pay as you go</td><td class="num">US$0.0515 per segment + US$8.25 number</td><td>Acknowledgements, missed-call text-back, review requests. About US$19 a month at 200 messages. Currency code not stated on the page; assumed USD.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Sinch Engage (MessageMedia)</td><td>Basics</td><td class="num">A$45 ex GST (A$22.50 first 3 months)</td><td>570 SMS a month, Australian provider, simpler compliance story for an NDIS owner; Conversations tier A$115 for 1,600.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Resend</td><td>Free</td><td class="num">$0 (Pro US$20)</td><td>3,000 transactional emails a month, 100 a day; enough for acknowledgements and the Friday report.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Brevo</td><td>Free / Starter</td><td class="num">$0 / A$12</td><td>300 emails a day free; Starter 5,000 a month with 500 contacts. Use instead of Resend if staff want a visual email editor.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>WordPress phase (weeks 1–6)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>Cloudflare</td><td>Free website plan</td><td class="num">$0</td><td>CDN caching, managed WAF rules, DDoS, SSL, DNS. Pro is US$20 annual / US$25 monthly and not needed.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>WP Rocket</td><td>Single</td><td class="num">US$4 (US$48/yr)</td><td>Page cache, critical CSS, lazy load, delay JS; the quickest LCP win on an Elementor build.</td><td>Week 1</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Elementor Pro</td><td>Essential</td><td class="num">~US$5 (US$60/yr, third-party figure)</td><td>Form Builder with webhooks and Theme Builder. Check whether the site already holds a Pro licence before buying.</td><td>Week 1</td><td><span class="chip med">Only if</span></td></tr>
+      <tr><td>SiteGround</td><td>GrowBig</td><td class="num">A$39.99 (12-month) / A$49.99 (1-month)</td><td>Only if Core Web Vitals stay red after caching and the current host is the cause. Kinsta Single is US$35 monthly, WP Engine Essential US$28 annual.</td><td>Week 2</td><td><span class="chip med">Only if</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Rebuild (weeks 3–6)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>Astro</td><td>Open source</td><td class="num">$0</td><td>Static-first, almost no client JS, excellent for a content site with a few islands.</td><td>Week 3</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Keystatic</td><td>Open source (MIT); Cloud free to 3 users, Pro US$10</td><td class="num">$0</td><td>Git-backed CMS with a proper editing UI for staff; content stays in the repo, no database to run.</td><td>Week 3</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Sanity</td><td>Free</td><td class="num">$0 (Growth US$15/seat)</td><td>20 seats, 10,000 documents, 250K API requests. Pick this over Keystatic if non-technical editors will manage lots of vacancies and want real-time preview.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Cloudflare Pages / Workers</td><td>Free</td><td class="num">$0 (Paid US$5 min)</td><td>100,000 requests a day free, commercial use allowed; Workers run the form and vacancy functions. Paid tier is 10M requests.</td><td>Week 3</td><td><span class="chip ok">Core</span></td></tr>
+      <tr><td>Vercel</td><td>Pro</td><td class="num">US$20/user</td><td>Hobby is non-commercial only, so a business site needs Pro. Fine, but Cloudflare does the same job free here.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Payload CMS</td><td>Self-host (MIT)</td><td class="num">$0</td><td>Full CMS if you go Next.js. Payload Cloud is paused for new projects, so you host it yourself.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Local SEO, SEO suites, server-side tagging</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>Local Falcon</td><td>Starter</td><td class="num">US$24.99</td><td>7,500 credits, roughly 300 5×5 map-rank scans; shows where in each town GBP actually ranks. Feeds A10.</td><td>Week 2</td><td><span class="chip low">Optional</span></td></tr>
+      <tr><td>BrightLocal</td><td>Track (1 location)</td><td class="num">US$41 monthly / US$31 annual</td><td>Rank tracking, audits, GBP insights per location; Manage (US$54) adds listings and reviews.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Semrush Local</td><td>Local Base</td><td class="num">US$30/location</td><td>GBP audit and map rank tracker; Local Pro (US$60) adds 70+ directory listings management.</td><td>—</td><td><span class="chip low">Alternative</span></td></tr>
+      <tr><td>Ahrefs</td><td>Starter / Lite</td><td class="num">US$29 / US$129</td><td>Backlinks, keyword data, site audit. Ahrefs' free webmaster-style tools cover the crawl; Starter is enough for the keyword map.</td><td>Week 2</td><td><span class="chip low">Optional</span></td></tr>
+      <tr><td>Semrush</td><td>SEO (replaced Pro in May 2026)</td><td class="num">US$139.95 monthly / US$117.33 annual</td><td>5 projects, 500 keywords tracked daily. The Starter tier (US$199) adds AI-visibility prompts. Only if you drop the DIY A14 monitor.</td><td>—</td><td><span class="chip med">Only if</span></td></tr>
+      <tr><td>Stape</td><td>Free → Pro</td><td class="num">$0 → US$20 monthly / US$17 annual</td><td>Server-side GTM for Meta Conversions API with custom events. Free covers 10,000 requests; Pro 500,000. Only if the Meta vacancy test earns a second month. Google Cloud Run DIY costs about US$120 a month for three instances; avoid.</td><td>Week 5</td><td><span class="chip med">Only if</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>AI visibility and content tools</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Tool</th><th>Plan</th><th class="num">Price / mo</th><th>Why it is in the plan</th><th>When</th><th>Need</th></tr></thead>
+    <tbody>
+      <tr><td>Otterly.AI</td><td>Lite</td><td class="num">US$29 monthly / US$25 annual</td><td>15 prompts tracked across AI engines. A14 does the same for twelve prompts at API cost; buy this only if the owners want a vendor report.</td><td>Month 3</td><td><span class="chip low">Optional</span></td></tr>
+      <tr><td>Peec AI</td><td>Starter</td><td class="num">US$95</td><td>50 prompts, 3 models. Overkill for one regional provider.</td><td>—</td><td><span class="chip low">Skip</span></td></tr>
+      <tr><td>Surfer</td><td>Discovery</td><td class="num">US$49 annual</td><td>Content scoring. You write six location pages and four guides; a brief and a reviewer do this better.</td><td>—</td><td><span class="chip low">Skip</span></td></tr>
+      <tr><td>Hotjar / Contentsquare</td><td>Growth</td><td class="num">US$49 monthly / US$39 annual</td><td>Hotjar no longer takes new accounts; Clarity covers heatmaps and recordings for free.</td><td>—</td><td><span class="chip low">Skip</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="g-key">Not verifiable on official pages on 30 Oct 2026: Make monthly-billed rates, the exact Elementor Pro Essential figure (US$59 vs US$60 a year), Pipedrive and n8n monthly-billed rates, and the currency code on CallRail's Australian page and Twilio's AU page. Delacon publishes no prices.</p>
+</section>
+
+<!-- ===================== BUDGET ===================== -->
+<section id="budget">
+  <div class="sec-head"><h2>Ad budget: what each level buys</h2></div>
+  <p>Modelled from Australian NDIS benchmarks: clicks at A$3.50–8 (regional NSW sits low in that range), 6–10% of clicks becoming enquiries on a good landing page, 25–45% of enquiries becoming participants. Agencies report A$40–90 per qualified enquiry as healthy and A$150–250 as what badly structured accounts pay. Treat these as the range to beat, not a promise; replace every number with your own after 30 days of data.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Monthly spend</th><th>Split</th><th class="num">Clicks</th><th class="num">Enquiries</th><th class="num">CPL</th><th class="num">Participants</th><th>What it is good for</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">A$1,000</td><td>Google Search only, one region</td><td class="num">125–285</td><td class="num">8–28</td><td class="num">A$36–125</td><td class="num">2–12</td><td>Proving the funnel in the region with the most capacity. Below 30 conversions a month, so manual bidding, not Target CPA.</td></tr>
+      <tr><td class="mono">A$1,500</td><td>Google Search, two regions</td><td class="num">190–430</td><td class="num">11–43</td><td class="num">A$35–135</td><td class="num">3–19</td><td>The level most providers start at. Enough data to compare regions.</td></tr>
+      <tr><td class="mono">A$2,500</td><td>A$1,800 Google · A$700 Meta vacancies</td><td class="num">450–900</td><td class="num">25–75</td><td class="num">A$33–100</td><td class="num">7–33</td><td>Google across regions plus a real Meta vacancy test. Target CPA becomes usable on the main campaign.</td></tr>
+      <tr><td class="mono">A$3,500</td><td>A$2,300 Google · A$700 Meta vacancies · A$500 recruitment</td><td class="num">650–1,250</td><td class="num">35–100</td><td class="num">A$35–100</td><td class="num">9–45</td><td>Only when intake can absorb it. Recruitment spend protects delivery capacity.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="g-key">Clicks = spend ÷ CPC range (Meta clicks at A$1.50–3.50). Enquiries = clicks × 6–10% (Meta leads at a lower 15–30% participant rate). Participant value under NDIS price limits is usually many thousands of dollars a year, which is why even a A$125 enquiry can be sound. Agencies charge A$1,500–5,000 a month to manage this; you are replacing that fee.</p>
+  <div class="callout"><strong>Recommendation to put in front of the owners:</strong> approve A$1,500 a month for 60 days starting week 3, in the region with capacity, with a stop rule (pause if cost per qualified enquiry is above A$150 after 30 days) and a scale rule (move to A$2,500 if it is under A$90).</div>
+</section>
+
+<!-- ===================== AUTOMATIONS ===================== -->
+<section id="auto" data-progress="auto">
+  <div class="sec-head"><h2>Automations to build</h2><span class="tally" data-tally="auto"></span></div>
+  <p>Each one has a trigger, an action, the tools it runs on, and the hours it should take you. Build in the order of the phase column. Everything here runs on n8n self-hosted (or Make if you would rather not host), the CRM's native automations, and small serverless functions.</p>
+  <div class="auto-grid">
+
+    <label class="auto"><input type="checkbox" id="a-01"><div><h4>A1 · Referral acknowledgement</h4><div class="flow">form submit → CRM contact + deal (region, service, source) → SMS + email to referrer within 2 min → notification to intake lead</div><dl><dt>Tools</dt><dd>Form webhook, n8n, CRM, SMS provider, email</dd><dt>Effort</dt><dd>6 h</dd><dt>Phase</dt><dd>1 (basic) → 4 (full)</dd><dt>Value</dt><dd>Turns "under a week" into "under two minutes"; coordinators notice.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-02"><div><h4>A2 · Missed-call text-back</h4><div class="flow">call tracking: missed or voicemail → SMS "Sorry we missed you, reply with the best time or use this link" → CRM task for intake</div><dl><dt>Tools</dt><dd>WildJar/CallRail webhook, n8n, SMS</dd><dt>Effort</dt><dd>3 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Recovers paid clicks that would otherwise call the next provider.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-03"><div><h4>A3 · Call to CRM logging</h4><div class="flow">answered call &gt; 60 s → CRM activity with source, recording link, duration → deal created if new number</div><dl><dt>Tools</dt><dd>Call tracking native CRM integration or n8n</dd><dt>Effort</dt><dd>2 h</dd><dt>Phase</dt><dd>1</dd><dt>Value</dt><dd>Phone enquiries stop disappearing; attribution survives.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-04"><div><h4>A4 · Lead routing</h4><div class="flow">new deal → match region + service → assign owner → if unassigned after 30 min, escalate to manager</div><dl><dt>Tools</dt><dd>CRM workflows</dd><dt>Effort</dt><dd>2 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Nothing sits in a shared inbox.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-05"><div><h4>A5 · Follow-up cadence</h4><div class="flow">deal stage "Contacted" unchanged 24 h → owner reminder; day 3 and day 7 → polite SMS/email to enquirer with opt-out; "Lost" → reason required</div><dl><dt>Tools</dt><dd>CRM sequences, SMS</dd><dt>Effort</dt><dd>5 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Enquiry-to-agreement rate is mostly follow-up discipline.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-06"><div><h4>A6 · Vacancy board sync</h4><div class="flow">nightly: vacancies sheet or CRM object → CMS API upsert → site rebuild → "last updated" stamp; vacancy closed → page shows waitlist form</div><dl><dt>Tools</dt><dd>Google Sheet or CRM, n8n, Keystatic/Sanity API, Cloudflare/Vercel deploy hook</dd><dt>Effort</dt><dd>8 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Coordinators trust a board that is visibly current.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-07"><div><h4>A7 · GBP posts and vacancy alerts</h4><div class="flow">weekly: next item in content queue → GBP post per location; new vacancy → GBP post + partner email</div><dl><dt>Tools</dt><dd>GBP API via n8n, content queue sheet</dd><dt>Effort</dt><dd>4 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Active profiles rank and convert better than static ones.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-08"><div><h4>A8 · Compliant review request</h4><div class="flow">deal stage "Active 30 days" → SMS to participant or nominated family member with GBP review link, plain wording, opt-out; no incentive ever</div><dl><dt>Tools</dt><dd>CRM trigger, SMS</dd><dt>Effort</dt><dd>4 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Reviews without inducement risk.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-09"><div><h4>A9 · Friday dashboard and summary</h4><div class="flow">Friday 07:00: Looker Studio snapshot + n8n pulls GA4, Ads, call tracking, CRM → one email: three numbers, deltas, one decision needed</div><dl><dt>Tools</dt><dd>Looker Studio, GA4/Ads/CRM APIs, n8n</dd><dt>Effort</dt><dd>8 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Owners see cause and effect; budget conversations get easier.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-10"><div><h4>A10 · Rank and GBP position alerts</h4><div class="flow">daily tracker run → if a target keyword or GBP grid position drops more than 3 places → alert with the URL</div><dl><dt>Tools</dt><dd>Local Falcon or BrightLocal, n8n</dd><dt>Effort</dt><dd>2 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>You hear about problems before traffic falls.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-11"><div><h4>A11 · Content pipeline with a review gate</h4><div class="flow">brief in sheet → Claude Code draft with FAQ block and schema → reviewer approves in CMS draft state → publish → internal links suggested</div><dl><dt>Tools</dt><dd>CMS drafts, n8n, Claude Code</dd><dt>Effort</dt><dd>8 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Steady guides without unreviewed claims going live.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-12"><div><h4>A12 · Referral-partner engine</h4><div class="flow">partner list (coordinators, plan managers, LAC partners, hospital social work) → sequence: intro, capacity sheet, meeting request → monthly capacity email auto-built from vacancies → replies create CRM tasks</div><dl><dt>Tools</dt><dd>CRM companies + sequences, n8n, vacancy data</dd><dt>Effort</dt><dd>8 h build + list research</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>The channel that actually fills SIL houses in regional NSW.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-13"><div><h4>A13 · Uptime and Core Web Vitals watch</h4><div class="flow">every 5 min: uptime ping; weekly: PageSpeed API on five templates → alert if LCP &gt; 2.5 s or any 5xx</div><dl><dt>Tools</dt><dd>n8n cron, PageSpeed Insights API, uptime check</dd><dt>Effort</dt><dd>3 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>Ads never point at a slow or dead page.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-14"><div><h4>A14 · AI visibility monitor</h4><div class="flow">monthly: 12 prompts run against ChatGPT, Perplexity, Gemini APIs → log mention yes/no and cited sources → trend in the dashboard</div><dl><dt>Tools</dt><dd>LLM APIs, n8n, sheet</dd><dt>Effort</dt><dd>3 h</dd><dt>Phase</dt><dd>4</dd><dt>Value</dt><dd>GEO measured, not guessed, at near-zero cost.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-15"><div><h4>A15 · Meta lead form to CRM</h4><div class="flow">Meta instant form submit → webhook → CRM deal tagged vacancy or recruitment → A1 acknowledgement</div><dl><dt>Tools</dt><dd>Meta Lead Ads webhook, n8n, CRM</dd><dt>Effort</dt><dd>2 h</dd><dt>Phase</dt><dd>3</dd><dt>Value</dt><dd>Leads reached within minutes instead of exported weekly.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-16"><div><h4>A16 · Recruitment pipeline</h4><div class="flow">application form → screening questions scored → CRM/ATS stage → interview booking link → onboarding checklist task</div><dl><dt>Tools</dt><dd>Form, n8n, CRM, calendar booking</dd><dt>Effort</dt><dd>6 h</dd><dt>Phase</dt><dd>3–4</dd><dt>Value</dt><dd>Staff capacity is the ceiling on every other number here.</dd></dl></div></label>
+
+    <label class="auto"><input type="checkbox" id="a-17"><div><h4>A17 · Form spam and data hygiene</h4><div class="flow">submit → Turnstile verify → NDIS number format check → duplicate-contact merge → only then CRM</div><dl><dt>Tools</dt><dd>Cloudflare Turnstile, serverless function, CRM dedupe</dd><dt>Effort</dt><dd>2 h</dd><dt>Phase</dt><dd>1</dd><dt>Value</dt><dd>Clean pipeline metrics; no junk SMS costs.</dd></dl></div></label>
+
+  </div>
+</section>
+
+<!-- ===================== KPIS ===================== -->
+<section id="kpi">
+  <div class="sec-head"><h2>KPIs and the dashboard</h2></div>
+  <p>These are the only numbers on the Friday report. Everything else is diagnostic and lives one click deeper.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Metric</th><th>Source</th><th>Day-90 target</th><th>Why it is on the page</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Qualified enquiries / week</strong> by source</td><td>CRM (stage ≥ Contacted), call tracking, GA4</td><td>2× baseline</td><td>The headline. "Qualified" means a real participant, family or coordinator in a region they serve.</td></tr>
+      <tr><td><strong>Cost per qualified enquiry</strong> (paid)</td><td>Google Ads + Meta spend ÷ CRM qualified</td><td>≤ A$90; stop rule at A$150</td><td>Decides the budget conversation.</td></tr>
+      <tr><td><strong>Time to first response</strong></td><td>CRM timestamps (A1 log)</td><td>&lt; 15 min business hours; &lt; 24 h always</td><td>Cheapest competitive advantage in the sector.</td></tr>
+      <tr><td>Enquiry → service agreement rate</td><td>CRM</td><td>≥ 25%</td><td>Shows whether intake, not marketing, is the constraint.</td></tr>
+      <tr><td>SIL/SDA vacancy fill time</td><td>Vacancy sheet</td><td>Baseline − 30%</td><td>Vacant rooms are the most expensive empty thing they own.</td></tr>
+      <tr><td>Organic clicks to region + service pages</td><td>Search Console</td><td>+100% vs baseline</td><td>Content and local SEO working.</td></tr>
+      <tr><td>GBP calls, direction requests, website clicks</td><td>GBP Insights</td><td>+50%</td><td>Local presence working.</td></tr>
+      <tr><td>Landing-page conversion rate (paid)</td><td>GA4 / Ads</td><td>≥ 8%</td><td>If low, the page is the problem, not the ads.</td></tr>
+      <tr><td>AI mention rate (12 prompts)</td><td>A14 log</td><td>Mentioned in ≥ 4 of 12</td><td>GEO, measured monthly, not weekly.</td></tr>
+      <tr><td>Core Web Vitals pass (mobile)</td><td>Search Console CWV</td><td>All templates green</td><td>Guardrail for everything above.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================== SOURCES ===================== -->
+<section id="sources" class="sources">
+  <div class="sec-head"><h2>Sources</h2></div>
+  <ol>
+    <li>AblePoint Australia site: <a href="https://ablepointaustralia.com.au/">home</a>, <a href="https://ablepointaustralia.com.au/referral/">referral</a>, <a href="https://ablepointaustralia.com.au/supported-independent-living/">SIL</a>, <a href="https://ablepointaustralia.com.au/ndis-support-service-providers-dubbo/">Dubbo</a> (read 30 Oct 2026)</li>
+    <li><a href="https://www.ndiscommission.gov.au/provider-registration/ablepoint-australia">NDIS Commission registration record, Ablepoint Australia</a></li>
+    <li><a href="https://www.adnews.com.au/news/ndis-providers-put-on-notice-for-misleading-advertising">ACCC puts NDIS providers on notice for misleading advertising (AdNews)</a></li>
+    <li><a href="https://www.accc.gov.au/media-release/australians-living-with-disability-at-risk-of-exploitation-by-ndis-providers-breaching-consumer-laws">ACCC media release on NDIS providers and consumer law</a></li>
+    <li><a href="https://www.ndiscommission.gov.au/media-centre/crackdown-ndis-fraud-and-exploitation-northern-territory">NDIS Commission: crackdown on fraud and inducements</a></li>
+    <li><a href="https://www.ndiscommission.gov.au/sites/default/files/2025-04/consultative-committee-communique-mar2025.docx">NDIS Commission communiqué on Code of Conduct Rules price changes (Mar 2025)</a></li>
+    <li><a href="https://searchengineland.com/meta-ads-restrictions-health-wellness-campaigns-453094">Search Engine Land: Meta Ads health and wellness restrictions</a></li>
+    <li><a href="https://sagapixel.com/?p=27263">Sagapixel: Meta's tiered health-data restrictions</a></li>
+    <li><a href="https://www.profitgeeks.com.au/blog/google-ads-cost-australia">Profit Geeks: Google Ads cost in Australia, Keyword Planner Oct 2026</a></li>
+    <li><a href="https://adpartner.com.au/blog/ndis-google-ads-cost-australia/">AdPartner: NDIS Google Ads cost in Australia</a></li>
+    <li><a href="https://ndisgrowth.com.au/ndis-google-ads/">NDIS Growth: NDIS Google Ads management</a></li>
+    <li><a href="https://ndiswebsitedesigns.com.au/ndis-google-ads-mistakes.php">NDIS Website Designs: NDIS Google Ads mistakes and healthy CPL</a></li>
+    <li><a href="https://squaremeters.digital/insights/facebook-ads-vs-google-ads-for-ndis-providers-in-australia-which-platform-brings-more-participants/">Square Meters: Facebook vs Google Ads for NDIS providers</a></li>
+    <li><a href="https://ryndigital.com/google-ads-benchmarks/">RynDigital: Google Ads benchmarks 2026 (LocaliQ data)</a></li>
+    <li><a href="https://foundrycro.com/blog/google-ads-benchmarks-by-industry-2026/">FoundryCRO: Google Ads benchmarks by industry 2026</a></li>
+    <li><a href="https://analytify.io/seo-statistics/">Analytify: SEO and AI Overview statistics 2026</a></li>
+    <li><a href="https://upgrowth.in/ai-traffic-share-report-2026">upGrowth: AI traffic share report 2026</a></li>
+    <li><a href="https://beta.searchenginejournal.com/llm-traffic-is-shrinking/559940/">Search Engine Journal: LLM traffic is shrinking</a></li>
+    <li>Pricing, call tracking and CRM: <a href="https://www.wildjar.com/pricing">WildJar</a>, <a href="https://www.callrail.com/pricing/australia">CallRail Australia</a>, <a href="https://support.callrail.com/hc/en-us/articles/5812465302925">CallRail international support note</a>, <a href="https://www.hubspot.com/pricing/crm">HubSpot</a>, <a href="https://www.pipedrive.com/en/pricing">Pipedrive</a>, <a href="https://www.gohighlevel.com/pricing">GoHighLevel</a></li>
+    <li>Pricing, automation and messaging: <a href="https://n8n.io/pricing/">n8n</a>, <a href="https://docs.n8n.io/hosting/community-edition-features/">n8n Community Edition</a>, <a href="https://www.make.com/en/pricing">Make</a>, <a href="https://zapier.com/pricing">Zapier</a>, <a href="https://www.twilio.com/en-us/sms/pricing/au">Twilio SMS Australia</a>, <a href="https://sinch.com/engage/pricing/?country=au">Sinch Engage AU</a>, <a href="https://www.brevo.com/pricing/">Brevo</a>, <a href="https://resend.com/pricing">Resend</a></li>
+    <li>Pricing, hosting and CMS: <a href="https://vercel.com/pricing">Vercel</a>, <a href="https://developers.cloudflare.com/workers/platform/pricing/">Cloudflare Workers</a>, <a href="https://www.cloudflare.com/plans/">Cloudflare plans</a>, <a href="https://www.sanity.io/pricing">Sanity</a>, <a href="https://keystatic.com/docs/cloud">Keystatic Cloud</a>, <a href="https://payloadcms.com/pricing">Payload</a>, <a href="https://wp-rocket.me/pricing/">WP Rocket</a>, <a href="https://elementor.com/pricing/">Elementor</a>, <a href="https://www.siteground.com/kb/current-rates-shared-hosting-plans">SiteGround rates</a>, <a href="https://kinsta.com/plans/">Kinsta</a>, <a href="https://wpengine.com/plans/">WP Engine</a></li>
+    <li>Pricing, SEO and tracking: <a href="https://www.localfalcon.com/pricing">Local Falcon</a>, <a href="https://www.brightlocal.com/pricing/">BrightLocal</a>, <a href="https://www.semrush.com/kb/1611-local-toolkit-pricing-and-plans">Semrush Local</a>, <a href="https://ahrefs.com/pricing">Ahrefs</a>, <a href="https://www.semrush.com/pricing/">Semrush</a>, <a href="https://www.screamingfrog.co.uk/seo-spider/pricing/">Screaming Frog</a>, <a href="https://stape.io/pricing">Stape</a>, <a href="https://stape.io/blog/how-much-does-server-gtm-cost">Stape on server GTM cost</a>, <a href="https://clarity.microsoft.com/pricing">Microsoft Clarity</a>, <a href="https://cloud.google.com/looker-studio">Looker Studio</a>, <a href="https://www.cloudflare.com/application-services/products/turnstile/">Turnstile</a>, <a href="https://contentsquare.com/pricing/">Contentsquare</a>, <a href="https://surfer.ai/pricing/">Surfer</a>, <a href="https://peec.ai/pricing">Peec AI</a>, <a href="https://otterly.ai/pricing">Otterly</a></li>
+  </ol>
+</section>
+
+<p class="foot">Benchmarks from Australian agencies are self-published and unaudited; use them as the range to beat and replace with AblePoint's own data after 30 days. Prices verified on the date shown in the tools table and change without notice.</p>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  var KEY='ablepoint-roadmap-v1';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  var boxes=Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][id]'));
+  boxes.forEach(function(b){ if(state[b.id]) b.checked=true; });
+
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  function group(b){
+    var sec=b.closest('section[data-progress]');
+    return sec?sec.getAttribute('data-progress'):null;
+  }
+  function update(){
+    var totals={all:[0,0]};
+    boxes.forEach(function(b){
+      var g=group(b);
+      totals.all[1]++; if(b.checked) totals.all[0]++;
+      if(g){ totals[g]=totals[g]||[0,0]; totals[g][1]++; if(b.checked) totals[g][0]++; }
+    });
+    Object.keys(totals).forEach(function(k){
+      var d=totals[k], pct=d[1]?Math.round(d[0]/d[1]*100):0;
+      document.querySelectorAll('[data-meter="'+k+'"]').forEach(function(el){ el.style.width=pct+'%'; });
+      document.querySelectorAll('[data-meter-text="'+k+'"]').forEach(function(el){ el.textContent=d[0]+' / '+d[1]; });
+      document.querySelectorAll('[data-tally="'+k+'"]').forEach(function(el){ el.textContent=d[0]+' of '+d[1]+' done'; });
+      document.querySelectorAll('[data-count="'+k+'"]').forEach(function(el){ el.textContent=d[0]+'/'+d[1]; });
+    });
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('change',function(){
+      if(b.checked) state[b.id]=1; else delete state[b.id];
+      save(); update();
+    });
+  });
+
+  var wrap=document.getElementById('reset-wrap');
+  var btn=document.getElementById('reset-btn');
+  if(btn){
+    btn.addEventListener('click',function(){
+      if(wrap.querySelector('.confirm')) return;
+      var c=document.createElement('span'); c.className='confirm';
+      var yes=document.createElement('button'); yes.type='button'; yes.textContent='Yes, clear everything';
+      var no=document.createElement('button'); no.type='button'; no.textContent='Keep';
+      c.appendChild(yes); c.appendChild(no); wrap.appendChild(c);
+      yes.addEventListener('click',function(){ state={}; save(); boxes.forEach(function(b){b.checked=false;}); update(); c.remove(); });
+      no.addEventListener('click',function(){ c.remove(); });
+    });
+  }
+  update();
+})();
+</script>

@@ -1,0 +1,7 @@
+---
+import { site } from '../data/site';
+---
+<div class="cta-bar" role="region" aria-label="Quick contact">
+  <a class="btn btn--secondary" href={site.phoneHref} data-event="phone_click" data-event-location="mobile_bar">Call {site.phoneDisplay}</a>
+  <a class="btn btn--primary" href="/referral/" data-event="referral_cta" data-event-location="mobile_bar">Make a referral</a>
+</div>

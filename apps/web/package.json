@@ -1,0 +1,43 @@
+{
+  "name": "@ablepoint/web",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "lint:dist": "node scripts/lint-dist.mjs",
+    "test:e2e": "playwright test",
+    "build:staging": "PUBLIC_SITE_ENV=staging PUBLIC_SITE_URL=http://localhost:4331 astro build",
+    "gen:vercel": "PUBLIC_SITE_ENV=staging node scripts/gen-vercel-config.mjs",
+    "gen:vercel:production": "PUBLIC_SITE_ENV=production node scripts/gen-vercel-config.mjs",
+    "build:analytics-test": "PUBLIC_SITE_ENV=staging PUBLIC_SITE_URL=http://localhost:4332 PUBLIC_GTM_ID=GTM-TEST123 ASTRO_OUT_DIR=dist-analytics astro build && PUBLIC_SITE_ENV=staging PUBLIC_GTM_ID=GTM-TEST123 OUT_FILE=vercel.analytics.json node scripts/gen-vercel-config.mjs",
+    "build:intake-test": "PUBLIC_SITE_ENV=staging PUBLIC_SITE_URL=http://localhost:4333 PUBLIC_INTAKE_ENDPOINT=http://localhost:4343/enquiry PUBLIC_TURNSTILE_SITEKEY=TEST-SITEKEY ASTRO_OUT_DIR=dist-intake astro build && PUBLIC_SITE_ENV=staging PUBLIC_INTAKE_ENDPOINT=http://localhost:4343/enquiry PUBLIC_TURNSTILE_SITEKEY=TEST-SITEKEY OUT_FILE=vercel.intake.json node scripts/gen-vercel-config.mjs",
+    "content:ingest": "tsx scripts/content/ingest.ts",
+    "content:approve": "tsx scripts/content/approve.ts",
+    "content:verify": "tsx scripts/content/verify-approvals.ts",
+    "cms:pull": "tsx scripts/cms-pull.ts"
+  },
+  "dependencies": {
+    "@ablepoint/schemas": "workspace:*",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "astro": "^7.4.5",
+    "lucide-static": "^1.67.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "sharp": "^0.35.5",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.0",
+    "vitest": "latest"
+  }
+}

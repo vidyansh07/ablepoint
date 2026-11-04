@@ -1,0 +1,28 @@
+---
+/**
+ * AblePoint icons: Lucide (ISC licence; Feather-derived icons MIT) on a 24px grid, 2px round stroke, inherit colour.
+ * Licence notices: /third-party-notices.txt. Always decorative: pair with visible text.
+ * Names below are AblePoint's semantic names mapped to Lucide icons; add a mapping to use a new icon.
+ */
+import nodes from 'lucide-static/icon-nodes.json';
+
+const map: Record<string, string> = {
+  phone: 'phone', home: 'house', 'home-heart': 'house-heart', heart: 'heart', 'hand-heart': 'hand-heart', building: 'building',
+  bed: 'bed-double', compass: 'compass', route: 'route', users: 'users', user: 'user', family: 'users-round',
+  clipboard: 'clipboard-list', stethoscope: 'stethoscope', referral: 'file-text', pin: 'map-pin', shield: 'shield-check',
+  accessibility: 'accessibility', 'text-size': 'a-large-small', contrast: 'contrast', book: 'book-open', arrow: 'arrow-right',
+  menu: 'menu', close: 'x', check: 'check', mail: 'mail', calendar: 'calendar', info: 'info', sparkle: 'sparkles',
+  ear: 'ear', 'heart-pulse': 'heart-pulse', chat: 'message-circle', verified: 'badge-check', eye: 'eye', languages: 'languages',
+  speaker: 'volume-2', search: 'search', clock: 'clock', landmark: 'landmark', support: 'hand-helping',
+};
+const all = nodes as unknown as Record<string, [string, Record<string, string | number>][]>;
+const { name, size = 24, class: cls } = Astro.props as { name: string; size?: number; class?: string };
+const shapes = all[map[name] ?? ''];
+if (!shapes) throw new Error(`Icon "${name}" has no Lucide mapping. Add it to the map in Icon.astro.`);
+---
+<svg class:list={['icon', `icon--${name}`, cls]} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {shapes.map(([tag, attrs]) => {
+    const Tag = tag as 'path';
+    return <Tag {...attrs} />;
+  })}
+</svg>

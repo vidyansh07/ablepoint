@@ -1,0 +1,19 @@
+---
+import Ring from './Ring.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+const { heading = 'Talk to us', text = 'Call us or send a referral. We will reply as soon as we can.', event = 'referral_cta' } = Astro.props as { heading?: string; text?: string; event?: 'referral_cta' | 'vacancy_enquiry' };
+---
+<section class="section" aria-labelledby="cta-heading">
+  <div class="container">
+    <div class="band">
+      <Ring class="band__ring" size={320} />
+      <h2 id="cta-heading">{heading}</h2>
+      <p class="lede">{text}</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/referral/" data-event={event} data-event-location="cta_block">Make a referral <Icon name="arrow" size={18} /></a>
+        <a class="btn btn--on-dark" href={site.phoneHref} data-event="phone_click" data-event-location="cta_block"><Icon name="phone" size={18} /> Call {site.phoneDisplay}</a>
+      </div>
+    </div>
+  </div>
+</section>

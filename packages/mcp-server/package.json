@@ -1,0 +1,28 @@
+{
+  "name": "@ablepoint/mcp-server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Read-only Model Context Protocol server (stdio) for AblePoint's public content API (docs/21). Not published, not deployed.",
+  "bin": {
+    "ablepoint-mcp": "./bin/ablepoint-mcp.mjs"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "test": "vitest run",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.0",
+    "vitest": "^5.1.0"
+  }
+}

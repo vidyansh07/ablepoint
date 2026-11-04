@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import Card from '../../components/Card.astro';
+import Icon from '../../components/Icon.astro';
+import ContactCard from '../../components/ContactCard.astro';
+import VacancyCard from '../../components/VacancyCard.astro';
+import DraftBanner from '../../components/DraftBanner.astro';
+import RegionArt from '../../components/art/RegionArt.astro';
+import Photo from '../../components/Photo.astro';
+import { photoFor } from '../../data/photos';
+import { SITE_ENV } from '../../lib/env';
+import { regions } from '../../data/regions';
+import { services } from '../../data/services';
+import { vacancies } from '../../data/vacancies';
+import { visible } from '../../lib/content';
+import { faqPage } from '../../lib/jsonld';
+import { factSections, lastChecked } from '../../lib/region-facts';
+import { metaDescription } from '../../lib/meta';
+
+export function getStaticPaths() {
+  return visible(regions).map((r) => ({ params: { slug: r.slug }, props: { slug: r.slug } }));
+}
+const { slug } = Astro.props;
+const region = regions.find((r) => r.slug === slug)!;
+const path = `/locations/${region.slug}/`;
+const here = visible(services).filter((s) => region.services.includes(s.slug));
+const homes = visible(vacancies).filter((v) => v.regionSlug === region.slug);
+const sections = factSections(region);
+const checked = lastChecked(region.facts);
+const crumbs = [{ name: 'Locations', path: '/locations/' }, { name: region.name, path }];
+---
+<Base title={`NDIS supports in ${region.name}`} description={metaDescription(region.summary)} path={path} crumbs={crumbs} jsonld={region.faqs.length ? [faqPage(region.faqs)] : []}>
+  <DraftBanner doc={region} />
+  <Hero eyebrow={region.isHeadOfficeRegion ? 'Location · head office region' : 'Location'} title={`NDIS supports in ${region.name}`} lede={region.summary} compact>
+    <div slot="art" class="hero-photo">{photoFor(region.slug, SITE_ENV) ? <Photo id={region.slug} eager sizes="(min-width: 60rem) 34rem, 100vw" /> : <div class="panel-art"><RegionArt region={region.slug} /></div>}</div>
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={crumbs} />
+    <div class="layout-aside">
+      <div class="stack-lg">
+        {here.length > 0 ? (
+          <section>
+            <h2>Services in {region.name}</h2>
+            <div class="grid grid--cards">{here.map((s) => <Card href={`/${s.slug}/`} title={s.title} text={s.summary} icon={s.icon} tint={s.tint} />)}</div>
+          </section>
+        ) : (
+          <section class="callout">
+            <span class="icon-circle tint-blue"><Icon name="pin" size={28} /></span>
+            <div>
+              <h2>What is available in {region.name}?</h2>
+              <p>Supports can differ from region to region. The quickest way to find out what is available near you is to call us or send a referral.</p>
+            </div>
+          </section>
+        )}
+        {homes.length > 0 && (
+          <section>
+            <h2>Vacancies in {region.name}</h2>
+            <div class="grid grid--cards">{homes.map((v) => <VacancyCard vacancy={v} regionName={region.name} />)}</div>
+          </section>
+        )}
+        {sections.map((sec) => (
+          <section aria-labelledby={`fact-${sec.id}`}>
+            <h2 id={`fact-${sec.id}`}>{sec.heading}</h2>
+            {sec.id === 'towns' && <ul class="checklist">{region.facts!.towns.map((t) => <li><Icon name="check" size={22} /> <span>{t}</span></li>)}</ul>}
+            {sec.id === 'about' && region.facts!.about!.map((p) => <p>{p}</p>)}
+            {sec.id === 'partners' && (
+              <ul class="checklist">{region.facts!.partners!.map((p) => <li><Icon name="check" size={22} /> <span>{p.url ? <a href={p.url} rel="noopener">{p.name}</a> : p.name}</span></li>)}</ul>
+            )}
+            {sec.id === 'getting-around' && <p>{region.facts!.gettingAround}</p>}
+          </section>
+        ))}
+        {checked && <p class="muted">Local details last checked {checked}.</p>}
+        <Faq faqs={region.faqs} />
+      </div>
+      <div class="aside"><ContactCard heading={`Talk to us about ${region.name}`} /></div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,105 @@
+name: CI
+
+# Verification only. There are no deploy steps: production deploys, DNS changes and live integrations
+# need explicit owner approval (docs/12-implementation-roadmap.md, release gates).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Never send anonymous usage data from CI.
+  ASTRO_TELEMETRY_DISABLED: "1"
+  CI: "true"
+
+jobs:
+  hygiene:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if reference material or env files are tracked
+        shell: bash
+        run: |
+          set -euo pipefail
+          # themecrafter.com/ is the Zaver demo scrape (licence unknown); ABLEPOINT* (folder or zip) and hts-* are its HTTrack wrappers.
+          # .env files may hold secrets; only .env.example is allowed.
+          bad=$(git ls-files \
+            | grep -E '^(themecrafter\.com/|ABLEPOINT[^/]*(/|$))|(^|/)hts-(cache/|log\.txt$)|(^|/)\.env(\.[^/]*)?$' \
+            | grep -Ev '(^|/)\.env\.example$' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Files that must never be tracked are in the repository:"
+            echo "$bad"
+            exit 1
+          fi
+          echo "No forbidden tracked files."
+
+  verify:
+    name: Typecheck, test, build, e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from the root package.json "packageManager" field.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (schemas, studio, web)
+        run: pnpm -r check
+
+      - name: Unit tests (schemas, studio, web)
+        run: pnpm -r test
+
+      - name: Build web (staging) and lint the output
+        env:
+          PUBLIC_SITE_ENV: staging
+        run: |
+          pnpm --filter @ablepoint/web build:staging
+          pnpm --filter @ablepoint/web lint:dist
+
+      - name: Production gate smoke test (no draft content may reach a production build)
+        env:
+          PUBLIC_SITE_ENV: production
+          PUBLIC_SITE_URL: https://example.invalid
+        run: |
+          pnpm --filter @ablepoint/web exec astro build
+          if grep -rl "Draft, not approved" apps/web/dist; then
+            echo "::error::Draft content leaked into a production build"
+            exit 1
+          fi
+
+      - name: Install Chrome for Playwright
+        run: pnpm --filter @ablepoint/web exec playwright install --with-deps chrome
+
+      - name: End-to-end and accessibility tests (Playwright + axe)
+        env:
+          PLAYWRIGHT_CHANNEL: chrome
+        run: pnpm --filter @ablepoint/web test:e2e
+
+      - name: Upload Playwright traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: |
+            apps/web/test-results
+            apps/web/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,18 @@
+---
+import { Image } from 'astro:assets';
+import { photoFor } from '../data/photos';
+import { SITE_ENV } from '../lib/env';
+/** A licensed photo with a visible credit line (required by CC BY / CC BY-SA, and good practice for CC0). */
+const { id, sizes = '(min-width: 60rem) 36rem, 100vw', eager = false, credit = true } = Astro.props as { id: string; sizes?: string; eager?: boolean; credit?: boolean };
+const p = photoFor(id, SITE_ENV);
+---
+{p && (
+  <figure class="photo">
+    <Image src={p.src} alt={p.alt} widths={[480, 720, 960]} sizes={sizes} format="webp" quality={62} loading={eager ? 'eager' : 'lazy'} decoding="async" class="photo__img" />
+    {credit && (
+      <figcaption class="photo__credit">
+        Photo: {p.creator}, <a href={p.licenceUrl} rel="noopener">{p.licence}</a>, <a href={p.sourcePage} rel="noopener">via {p.source}</a>. <a href="/image-credits/">Image credits</a>
+      </figcaption>
+    )}
+  </figure>
+)}

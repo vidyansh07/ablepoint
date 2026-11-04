@@ -1,0 +1,1872 @@
+[
+  {
+    "_id": "fx-faq-referrals",
+    "_type": "faq",
+    "_rev": "rev-fx-faq-referrals",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "question": "Fake question about referrals?",
+    "shortAnswer": "Fake short answer about referrals.",
+    "longAnswer": [
+      {
+        "_type": "block",
+        "_key": "b-42-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake long answer, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "topics": [
+      "Referrals"
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "8687ad2f4bfc8ef5be291d7c4ab9e13d05bdc7af55c81e25533446598dc8c8fb"
+  },
+  {
+    "_id": "fx-faq-housing",
+    "_type": "faq",
+    "_rev": "rev-fx-faq-housing",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "question": "Fake question about housing?",
+    "shortAnswer": "Fake short answer about housing.",
+    "topics": [
+      "Housing"
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "2fc424e42094c5fde1d00f19bd35c8393b249293d0ab2695b67d24a99809a327"
+  },
+  {
+    "_id": "fx-faq-othertopic",
+    "_type": "faq",
+    "_rev": "rev-fx-faq-othertopic",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "question": "Fake question with an unknown topic?",
+    "shortAnswer": "Fake short answer.",
+    "topics": [
+      "Not a site topic"
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "457f542a4ee5b6d2d6a686003635f1d6628db4bdc282432e5515577e0de81347"
+  },
+  {
+    "_id": "fx-faq-draft",
+    "_type": "faq",
+    "_rev": "rev-fx-faq-draft",
+    "_createdAt": "2026-01-04T00:00:00.000Z",
+    "_updatedAt": "2026-01-14T00:00:00.000Z",
+    "question": "Fake draft question?",
+    "shortAnswer": "Fake draft answer.",
+    "topics": [
+      "Housing"
+    ],
+    "reviewState": "draft"
+  },
+  {
+    "_id": "fx-author-1",
+    "_type": "author",
+    "_rev": "rev-fx-author-1",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "name": "Fixture Author One",
+    "slug": {
+      "_type": "slug",
+      "current": "fixture-author-one"
+    },
+    "credentials": "Fake role",
+    "consentRef": "FAKE-CONSENT-REF-001",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "f56a256b1ee1ef0f55f015cb48452043781fd2ca398a9340c47792766a1dc77c"
+  },
+  {
+    "_id": "fx-author-2",
+    "_type": "author",
+    "_rev": "rev-fx-author-2",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "name": "Fixture Reviewer Two",
+    "slug": {
+      "_type": "slug",
+      "current": "fixture-reviewer-two"
+    },
+    "consentRef": "FAKE-CONSENT-REF-001",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "767626e06adff1fca5efe0ebd1ac00050ab10973cd3c93898b9a80fb43df8ffc"
+  },
+  {
+    "_id": "fx-author-draft",
+    "_type": "author",
+    "_rev": "rev-fx-author-draft",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "name": "Fixture Draft Author",
+    "slug": {
+      "_type": "slug",
+      "current": "fixture-draft-author"
+    },
+    "consentRef": "FAKE-CONSENT-REF-001",
+    "reviewState": "draft"
+  },
+  {
+    "_id": "fx-service-alpha",
+    "_type": "service",
+    "_rev": "rev-fx-service-alpha",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "title": "Fake service alpha",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-service-alpha"
+    },
+    "summary": "Fake summary.",
+    "whoFor": "Fake audience.",
+    "provides": [
+      "Fake item"
+    ],
+    "process": [
+      "Fake step one",
+      "Fake step two"
+    ],
+    "faqs": [],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "304a88b982b58fad183d9729f9c0584ff3396fd6cbed158a23c77a7685d04e81"
+  },
+  {
+    "_id": "fx-service-draft",
+    "_type": "service",
+    "_rev": "rev-fx-service-draft",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "title": "Fake service draft",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-service-draft"
+    },
+    "summary": "Fake summary.",
+    "whoFor": "Fake audience.",
+    "provides": [
+      "Fake item"
+    ],
+    "process": [
+      "One",
+      "Two"
+    ],
+    "reviewState": "draft"
+  },
+  {
+    "_id": "fx-region-alpha",
+    "_type": "region",
+    "_rev": "rev-fx-region-alpha",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "name": "Alphaville Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "alphaville-fixture"
+    },
+    "summary": "Fake summary for Alphaville Fixture.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "isHeadOfficeRegion": true,
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      },
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-housing",
+        "_key": "k-fx-faq-housing"
+      }
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "a816c75abdfd9e1d3cfdcb8744415f655cd8ae99e57d510f4af70241ace6c16c"
+  },
+  {
+    "_id": "fx-region-draft",
+    "_type": "region",
+    "_rev": "rev-fx-region-draft",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "name": "Draftville Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "draftville-fixture"
+    },
+    "summary": "Fake summary for Draftville Fixture.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "reviewState": "draft"
+  },
+  {
+    "_id": "fx-region-inreview",
+    "_type": "region",
+    "_rev": "rev-fx-region-inreview",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "name": "Reviewton Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "reviewton-fixture"
+    },
+    "summary": "Fake summary for Reviewton Fixture.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "reviewState": "inReview"
+  },
+  {
+    "_id": "fx-region-edited",
+    "_type": "region",
+    "_rev": "rev-fx-region-edited",
+    "_createdAt": "2026-01-04T00:00:00.000Z",
+    "_updatedAt": "2026-01-14T00:00:00.000Z",
+    "name": "Editedburg Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "editedburg-fixture"
+    },
+    "summary": "Fake summary changed after approval.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "7a434759aebf1539b80c7a6fcd31a314613be86883049a78752ff40d24822567"
+  },
+  {
+    "_id": "fx-region-badref",
+    "_type": "region",
+    "_rev": "rev-fx-region-badref",
+    "_createdAt": "2026-01-05T00:00:00.000Z",
+    "_updatedAt": "2026-01-15T00:00:00.000Z",
+    "name": "Badrefton Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "badrefton-fixture"
+    },
+    "summary": "Fake summary for Badrefton Fixture.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-draft",
+        "_key": "k-fx-faq-draft"
+      }
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "35744c35fb538d733e1ad15536fe7b4f51a758969d1ce0f253978eff7b33a888"
+  },
+  {
+    "_id": "fx-region-noapprover",
+    "_type": "region",
+    "_rev": "rev-fx-region-noapprover",
+    "_createdAt": "2026-01-06T00:00:00.000Z",
+    "_updatedAt": "2026-01-16T00:00:00.000Z",
+    "name": "Noapprover Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "noapprover-fixture"
+    },
+    "summary": "Fake summary for Noapprover Fixture.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "reviewState": "approved",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "44cb29c95e9abb191c095c7551c7f23993c3cdc2abcd31fde8c785f4f1ae29c3"
+  },
+  {
+    "_id": "drafts.fx-region-alpha",
+    "_type": "region",
+    "_rev": "rev-drafts.fx-region-alpha",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "name": "Alphaville Fixture",
+    "slug": {
+      "_type": "slug",
+      "current": "alphaville-fixture"
+    },
+    "summary": "Fake unpublished draft copy.",
+    "officeType": "serviceArea",
+    "suburbs": [
+      "Fake Suburb One"
+    ],
+    "narrative": [
+      {
+        "_type": "block",
+        "_key": "b-48-Fak",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "s1",
+            "text": "Fake local information, not carried to the site.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "localContactLabel": "Fake intake role",
+    "seo": {
+      "_type": "seo",
+      "title": "Fake SEO title",
+      "ogImage": {
+        "_type": "mediaAsset",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0001-200x200-png",
+            "_key": "k-image-fakeasset0001-200x200-png"
+          }
+        },
+        "alt": "Fake alt"
+      }
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "d999c717670e3dc373fa91aeb12e9c9d29ed54865b1ae54e5791a20993716178"
+  },
+  {
+    "_id": "fx-cov-1",
+    "_type": "serviceCoverage",
+    "_rev": "rev-fx-cov-1",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "service": {
+      "_type": "reference",
+      "_ref": "fx-service-alpha",
+      "_key": "k-fx-service-alpha"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "available": true,
+    "publicBlurb": "Fake blurb.",
+    "capacityNote": "FAKE-CAPACITY-NOTE-DO-NOT-PUBLISH",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "ebd370c309a7ce8a90d6243e952511f504f92d1aca649084dbe52dd156f36f90"
+  },
+  {
+    "_id": "fx-cov-2",
+    "_type": "serviceCoverage",
+    "_rev": "rev-fx-cov-2",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "service": {
+      "_type": "reference",
+      "_ref": "fx-service-alpha",
+      "_key": "k-fx-service-alpha"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-edited",
+      "_key": "k-fx-region-edited"
+    },
+    "available": false,
+    "capacityNote": "FAKE-CAPACITY-NOTE-DO-NOT-PUBLISH",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "f9f10d05c958a3ed6f5424278b1a2394369a5aa6f62cd294bef29aaf91da0811"
+  },
+  {
+    "_id": "fx-cov-3",
+    "_type": "serviceCoverage",
+    "_rev": "rev-fx-cov-3",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "service": {
+      "_type": "reference",
+      "_ref": "fx-service-draft",
+      "_key": "k-fx-service-draft"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "available": true,
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "904dc8d770ad313133344a4385ff4857281d985f3f0d9cb4171dc06934edc6b6"
+  },
+  {
+    "_id": "fx-cov-4",
+    "_type": "serviceCoverage",
+    "_rev": "rev-fx-cov-4",
+    "_createdAt": "2026-01-04T00:00:00.000Z",
+    "_updatedAt": "2026-01-14T00:00:00.000Z",
+    "service": {
+      "_type": "reference",
+      "_ref": "fx-service-alpha",
+      "_key": "k-fx-service-alpha"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "available": true,
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "e3c6950e81e4dc77f0d4dae168b88d87c7b8767d55012141e6cd60c785bfe02f",
+    "publicBlurb": "Fake blurb edited after approval."
+  },
+  {
+    "_id": "fx-guide-ok",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-ok",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "title": "Fake guide fake-guide-ok",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-ok"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewer": {
+      "_type": "reference",
+      "_ref": "fx-author-2",
+      "_key": "k-fx-author-2"
+    },
+    "publishedAt": "2026-01-05T00:00:00.000Z",
+    "reviewedAt": "2026-01-12T00:00:00.000Z",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "c79aa69bdb4c2238e1f991873612fb84d668130eb47f9ef9beab7171c31f14ab"
+  },
+  {
+    "_id": "fx-guide-list",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-list",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "title": "Fake guide fake-guide-list",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-list"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-l",
+        "heading": "Fake heading",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-14-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake list item",
+                "marks": []
+              }
+            ],
+            "listItem": "bullet",
+            "level": 1
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "05cc6189d8e5a102d07072d44fcab30b90a137b2d6d6286a6606962d1a822130"
+  },
+  {
+    "_id": "fx-guide-bold",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-bold",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "title": "Fake guide fake-guide-bold",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-bold"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-14-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake bold text",
+                "marks": [
+                  "strong"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "4c1d315f74d50667b3bb7a0d5d1f51ac09e9e1f304eb96f4de54229c1325bcea"
+  },
+  {
+    "_id": "fx-guide-heading",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-heading",
+    "_createdAt": "2026-01-04T00:00:00.000Z",
+    "_updatedAt": "2026-01-14T00:00:00.000Z",
+    "title": "Fake guide fake-guide-heading",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-heading"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-h",
+        "heading": "Fake heading",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-16-Fak",
+            "style": "h3",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake sub heading",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "d3096fdd707e8a0924bc2e88cf2d74762379d08d36770edf3d7a7dc3dd6c9f73"
+  },
+  {
+    "_id": "fx-guide-authordraft",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-authordraft",
+    "_createdAt": "2026-01-05T00:00:00.000Z",
+    "_updatedAt": "2026-01-15T00:00:00.000Z",
+    "title": "Fake guide fake-guide-authordraft",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-authordraft"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-draft",
+      "_key": "k-fx-author-draft"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "d6cd05d85f8301cffebd46697832de58f96e5fe45fc572b78b8da68bfe0d1e3b"
+  },
+  {
+    "_id": "fx-guide-nosources",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-nosources",
+    "_createdAt": "2026-01-06T00:00:00.000Z",
+    "_updatedAt": "2026-01-16T00:00:00.000Z",
+    "title": "Fake guide fake-guide-nosources",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-nosources"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "40d5f4751968a18d47783d2e94239abfe60e9c846958e9c03c0adc88ae29cb12"
+  },
+  {
+    "_id": "fx-guide-badurl",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-badurl",
+    "_createdAt": "2026-01-07T00:00:00.000Z",
+    "_updatedAt": "2026-01-17T00:00:00.000Z",
+    "title": "Fake guide fake-guide-badurl",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-badurl"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-x",
+        "label": "Fake link",
+        "url": "javascript:alert(1)"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "52ee954ed194e36c5febf6a55474f51bcc36e2314706964685f0f1c4ca38a7a3"
+  },
+  {
+    "_id": "fx-guide-dup-a",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-dup-a",
+    "_createdAt": "2026-01-08T00:00:00.000Z",
+    "_updatedAt": "2026-01-18T00:00:00.000Z",
+    "title": "Fake guide fake-guide-dup",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-dup"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "2399481d0c540cc3d9196d131e4b9b79fa4deaf943f8244d40de0395b4635591"
+  },
+  {
+    "_id": "fx-guide-dup-b",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-dup-b",
+    "_createdAt": "2026-01-09T00:00:00.000Z",
+    "_updatedAt": "2026-01-19T00:00:00.000Z",
+    "title": "Fake guide fake-guide-dup",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-dup"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "2399481d0c540cc3d9196d131e4b9b79fa4deaf943f8244d40de0395b4635591"
+  },
+  {
+    "_id": "fx-guide-draft",
+    "_type": "guide",
+    "_rev": "rev-fx-guide-draft",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "title": "Fake guide fake-guide-draft",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-guide-draft"
+    },
+    "answer": "Fake answer-first summary for tests only.",
+    "sections": [
+      {
+        "_type": "guideSection",
+        "_key": "sec-a",
+        "heading": "Fake heading one",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph one.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "_key": "b-19-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph two.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "_type": "guideSection",
+        "_key": "sec-b",
+        "heading": "Fake heading two",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-21-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake paragraph three.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "_type": "source",
+        "_key": "src-a",
+        "label": "Fake source",
+        "url": "https://example.com/fake-source"
+      }
+    ],
+    "faqs": [
+      {
+        "_type": "reference",
+        "_ref": "fx-faq-referrals",
+        "_key": "k-fx-faq-referrals"
+      }
+    ],
+    "author": {
+      "_type": "reference",
+      "_ref": "fx-author-1",
+      "_key": "k-fx-author-1"
+    },
+    "reviewState": "draft"
+  },
+  {
+    "_id": "fx-property-1",
+    "_type": "property",
+    "_rev": "rev-fx-property-1",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "title": "Fake property",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-property"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "suburb": "Fake Suburb",
+    "classification": "SIL",
+    "features": [
+      "Fake feature"
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "bcabc6a34acc28416fe336d25f3737d91be725edc2ea402f529d38d15081a237"
+  },
+  {
+    "_id": "fx-property-draft",
+    "_type": "property",
+    "_rev": "rev-fx-property-draft",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "title": "Fake draft property",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-draft-property"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "suburb": "Fake Suburb",
+    "classification": "SIL",
+    "reviewState": "draft"
+  },
+  {
+    "_id": "fx-vacancy-ok",
+    "_type": "vacancy",
+    "_rev": "rev-fx-vacancy-ok",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "title": "Fake vacancy fake-vacancy-ok",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-vacancy-ok"
+    },
+    "property": {
+      "_type": "reference",
+      "_ref": "fx-property-1",
+      "_key": "k-fx-property-1"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "suburb": "Fake Suburb",
+    "type": "SIL",
+    "status": "available",
+    "summary": "Fake availability summary.",
+    "features": [
+      "Fake feature"
+    ],
+    "accessibilityFeatures": [
+      "Fake accessibility feature, not carried to the site"
+    ],
+    "photos": [
+      {
+        "_type": "mediaAsset",
+        "_key": "p1",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0002-300x300-jpg",
+            "_key": "k-image-fakeasset0002-300x300-jpg"
+          }
+        },
+        "alt": "Fake alt text",
+        "rightsStatus": "owned"
+      }
+    ],
+    "lastVerifiedAt": "2026-11-01T00:00:00.000Z",
+    "internalOwner": "FAKE-INTERNAL-OWNER-ROLE",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "26951039c7c3a7d3391266ec99daad98f2391bc2a2084d04280e6fe1be495f4e"
+  },
+  {
+    "_id": "fx-vacancy-draftstatus",
+    "_type": "vacancy",
+    "_rev": "rev-fx-vacancy-draftstatus",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "title": "Fake vacancy fake-vacancy-draftstatus",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-vacancy-draftstatus"
+    },
+    "property": {
+      "_type": "reference",
+      "_ref": "fx-property-1",
+      "_key": "k-fx-property-1"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "suburb": "Fake Suburb",
+    "type": "SIL",
+    "status": "draft",
+    "summary": "Fake availability summary.",
+    "features": [
+      "Fake feature"
+    ],
+    "accessibilityFeatures": [
+      "Fake accessibility feature, not carried to the site"
+    ],
+    "photos": [
+      {
+        "_type": "mediaAsset",
+        "_key": "p1",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0002-300x300-jpg",
+            "_key": "k-image-fakeasset0002-300x300-jpg"
+          }
+        },
+        "alt": "Fake alt text",
+        "rightsStatus": "owned"
+      }
+    ],
+    "lastVerifiedAt": "2026-11-01T00:00:00.000Z",
+    "internalOwner": "FAKE-INTERNAL-OWNER-ROLE",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "aecc8196892eee26d5ff6b5ad583bcd054f87e55eca3ee6bc51ba479e4a5745f"
+  },
+  {
+    "_id": "fx-vacancy-badproperty",
+    "_type": "vacancy",
+    "_rev": "rev-fx-vacancy-badproperty",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "title": "Fake vacancy fake-vacancy-badproperty",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-vacancy-badproperty"
+    },
+    "property": {
+      "_type": "reference",
+      "_ref": "fx-property-draft",
+      "_key": "k-fx-property-draft"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "suburb": "Fake Suburb",
+    "type": "SIL",
+    "status": "available",
+    "summary": "Fake availability summary.",
+    "features": [
+      "Fake feature"
+    ],
+    "accessibilityFeatures": [
+      "Fake accessibility feature, not carried to the site"
+    ],
+    "photos": [
+      {
+        "_type": "mediaAsset",
+        "_key": "p1",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0002-300x300-jpg",
+            "_key": "k-image-fakeasset0002-300x300-jpg"
+          }
+        },
+        "alt": "Fake alt text",
+        "rightsStatus": "owned"
+      }
+    ],
+    "lastVerifiedAt": "2026-11-01T00:00:00.000Z",
+    "internalOwner": "FAKE-INTERNAL-OWNER-ROLE",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "7557745a48ba412f72954649a7293e28489dd7a23a22c41d26c4eae9a960a31e"
+  },
+  {
+    "_id": "fx-vacancy-edited",
+    "_type": "vacancy",
+    "_rev": "rev-fx-vacancy-edited",
+    "_createdAt": "2026-01-04T00:00:00.000Z",
+    "_updatedAt": "2026-01-14T00:00:00.000Z",
+    "title": "Fake vacancy fake-vacancy-edited",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-vacancy-edited"
+    },
+    "property": {
+      "_type": "reference",
+      "_ref": "fx-property-1",
+      "_key": "k-fx-property-1"
+    },
+    "region": {
+      "_type": "reference",
+      "_ref": "fx-region-alpha",
+      "_key": "k-fx-region-alpha"
+    },
+    "suburb": "Fake Suburb",
+    "type": "SIL",
+    "status": "filled",
+    "summary": "Fake availability summary.",
+    "features": [
+      "Fake feature"
+    ],
+    "accessibilityFeatures": [
+      "Fake accessibility feature, not carried to the site"
+    ],
+    "photos": [
+      {
+        "_type": "mediaAsset",
+        "_key": "p1",
+        "image": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-fakeasset0002-300x300-jpg",
+            "_key": "k-image-fakeasset0002-300x300-jpg"
+          }
+        },
+        "alt": "Fake alt text",
+        "rightsStatus": "owned"
+      }
+    ],
+    "lastVerifiedAt": "2026-11-01T00:00:00.000Z",
+    "internalOwner": "FAKE-INTERNAL-OWNER-ROLE",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "77094349770fb95c4fcac001a7f1696d3f638f9bea06835757f0f70b4f384909"
+  },
+  {
+    "_id": "fx-legal-ok",
+    "_type": "legalPage",
+    "_rev": "rev-fx-legal-ok",
+    "_createdAt": "2026-01-01T00:00:00.000Z",
+    "_updatedAt": "2026-01-11T00:00:00.000Z",
+    "title": "Fake policy fake-policy-ok",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-policy-ok"
+    },
+    "description": "Fake description for tests only.",
+    "version": "1.0",
+    "effectiveDate": "2026-01-01",
+    "sections": [
+      {
+        "_type": "legalSection",
+        "_key": "ls-a",
+        "heading": "Fake section heading",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-22-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake policy paragraph.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "020be6061689a6923023bfcadb741becc4061010fb80dfbc3f6a2dbc9e1ca505"
+  },
+  {
+    "_id": "fx-legal-bold",
+    "_type": "legalPage",
+    "_rev": "rev-fx-legal-bold",
+    "_createdAt": "2026-01-02T00:00:00.000Z",
+    "_updatedAt": "2026-01-12T00:00:00.000Z",
+    "title": "Fake policy fake-policy-bold",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-policy-bold"
+    },
+    "description": "Fake description for tests only.",
+    "version": "1.0",
+    "effectiveDate": "2026-01-01",
+    "sections": [
+      {
+        "_type": "legalSection",
+        "_key": "ls-b",
+        "heading": "Fake section",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "b-14-Fak",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "s1",
+                "text": "Fake bold text",
+                "marks": [
+                  "strong"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "43197bba1e786c85a78411fd3c42235f42b4260465c5ccdb31c15267de1e848e"
+  },
+  {
+    "_id": "fx-legal-nosections",
+    "_type": "legalPage",
+    "_rev": "rev-fx-legal-nosections",
+    "_createdAt": "2026-01-03T00:00:00.000Z",
+    "_updatedAt": "2026-01-13T00:00:00.000Z",
+    "title": "Fake policy fake-policy-nosections",
+    "slug": {
+      "_type": "slug",
+      "current": "fake-policy-nosections"
+    },
+    "description": "Fake description for tests only.",
+    "version": "1.0",
+    "effectiveDate": "2026-01-01",
+    "reviewState": "approved",
+    "approvedBy": "fixture-reviewer-1",
+    "approvedAt": "2026-01-15T00:00:00.000Z",
+    "approvedContentHash": "cd5fa5a349d416a82ceb29d5257a70c60dbb7965ebe86aeeb9071f420b3b8fc9"
+  }
+]

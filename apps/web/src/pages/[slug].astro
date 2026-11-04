@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import Card from '../components/Card.astro';
+import Icon from '../components/Icon.astro';
+import ContactCard from '../components/ContactCard.astro';
+import EasyReadBlock from '../components/EasyReadBlock.astro';
+import DraftBanner from '../components/DraftBanner.astro';
+import { services } from '../data/services';
+import { regions } from '../data/regions';
+import { legalPages } from '../data/legal';
+import { visible } from '../lib/content';
+import { faqPage, serviceSchema } from '../lib/jsonld';
+import { metaDescription } from '../lib/meta';
+
+export function getStaticPaths() {
+  return [
+    ...visible(services).map((s) => ({ params: { slug: s.slug }, props: { kind: 'service' as const, slug: s.slug } })),
+    ...visible(legalPages).map((p) => ({ params: { slug: p.slug }, props: { kind: 'legal' as const, slug: p.slug } })),
+  ];
+}
+const { kind, slug } = Astro.props;
+const service = kind === 'service' ? services.find((s) => s.slug === slug)! : undefined;
+const legal = kind === 'legal' ? legalPages.find((p) => p.slug === slug)! : undefined;
+const path = `/${slug}/`;
+const originAbs = Astro.site?.origin ?? 'http://localhost:4321';
+const relatedServices = service ? visible(services).filter((s) => service.related.includes(s.slug)) : [];
+const areas = service ? visible(regions).filter((r) => r.services.includes(service.slug)) : [];
+---
+{service && (
+  <Base
+    title={service.title}
+    description={metaDescription(service.summary)}
+    path={path}
+    crumbs={[{ name: 'Services', path: '/services/' }, { name: service.title, path }]}
+    jsonld={[
+      serviceSchema({ name: service.title, description: service.summary, path, areaServed: areas.map((r) => r.name) }, originAbs),
+      ...(service.faqs.length ? [faqPage(service.faqs)] : []),
+    ]}
+  >
+    <DraftBanner doc={service} />
+    <Hero eyebrow="Service" title={service.title} lede={service.summary} compact>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/referral/" data-event="referral_cta" data-event-location="hero">Make a referral <Icon name="arrow" size={18} /></a>
+      </div>
+    </Hero>
+    <div class="container section">
+      <Breadcrumbs crumbs={[{ name: 'Services', path: '/services/' }, { name: service.title, path }]} />
+      <div class="layout-aside">
+        <div class="stack-lg">
+          <div class="callout">
+            <span class:list={['icon-circle', `tint-${service.tint}`]}><Icon name={service.icon} size={28} /></span>
+            <div><h2>Who it is for</h2><p>{service.whoFor}</p></div>
+          </div>
+          <section>
+            <h2>What we provide</h2>
+            <ul class="checklist">{service.provides.map((p) => <li><Icon name="check" size={22} /> <span>{p}</span></li>)}</ul>
+          </section>
+          <section>
+            <h2>How it works</h2>
+            <ol class="steps">{service.process.map((p) => <li><p>{p}</p></li>)}</ol>
+          </section>
+          {areas.length > 0 && (
+            <section>
+              <h2>Where we offer it</h2>
+              <ul class="chips">{areas.map((r) => <li><a href={`/locations/${r.slug}/`}><Icon name="pin" size={18} /> {r.name}</a></li>)}</ul>
+            </section>
+          )}
+          <Faq faqs={service.faqs} />
+        </div>
+        <div class="aside"><ContactCard /></div>
+      </div>
+      {relatedServices.length > 0 && (
+        <section class="mt-7" aria-labelledby="related-heading">
+          <h2 id="related-heading">Related services</h2>
+          <div class="grid grid--cards">{relatedServices.map((s) => <Card href={`/${s.slug}/`} title={s.title} text={s.summary} icon={s.icon} tint={s.tint} />)}</div>
+        </section>
+      )}
+    </div>
+  </Base>
+)}
+{legal && (
+  <Base title={legal.title} description={metaDescription(legal.description)} path={path} crumbs={[{ name: legal.title, path }]}>
+    <DraftBanner doc={legal} />
+    <Hero title={legal.title} lede={legal.description} compact />
+    <div class="container section">
+      <Breadcrumbs crumbs={[{ name: legal.title, path }]} />
+      {legal.easyRead ? (
+        <div class="easy-read">
+          {legal.easyRead.map((b) => <EasyReadBlock icon={b.icon} tint={b.tint} title={b.title} lines={b.lines} />)}
+          <p class="mt-4"><a class="btn btn--primary" href="/referral/">Make a referral</a></p>
+        </div>
+      ) : (
+        <div class="layout-aside">
+          <div class="prose">
+            {legal.sections.map((s) => (<section><h2>{s.heading}</h2>{s.body.map((b) => <p>{b}</p>)}</section>))}
+          </div>
+          <div class="aside"><ContactCard heading="Questions?" text="Call us or send a message and we will help." /></div>
+        </div>
+      )}
+    </div>
+  </Base>
+)}

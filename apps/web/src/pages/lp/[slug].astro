@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Faq from '../../components/Faq.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
+import DraftBanner from '../../components/DraftBanner.astro';
+import { landingPages } from '../../data/landing';
+import { services } from '../../data/services';
+import { regions } from '../../data/regions';
+import { site } from '../../data/site';
+import { visible } from '../../lib/content';
+import { metaDescription } from '../../lib/meta';
+
+export function getStaticPaths() {
+  return visible(landingPages).map((l) => ({ params: { slug: l.slug }, props: { slug: l.slug } }));
+}
+const { slug } = Astro.props;
+const lp = landingPages.find((l) => l.slug === slug)!;
+const service = services.find((s) => s.slug === lp.serviceSlug)!;
+const region = regions.find((r) => r.slug === lp.regionSlug)!;
+const title = `${service.title} in ${region.name}`;
+---
+<Base title={title} description={metaDescription(service.summary)} path={`/lp/${lp.slug}/`} noindex minimalHeader analytics="off">
+  <DraftBanner doc={lp} />
+  <Hero eyebrow={`${region.name}, NSW`} title={title} lede={service.summary}>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/referral/">Make a referral</a>
+      <a class="btn btn--secondary" href={site.phoneHref}>Call {site.phoneDisplay}</a>
+    </div>
+  </Hero>
+  <div class="container section stack">
+    <TrustStrip />
+    <h2>Who it is for</h2>
+    <p class="measure">{service.whoFor}</p>
+    <h2>What we provide</h2>
+    <ul class="measure">{service.provides.map((p) => <li>{p}</li>)}</ul>
+    <Faq faqs={service.faqs} />
+  </div>
+</Base>

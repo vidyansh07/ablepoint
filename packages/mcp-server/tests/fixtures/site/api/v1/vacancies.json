@@ -1,0 +1,68 @@
+{
+  "apiVersion": "1",
+  "environment": "production",
+  "generatedAt": "2026-11-03T10:00:00.000Z",
+  "publisher": "FIXTURE Example Provider (not real content)",
+  "data": [
+    {
+      "type": "vacancy",
+      "summary": "FIXTURE ONLY. Placeholder vacancy text.",
+      "features": [
+        "Placeholder feature"
+      ],
+      "id": "fixture-vacancy-recent",
+      "title": "Fixture home with a recently verified room",
+      "url": "https://fixtures.example.invalid/vacancies/fixture-vacancy-recent/",
+      "vacancyType": "SIL",
+      "region": "exampleton",
+      "suburb": "Fixtureville",
+      "availability": "available",
+      "lastVerifiedAt": "2026-11-01T09:00:00Z"
+    },
+    {
+      "type": "vacancy",
+      "summary": "FIXTURE ONLY. Placeholder vacancy text.",
+      "features": [
+        "Placeholder feature"
+      ],
+      "id": "fixture-vacancy-unconfirmed",
+      "title": "Fixture home with an unconfirmed room",
+      "url": "https://fixtures.example.invalid/vacancies/fixture-vacancy-unconfirmed/",
+      "vacancyType": "SDA",
+      "region": "sampleville",
+      "suburb": "Sampleton",
+      "availability": "unconfirmed",
+      "lastVerifiedAt": null
+    },
+    {
+      "type": "vacancy",
+      "summary": "FIXTURE ONLY. Placeholder vacancy text.",
+      "features": [
+        "Placeholder feature"
+      ],
+      "id": "fixture-vacancy-stale",
+      "title": "Fixture home with a stale room",
+      "url": "https://fixtures.example.invalid/vacancies/fixture-vacancy-stale/",
+      "vacancyType": "SIL",
+      "region": "exampleton",
+      "suburb": "Fixtureville",
+      "availability": "available",
+      "lastVerifiedAt": "2026-10-10T09:00:00Z"
+    },
+    {
+      "type": "vacancy",
+      "summary": "FIXTURE ONLY. Placeholder vacancy text.",
+      "features": [
+        "Placeholder feature"
+      ],
+      "id": "fixture-vacancy-paused",
+      "title": "Fixture short stay place that is paused",
+      "url": "https://fixtures.example.invalid/vacancies/fixture-vacancy-paused/",
+      "vacancyType": "STA",
+      "region": "sampleville",
+      "suburb": "Sampleton",
+      "availability": "temporarilyUnavailable",
+      "lastVerifiedAt": "2026-11-02T09:00:00Z"
+    }
+  ]
+}

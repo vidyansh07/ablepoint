@@ -1,0 +1,104 @@
+{
+  "slug": "choosing-a-sil-provider-checklist",
+  "kind": "post",
+  "title": "A practical checklist for choosing a SIL provider",
+  "summary": "A plain-English checklist for support coordinators comparing supported independent living providers in regional NSW.",
+  "answer": "When you compare supported independent living (SIL) providers, check that they are registered for the supports you need, ask who replies to referrals and how quickly, visit the home, read the service agreement, and keep the participant in charge of every decision. Use the official NDIS pages for current rules.",
+  "category": "for-coordinators",
+  "tags": [
+    "sil",
+    "support-coordination",
+    "checklist"
+  ],
+  "regions": [],
+  "services": [
+    "supported-independent-living",
+    "support-coordinator"
+  ],
+  "sections": [
+    {
+      "heading": "Start with the participant, not the provider",
+      "body": [
+        "Before you look at any house, sit down with the participant. Ask what a good week looks like for them. Ask who they want to live with, what they want to be near, and what they do not want to give up.",
+        "Write the answers in the participant's own words. Then match each goal in the plan to the kind of support that could help. This gives you a short list of questions that matter, and it keeps the search about the person rather than the vacancy.",
+        "Choice and control stay with the participant at every step. Your job is to explain the options clearly and in a format that suits them."
+      ]
+    },
+    {
+      "heading": "Check the provider is registered and open about how it works",
+      "body": [
+        "Confirm that the provider is registered for the supports you are asking about. The NDIS Quality and Safeguards Commission keeps a public register, so you can check the details yourself instead of relying on a brochure.",
+        "Ask who will answer your referral and how long it usually takes. A named contact and a clear time frame are a good sign. Vague answers are worth noting. Ask the same questions of every provider so that you can compare them fairly.",
+        "Look for a complaints process that is easy to find and easy to use. Ask how the provider screens, trains and supports the workers who will be in the home. Ask how it records incidents and how it keeps families and coordinators informed."
+      ]
+    },
+    {
+      "heading": "Visit the home and ask about daily life",
+      "body": [
+        "If you can, visit in person and bring the participant if they would like to come. Notice how the staff talk to the people who already live there. Notice whether the house feels like a home and whether people have a say in their own rooms.",
+        "Ask practical questions about access. Is there step-free entry? Are the doorways wide enough? How do the bathroom and kitchen work for someone who uses a wheelchair or other mobility aids? Not every home suits every person, and a good provider will tell you so.",
+        "Ask what happens overnight, and what happens when a worker is sick or a shift cannot be filled. Ask how visitors are welcomed, and how the household agrees on shared spaces and routines."
+      ]
+    },
+    {
+      "heading": "Read the service agreement before anyone signs",
+      "body": [
+        "Ask for the service agreement early and give the participant time to read it. A good provider explains it in plain language and answers questions without pressure. Compare what is written with what you were told during the visit.",
+        "Check what is included, what costs extra, and how either side can change or end the agreement. Funding decisions belong to the NDIA, so be careful about promising any outcome. Describe the options honestly and point to the official NDIS pages for the current rules.",
+        "Keep a simple record of each call, with the date, the name and the answer. Follow up in writing so that nothing depends on memory alone."
+      ]
+    },
+    {
+      "heading": "Share information safely and send only what is needed",
+      "body": [
+        "A short, clear referral form saves everyone time and reduces mistakes. Give the provider the information it needs to assess the referral and nothing more than it needs. Health details are sensitive, so ask how the provider receives and stores them.",
+        "Look for providers who say plainly when they cannot help. That honesty saves time for the participant and for you, and it lets you move on to the next option quickly."
+      ]
+    },
+    {
+      "heading": "Plan the move and review how it is going",
+      "body": [
+        "Plan the move itself. Think about transport, belongings and who will be there on the day. Ask what the first month will look like, day by day, and write down any questions that are still open and who will answer them.",
+        "Check in after the first few weeks. Ask the participant how it feels, and tell the provider quickly if something is not working so that it can be fixed. If the home turns out not to be the right fit, respect that decision and help the participant look again."
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "q": "Who decides which SIL provider a participant uses?",
+      "a": "The participant decides. A support coordinator gives information and support, and each provider explains what it can offer, but choice and control stay with the participant."
+    },
+    {
+      "q": "How can I check that a provider is registered?",
+      "a": "The NDIS Quality and Safeguards Commission publishes a register of registered providers. Search for the provider by name and check which supports it is registered to deliver."
+    },
+    {
+      "q": "Should I visit before the participant decides?",
+      "a": "If you can, yes. A visit shows you how the home works day to day and lets the participant meet the people and staff. Bring the participant if they would like to come."
+    }
+  ],
+  "sources": [
+    {
+      "label": "NDIS: information for participants",
+      "url": "https://www.ndis.gov.au/participants"
+    },
+    {
+      "label": "NDIS Quality and Safeguards Commission: provider registration",
+      "url": "https://www.ndiscommission.gov.au/provider-registration"
+    },
+    {
+      "label": "NDIS: support coordination",
+      "url": "https://www.ndis.gov.au/participants/using-your-plan/support-coordination"
+    }
+  ],
+  "author": "AblePoint team (named author to be added)",
+  "aiAssisted": true,
+  "aiNotes": "First draft prepared with an AI assistant from general NDIS knowledge; every claim and every source URL must be checked by a human editor before approval.",
+  "reviewState": "draft",
+  "updatedAt": "2026-11-03T14:13:06.128Z",
+  "missingFacts": [
+    "Named human reviewer (fact-check)",
+    "Compliance approval",
+    "Human edit of AI-assisted text"
+  ]
+}

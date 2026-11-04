@@ -1,0 +1,584 @@
+{
+  "name": "Post-deploy IndexNow ping",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Post-deploy IndexNow ping (production only)\n\n**NOT imported into or tested on a running n8n instance.** Written from n8n documentation and source.\n\nA signed webhook from the deploy pipeline starts this. The workflow checks the signature, refuses to run unless SITE_BASE_URL is the production host (PRODUCTION_HOST), reads the sitemap, and tells IndexNow (Bing family, Yandex, Seznam, Naver, Yep; not Google) which URLs exist.\n\n**Instance requirement:** the Code node needs `NODE_FUNCTION_ALLOW_BUILTIN=crypto` (and the same allowance on the task runner if task runners are used), and `$env` access must be allowed (`N8N_BLOCK_ENV_ACCESS_IN_NODE=false`).\n\n**Caller contract:** POST the JSON body with headers `x-ablepoint-timestamp` (Unix seconds) and `x-ablepoint-signature` (hex HMAC-SHA256 of `<timestamp>.<raw body>`, optional `sha256=` prefix). Optional body field `paths`: array of changed paths. This is the scheme in packages/automation/src/webhook.ts. A plain Vercel webhook does not sign this way, so a small signing relay is needed (not built).\n\nEnvironment variables: SITE_BASE_URL, PRODUCTION_HOST, INDEXNOW_KEY, DEPLOY_WEBHOOK_SECRET, NOTIFY_FROM_ADDRESS, ALERT_NOTIFY_ADDRESS.",
+        "height": 440,
+        "width": 760,
+        "color": 4
+      },
+      "id": "34d9dfa8-c993-4767-8ba2-9e47fb78dce2",
+      "name": "Note: purpose",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "post-deploy-indexnow",
+        "authentication": "none",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "b0de14f4-b3dc-4290-8737-832f651ec1b4",
+      "name": "Deploy webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "529497b8-f431-42c9-8b87-e78f4c78df28"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Needs NODE_FUNCTION_ALLOW_BUILTIN=crypto on the n8n instance (and on the task runner, if task runners are used).\n// Same rules as verifyWebhook()/acceptWebhook() in packages/automation/src/webhook.ts:\n// HMAC-SHA256 over `${timestamp}.${rawBody}`, constant-time compare, +/-300 s window (inclusive), replay rejection, fail closed.\nconst crypto = require('crypto');\nconst MAX_SKEW_SECONDS = 300;\nconst REPLAY_TTL_SECONDS = MAX_SKEW_SECONDS * 2;\n\nconst reject = (reason) => [{ json: { ok: false, reason } }];\nconst item = $input.first();\nconst headers = (item.json && item.json.headers) || {};\nconst secret = String($env.DEPLOY_WEBHOOK_SECRET || '');\n\nif (!secret) return reject('missing_secret');\nconst signature = headers['x-ablepoint-signature'];\nif (!signature) return reject('missing_signature');\n\nconst timestamp = headers['x-ablepoint-timestamp'];\nconst tsText = String(timestamp === undefined || timestamp === null ? '' : timestamp);\nif (!/^\\d{1,12}$/.test(tsText)) return reject('invalid_timestamp');\nconst ts = Number(tsText);\nconst maxMs = MAX_SKEW_SECONDS * 1000;\nconst skewMs = Date.now() - ts * 1000;\nif (skewMs > maxMs) return reject('timestamp_too_old');\nif (skewMs < -maxMs) return reject('timestamp_in_future');\n\nconst sigHex = String(signature).replace(/^sha256=/i, '').toLowerCase();\nif (!/^[0-9a-f]{64}$/.test(sigHex)) return reject('bad_signature');\n\n// The signature covers the raw request body, so the Webhook node has \"Raw Body\" switched on and the body arrives as binary data.\nlet raw = null;\ntry {\n  if (this.helpers && typeof this.helpers.getBinaryDataBuffer === 'function') raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8');\n} catch (e) {\n  raw = null;\n}\nif (raw === null && item.binary && item.binary.data && typeof item.binary.data.data === 'string') raw = Buffer.from(item.binary.data.data, 'base64').toString('utf8');\nif (raw === null) return reject('raw_body_unavailable');\n\nconst expected = crypto.createHmac('sha256', secret).update(ts + '.' + raw).digest();\nconst provided = Buffer.from(sigHex, 'hex');\nif (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return reject('bad_signature');\n\n// Replay guard. Workflow static data is only saved for production (active) executions, not for test runs in the editor.\nconst replayKey = crypto.createHash('sha256').update(ts + '.' + sigHex).digest('hex');\nconst store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst nowMs = Date.now();\nfor (const k of Object.keys(store.seen)) if (store.seen[k] <= nowMs) delete store.seen[k];\nif (store.seen[replayKey]) return reject('replayed');\nstore.seen[replayKey] = nowMs + REPLAY_TTL_SECONDS * 1000;\n\n// Optional list of changed paths. Anything not in the sitemap is ignored later.\nlet paths = [];\ntry {\n  const parsed = JSON.parse(raw);\n  if (parsed && Array.isArray(parsed.paths)) paths = parsed.paths.filter((x) => typeof x === 'string' && x.startsWith('/')).slice(0, 10000);\n} catch (e) {\n  paths = [];\n}\nreturn [{ json: { ok: true, paths } }];"
+      },
+      "id": "5251436c-f7ce-4685-8fc9-1e011e8aa02d",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ac30ae5d-8ba1-4f3a-8ee1-c3a0b32fac9f",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5f48bc11-a557-4131-8b37-28a0d8e5f4e3",
+      "name": "Signature valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// IndexNow must never be told about staging, previews or local builds (apps/web/scripts/indexnow.mjs refuses localhost, staging and example.invalid).\n// This guard is stricter: SITE_BASE_URL must be an https origin whose host is exactly PRODUCTION_HOST.\nconst NON_PRODUCTION = /localhost|staging|example\\.invalid|vercel\\.app/i;\nconst refuse = (reason) => [{ json: { allowed: false, reason } }];\nconst base = String($env.SITE_BASE_URL || '').trim();\nconst expectedHost = String($env.PRODUCTION_HOST || '').trim().toLowerCase();\n\nlet url;\ntry { url = new URL(base); } catch (e) { return refuse('site_base_url_invalid'); }\nif (url.protocol !== 'https:') return refuse('site_base_url_not_https');\nif (url.origin !== base) return refuse('site_base_url_must_be_an_origin_without_a_path_or_trailing_slash');\nif (!expectedHost) return refuse('production_host_not_configured');\nif (url.host.toLowerCase() !== expectedHost) return refuse('site_base_url_is_not_the_production_host');\nif (NON_PRODUCTION.test(url.host)) return refuse('non_production_host_pattern');\nreturn [{ json: { allowed: true, host: url.host, origin: url.origin } }];"
+      },
+      "id": "7075a64f-c370-4b44-8229-87293aaddb43",
+      "name": "Production host guard",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cde1cd5d-cac1-430d-85a0-39d4d3c2ff8e",
+              "leftValue": "={{ $json.allowed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "59d2ff36-6ee8-4825-8757-e53aabb157c6",
+      "name": "Guard passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SITE_BASE_URL }}/sitemap.xml",
+        "authentication": "none",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "770e27dc-3138-4f27-8451-162db6096131",
+      "name": "Fetch sitemap",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1200,
+        100
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Same rules as buildPayload() in apps/web/scripts/indexnow.mjs: URLs on the site host only, de-duplicated, 1 to 10,000 URLs, key of 8 to 128 letters, digits or hyphens.\nconst KEY_PATTERN = /^[a-zA-Z0-9-]{8,128}$/;\nconst MAX_URLS = 10000;\nconst fail = (reason) => [{ json: { ready: false, reason } }];\n\nconst guard = $('Production host guard').first().json;\nconst verified = $('Verify signature').first().json;\nconst key = String($env.INDEXNOW_KEY || '').trim();\nconst res = $input.first().json || {};\nconst xml = typeof res.data === 'string' ? res.data : typeof res.body === 'string' ? res.body : '';\nconst decode = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '\"').replace(/&apos;/g, \"'\").replace(/&amp;/g, '&');\n\nif (!KEY_PATTERN.test(key)) return fail('indexnow_key_invalid');\nif (xml.indexOf('<urlset') < 0) return fail('sitemap_missing_or_not_a_urlset');\n\nconst locs = [...new Set((xml.match(/<loc>[^<]+<\\/loc>/g) || []).map((m) => decode(m.replace(/<\\/?loc>/g, '').trim())))];\nfor (const u of locs) {\n  let parsed;\n  try { parsed = new URL(u); } catch (e) { return fail('sitemap_contains_an_invalid_url'); }\n  if (parsed.host !== guard.host) return fail('sitemap_contains_a_url_on_another_host');\n}\n\nlet urlList = locs;\nif (Array.isArray(verified.paths) && verified.paths.length) {\n  const wanted = new Set();\n  for (const p of verified.paths) {\n    try { wanted.add(new URL(p, guard.origin).toString()); } catch (e) { /* ignore a bad path */ }\n  }\n  urlList = locs.filter((u) => wanted.has(u));\n}\nif (urlList.length === 0) return fail('no_urls_to_submit');\nif (urlList.length > MAX_URLS) return fail('too_many_urls');\n\nreturn [{ json: { ready: true, count: urlList.length, payload: { host: guard.host, key, keyLocation: new URL('/indexnow-key.txt', guard.origin).toString(), urlList } } }];"
+      },
+      "id": "fb830d4f-78d1-4457-8fe3-567e32ca7c46",
+      "name": "Build IndexNow payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "baa1986d-b8b9-4538-83a8-22d1ae9ec671",
+              "leftValue": "={{ $json.ready }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "614c4139-f46f-4c1c-8300-f84016ed1b5e",
+      "name": "URLs ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1680,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.indexnow.org/indexnow",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "fc5baa70-f1ae-4bff-82c6-9633ac7e4a16",
+      "name": "Submit to IndexNow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1920,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// IndexNow answers 200 (received) or 202 (received, key validation pending) on success. 400, 403, 422 and 429 are failures.\nconst payload = $('Build IndexNow payload').first().json;\nconst r = $input.first().json || {};\nconst status = Number(r.statusCode);\nconst ok = status === 200 || status === 202;\nreturn [{\n  json: {\n    ok,\n    indexNowStatus: Number.isFinite(status) ? status : null,\n    submitted: ok ? payload.count : 0,\n    httpStatus: ok ? 200 : 502,\n    notifySubject: 'IndexNow submission was not accepted',\n    notifyText: [\n      'The post-deploy IndexNow submission was not accepted.',\n      'Status returned: ' + (Number.isFinite(status) ? status : 'none'),\n      'URLs in the request: ' + payload.count,\n      '400 means a malformed request, 403 an invalid key, 422 URLs that do not belong to the host, 429 too many requests.',\n      'Search engines other than Bing-family engines are not affected. Google does not use IndexNow.',\n    ].join('\\n'),\n  },\n}];"
+      },
+      "id": "2eab90a9-c022-4ce2-86e6-0436f8c5ae36",
+      "name": "Evaluate IndexNow response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "83e79045-695d-4f93-80d8-6887f76ef4c2",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fcf6bc97-3687-4813-8629-0b9abff6a6de",
+      "name": "IndexNow accepted?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ accepted: true, submitted: $json.submitted }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "bf61b084-f955-44f2-856f-11887978932a",
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2640,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.NOTIFY_FROM_ADDRESS }}",
+        "toEmail": "={{ $env.ALERT_NOTIFY_ADDRESS }}",
+        "subject": "={{ $json.notifySubject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.notifyText }}",
+        "options": {}
+      },
+      "id": "f26b2a25-cd41-4c57-84f5-6441d49cc823",
+      "name": "Notify engineers: IndexNow failed",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2640,
+        120
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "PLACEHOLDER",
+          "name": "SMTP - internal notifications - PLACEHOLDER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ accepted: false, indexNowStatus: $(\"Evaluate IndexNow response\").first().json.indexNowStatus }) }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "id": "0617cf6b-fcd8-494d-8ade-2ab4eeb653e2",
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2880,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ accepted: false, reason: $json.reason }) }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "7c914695-8ddf-4748-8469-67237766a845",
+      "name": "Respond 422",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1920,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ accepted: false, reason: $json.reason }) }}",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "606ae38b-576a-4719-82db-39e3e4903513",
+      "name": "Respond 403",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1200,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ accepted: false }) }}",
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "id": "12f088f6-38ef-4c37-8683-da86a22eb821",
+      "name": "Respond 401",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        720,
+        420
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Deploy webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Signature valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature valid?": {
+      "main": [
+        [
+          {
+            "node": "Production host guard",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 401",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Production host guard": {
+      "main": [
+        [
+          {
+            "node": "Guard passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guard passed?": {
+      "main": [
+        [
+          {
+            "node": "Fetch sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 403",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch sitemap": {
+      "main": [
+        [
+          {
+            "node": "Build IndexNow payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build IndexNow payload": {
+      "main": [
+        [
+          {
+            "node": "URLs ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URLs ready?": {
+      "main": [
+        [
+          {
+            "node": "Submit to IndexNow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 422",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Submit to IndexNow": {
+      "main": [
+        [
+          {
+            "node": "Evaluate IndexNow response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate IndexNow response": {
+      "main": [
+        [
+          {
+            "node": "IndexNow accepted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IndexNow accepted?": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify engineers: IndexNow failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify engineers: IndexNow failed": {
+      "main": [
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Australia/Sydney",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  }
+}

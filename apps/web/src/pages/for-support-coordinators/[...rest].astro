@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import TrustStrip from '../../components/TrustStrip.astro';
+import ContactCard from '../../components/ContactCard.astro';
+import DraftBanner from '../../components/DraftBanner.astro';
+import { coordinatorPage as c } from '../../data/coordinators';
+import { isShown } from '../../lib/gate';
+import { SITE_ENV } from '../../lib/env';
+import { site } from '../../data/site';
+
+// Hidden in production until the compliance reviewer approves it.
+export function getStaticPaths() {
+  return isShown(c, SITE_ENV) ? [{ params: { rest: undefined } }] : [];
+}
+const path = '/for-support-coordinators/';
+---
+<Base title="For support coordinators and referrers" description="How to refer a participant to AblePoint Australia, what we need, what to expect, and how we keep the participant in charge." path={path} crumbs={[{ name: 'For support coordinators', path }]}>
+  <DraftBanner doc={c} />
+  <Hero eyebrow="For referrers" title="For support coordinators and referrers" lede="How to refer a participant, what to expect from us, and how we keep the participant in charge." compact>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/referral/" data-event="referral_cta" data-event-location="hero">Make a referral <Icon name="arrow" size={18} /></a>
+      <a class="btn btn--secondary" href={site.phoneHref} data-event="phone_click" data-event-location="hero"><Icon name="phone" size={18} /> Call {site.phoneDisplay}</a>
+    </div>
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'For support coordinators', path }]} />
+    <div class="layout-aside">
+      <div class="stack-lg">
+        <section aria-labelledby="how-h">
+          <h2 id="how-h">How a referral works</h2>
+          <ol class="steps">{c.steps.map((s) => <li><div><h3>{s.title}</h3><p class="muted">{s.text}</p></div></li>)}</ol>
+        </section>
+        <section aria-labelledby="need-h">
+          <h2 id="need-h">What we need in a referral</h2>
+          <ul class="checklist">{c.need.map((n) => <li><Icon name="check" size={22} /> <span>{n}</span></li>)}</ul>
+          <p class="muted">Please do not email health or NDIS details. We will ask for what we need in a secure way.</p>
+        </section>
+        <section aria-labelledby="ind-h" class="callout callout--answer">
+          <span class="icon-circle tint-green"><Icon name="shield" size={28} /></span>
+          <div>
+            <h2 id="ind-h">Independence and choice</h2>
+            {c.independence.map((t) => <p>{t}</p>)}
+          </div>
+        </section>
+        <section aria-labelledby="vac-h">
+          <h2 id="vac-h">Vacancies</h2>
+          <p class="measure">We show vacancies with the date we last checked them. If something is not listed, ask: we can tell you what is expected to be available.</p>
+          <p><a class="btn btn--secondary" href="/vacancies/"><Icon name="home" size={20} /> See vacancies</a></p>
+        </section>
+        <section aria-labelledby="dis-h">
+          <h2 id="dis-h">Leaving hospital or another setting</h2>
+          {c.discharge.map((t) => <p class="measure">{t}</p>)}
+        </section>
+        <section aria-labelledby="safe-h">
+          <h2 id="safe-h">How we keep people safe</h2>
+          <ul class="checklist">{c.safeguards.map((s) => <li><Icon name="check" size={22} /> <span>{s.text}</span></li>)}</ul>
+          <TrustStrip />
+          <p class="muted"><a href="/feedback-complaints/">Feedback and complaints</a> · <a href="/privacy-policy/">Privacy policy</a> · <a href="/accessibility/">Accessibility</a></p>
+        </section>
+      </div>
+      <div class="aside"><ContactCard heading="Refer or ask a question" text="Call us or send a referral. We will tell you honestly what is possible." /></div>
+    </div>
+  </div>
+</Base>

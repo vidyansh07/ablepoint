@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.jpg';
+import Ring from './Ring.astro';
+import { footerLinks, site } from '../data/site';
+import { GTM_ID } from '../lib/env';
+import { regions } from '../data/regions';
+import { visible } from '../lib/content';
+const { analytics = true } = Astro.props as { analytics?: boolean };
+---
+<footer class="site-footer">
+  <Ring class="footer-ring" size={384} />
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="footer-logo" href="/" aria-label={`${site.name} home`}><Image src={logo} alt="" width={352} height={97} loading="lazy" decoding="async" format="webp" /></a>
+        <p>Head office: {site.headOffice}</p>
+        <p><a href={site.phoneHref} data-event="phone_click" data-event-location="footer">{site.phoneDisplay}</a><br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        {site.registrationNumber && <p>Registered NDIS provider. Registration number {site.registrationNumber}.</p>}
+      </div>
+      <nav aria-label="Services"><h2>Services</h2><ul>{footerLinks.services.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul></nav>
+      {visible(regions).length > 0 && <nav aria-label="Where we work"><h2>Where we work</h2><ul>{visible(regions).map((r) => <li><a href={`/locations/${r.slug}/`}>{r.name}</a></li>)}</ul></nav>}
+      <nav aria-label="About"><h2>About</h2><ul>{footerLinks.about.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul></nav>
+      <nav aria-label="Policies"><h2>Information</h2><ul>{footerLinks.legal.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul></nav>
+    </div>
+    {GTM_ID && analytics && <p><button id="consent-settings" type="button" class="link-button">Statistics settings</button></p>}
+    <p><a href="/image-credits/">Image credits</a> · <a href="/third-party-notices.txt">Open source notices</a></p>
+    <p class="footer-note">
+      We acknowledge the Traditional Custodians of the lands where we live and work, and pay our respects to Elders past and present. [Acknowledgement wording to be confirmed by AblePoint.]
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.jpg';
+import Icon from './Icon.astro';
+import UtilityBar from './UtilityBar.astro';
+import { nav, site } from '../data/site';
+const { currentPath, minimal = false } = Astro.props as { currentPath: string; minimal?: boolean };
+const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+const call = `Call ${site.phoneDisplay}`;
+---
+{!minimal && <UtilityBar />}
+
+<header class="site-header">
+  <div class="container site-header__bar">
+    <a class="logo" href="/" aria-label={`${site.name} home`}>
+      <Image src={logo} alt="" width={416} height={115} loading="eager" decoding="async" format="webp" />
+    </a>
+    <div class="header-actions">
+      {!minimal && (
+        <nav aria-label="Main">
+          <details class="menu">
+            <summary><Icon name="menu" size={22} /> Menu</summary>
+            <ul class="menu__list">
+              {nav.map((item) => (
+                <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
+              ))}
+              <li><a class="btn btn--primary" href="/referral/" data-event="referral_cta" data-event-location="header">Make a referral</a></li>
+            </ul>
+          </details>
+        </nav>
+      )}
+      {minimal && <a class="header-call btn btn--secondary" href={site.phoneHref} aria-label={call} data-event="phone_click" data-event-location="header"><Icon name="phone" size={18} /> {site.phoneDisplay}</a>}
+      <a class="round-btn" href={site.phoneHref} aria-label={call} data-event="phone_click" data-event-location="header"><Icon name="phone" size={22} /></a>
+    </div>
+  </div>
+</header>

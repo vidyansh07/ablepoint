@@ -1,0 +1,13 @@
+---
+import Icon from './Icon.astro';
+// Easy Read pattern: one idea per row, short sentences, large type, a clear picture (icon) beside the words.
+// Content must be written in Easy Read format and checked by people with intellectual disability before approval.
+const { icon, title, lines, tint = 'blue' } = Astro.props as { icon: string; title: string; lines: string[]; tint?: 'blue' | 'plum' | 'orange' | 'green' };
+---
+<section class="easy-block">
+  <span class:list={['icon-circle', 'icon-circle--lg', `tint-${tint}`]}><Icon name={icon} size={44} /></span>
+  <div>
+    <h2>{title}</h2>
+    {lines.map((l) => <p>{l}</p>)}
+  </div>
+</section>

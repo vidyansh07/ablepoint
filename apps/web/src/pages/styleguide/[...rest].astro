@@ -1,0 +1,91 @@
+---
+// Living style guide: STAGING / DEVELOPMENT ONLY. Not built in production (getStaticPaths returns nothing) and always noindex.
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Icon from '../../components/Icon.astro';
+import Ring from '../../components/Ring.astro';
+import HeroArt from '../../components/HeroArt.astro';
+import Card from '../../components/Card.astro';
+import ContactCard from '../../components/ContactCard.astro';
+import EasyReadBlock from '../../components/EasyReadBlock.astro';
+import VacancyCard from '../../components/VacancyCard.astro';
+import tokens from '../../styles/tokens.css?raw';
+import { IS_PRODUCTION } from '../../lib/env';
+import type { Vacancy } from '../../data/types';
+
+export function getStaticPaths() {
+  return IS_PRODUCTION ? [] : [{ params: { rest: undefined } }];
+}
+
+const root = /:root\s*\{([\s\S]*?)\n\}/.exec(tokens)?.[1] ?? '';
+const hexes = [...root.matchAll(/--([a-z0-9-]+):\s*(#[0-9a-f]{6})\s*;/gi)].map((m) => ({ name: m[1]!, hex: m[2]! }));
+const lum = (h: string) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!; };
+const ratio = (a: string, b = '#ffffff') => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return ((x! + 0.05) / (y! + 0.05)).toFixed(1); };
+const groups = ['blue', 'orange', 'plum', 'green'].map((g) => ({ g, items: hexes.filter((h) => h.name.startsWith(g + '-')) }));
+const neutrals = hexes.filter((h) => !/^(blue|orange|plum|green)-/.test(h.name));
+const icons = ['phone','home','heart','hand-heart','building','bed','compass','users','user','family','clipboard','stethoscope','referral','pin','shield','accessibility','text-size','contrast','book','arrow','menu','close','check','mail','calendar','info','sparkle'];
+const sample: Vacancy = { slug: 'sample', title: 'Sample home (not a real vacancy)', regionSlug: 'central-coast', suburb: 'Sample suburb', type: 'SIL', status: 'available', summary: 'Synthetic example used only to show the card design.', features: ['Step-free entry', 'Ceiling hoist track', 'Close to public transport'], lastVerifiedAt: new Date().toISOString(), reviewState: 'draft', updatedAt: new Date().toISOString() };
+---
+<Base title="Style guide" description="AblePoint design system: colour, type, components and icons. Staging only." path="/styleguide/" noindex analytics="off">
+  <Hero eyebrow="Staging only" title="AblePoint style guide" lede="Living reference for docs/17-brand-guidelines.md. Everything here is rendered from the real tokens and components." compact />
+  <div class="container section stack-lg">
+    <section aria-labelledby="colour"><h2 id="colour">Colour</h2>
+      <p class="muted">Contrast is measured against white. Colours ending in -500 are logo tones and are decorative only.</p>
+      {groups.map((grp) => (
+        <div class="swatches mt-4">{grp.items.map((c) => (
+          <div class="swatch"><svg class="swatch__chip" width="100%" height="64" role="presentation" focusable="false"><rect width="100%" height="64" fill={c.hex} /></svg><div class="swatch__meta"><strong>--{c.name}</strong>{c.hex} · {ratio(c.hex)}:1</div></div>
+        ))}</div>
+      ))}
+      <div class="swatches mt-4">{neutrals.map((c) => (
+        <div class="swatch"><svg class="swatch__chip" width="100%" height="64" role="presentation" focusable="false"><rect width="100%" height="64" fill={c.hex} /></svg><div class="swatch__meta"><strong>--{c.name}</strong>{c.hex} · {ratio(c.hex)}:1</div></div>
+      ))}</div>
+    </section>
+
+    <section aria-labelledby="type"><h2 id="type">Type: Atkinson Hyperlegible</h2>
+      <p class="eyebrow">Eyebrow label</p>
+      <p class="demo-h1">Heading 1: Disability support built around you</p>
+      <h2>Heading 2: How can we help you?</h2>
+      <h3>Heading 3: Our services</h3>
+      <p class="lede">Lede paragraph: a short, warm sentence that says what happens next.</p>
+      <p>Body text at 17–19 px with a 1.6 line height and a 68-character reading width. <a href="/styleguide/">A link looks like this</a>.</p>
+    </section>
+
+    <section aria-labelledby="buttons"><h2 id="buttons">Buttons</h2>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/styleguide/">Primary <Icon name="arrow" size={18} /></a>
+        <a class="btn btn--secondary" href="/styleguide/"><Icon name="phone" size={18} /> Secondary</a>
+      </div>
+      <div class="band mt-4"><h3>On dark</h3><div class="hero__actions"><a class="btn btn--primary" href="/styleguide/">Primary</a><a class="btn btn--on-dark" href="/styleguide/">On dark</a></div></div>
+    </section>
+
+    <section aria-labelledby="cards"><h2 id="cards">Cards and tiles</h2>
+      <div class="grid grid--cards">
+        <Card href="/styleguide/" title="Service card" text="Icon in a tinted circle, one link, whole card clickable." icon="home" tint="plum" level={3} />
+        <VacancyCard vacancy={sample} regionName="Central Coast" href="/styleguide/" />
+        <ContactCard heading="Contact card" />
+      </div>
+    </section>
+
+    <section aria-labelledby="notices"><h2 id="notices">Notices and callouts</h2>
+      <div class="stack">
+        <div class="notice"><p>Information notice.</p></div>
+        <div class="notice notice--ok"><p>Success notice.</p></div>
+        <div class="notice notice--error"><p>Error notice.</p></div>
+        <div class="notice notice--draft"><p>Draft banner (staging only).</p></div>
+        <div class="callout"><span class="icon-circle tint-blue"><Icon name="user" size={28} /></span><div><h3>Callout</h3><p>Used for “who it is for”.</p></div></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="easy"><h2 id="easy">Easy Read block</h2>
+      <div class="easy-read"><EasyReadBlock icon="phone" title="How to talk to us" lines={['You can call us.', 'You can ask a person you trust to call for you.']} tint="orange" /></div>
+    </section>
+
+    <section aria-labelledby="icons"><h2 id="icons">Icons (24 px grid, 2 px round stroke)</h2>
+      <div class="icon-grid">{icons.map((n) => <div class="icon-cell"><Icon name={n} size={28} /><span>{n}</span></div>)}</div>
+    </section>
+
+    <section aria-labelledby="art"><h2 id="art">Brand art</h2>
+      <div class="split"><div class="panel-art"><HeroArt /></div><div><Ring size={220} /><p class="muted">The Gathering: decorative only, always aria-hidden.</p></div></div>
+    </section>
+  </div>
+</Base>

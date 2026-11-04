@@ -1,0 +1,55 @@
+{
+  "apiVersion": "1",
+  "environment": "production",
+  "generatedAt": "2026-11-03T10:00:00.000Z",
+  "publisher": "FIXTURE Example Provider (not real content)",
+  "data": {
+    "description": "FIXTURE ONLY. Index of the fixture content API.",
+    "openapi": "https://fixtures.example.invalid/api/v1/openapi.json",
+    "resources": [
+      {
+        "name": "organisation",
+        "url": "https://fixtures.example.invalid/api/v1/organisation.json"
+      },
+      {
+        "name": "services",
+        "url": "https://fixtures.example.invalid/api/v1/services.json"
+      },
+      {
+        "name": "regions",
+        "url": "https://fixtures.example.invalid/api/v1/regions.json"
+      },
+      {
+        "name": "guides",
+        "url": "https://fixtures.example.invalid/api/v1/guides.json"
+      },
+      {
+        "name": "posts",
+        "url": "https://fixtures.example.invalid/api/v1/posts.json"
+      },
+      {
+        "name": "vacancies",
+        "url": "https://fixtures.example.invalid/api/v1/vacancies.json"
+      },
+      {
+        "name": "faqs",
+        "url": "https://fixtures.example.invalid/api/v1/faqs.json"
+      },
+      {
+        "name": "search-index",
+        "url": "https://fixtures.example.invalid/api/v1/search-index.json"
+      }
+    ],
+    "counts": {
+      "organisation": 1,
+      "services": 2,
+      "regions": 2,
+      "guides": 2,
+      "posts": 1,
+      "vacancies": 4,
+      "faqs": 5,
+      "search-index": 11
+    },
+    "usage": "FIXTURE ONLY."
+  }
+}

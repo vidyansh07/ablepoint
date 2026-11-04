@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import ContactCard from '../../components/ContactCard.astro';
+import DraftBanner from '../../components/DraftBanner.astro';
+import { vacancies } from '../../data/vacancies';
+import { regions } from '../../data/regions';
+import { visible } from '../../lib/content';
+import { vacancyDisplay } from '@ablepoint/schemas';
+import { metaDescription } from '../../lib/meta';
+
+export function getStaticPaths() {
+  return visible(vacancies).map((v) => ({ params: { slug: v.slug }, props: { slug: v.slug } }));
+}
+const { slug } = Astro.props;
+const v = vacancies.find((x) => x.slug === slug)!;
+const path = `/vacancies/${v.slug}/`;
+const display = vacancyDisplay(v.status, v.lastVerifiedAt, new Date());
+const region = regions.find((r) => r.slug === v.regionSlug);
+const crumbs = [{ name: 'Vacancies', path: '/vacancies/' }, { name: v.title, path }];
+---
+<Base title={v.title} description={metaDescription(v.summary)} path={path} crumbs={crumbs} noindex={display === 'noLongerAvailable'} pageEvent="vacancy_view">
+  <DraftBanner doc={v} />
+  <Hero eyebrow={`${v.type} · ${[region?.name, v.suburb].filter(Boolean).join(' · ')}`} title={v.title} lede={v.summary} compact />
+  <div class="container section">
+    <Breadcrumbs crumbs={crumbs} />
+    <div class="layout-aside">
+      <div class="stack-lg">
+        {display === 'noLongerAvailable' && <div class="notice"><p>This vacancy is no longer available. <a href="/vacancies/">See current vacancies</a>.</p></div>}
+        {display === 'unconfirmed' && <div class="notice"><p>We have not confirmed this vacancy recently. Please call us to check.</p></div>}
+        {display === 'temporarilyUnavailable' && <div class="notice"><p>This vacancy is temporarily unavailable. Please call us to ask when it may be open again.</p></div>}
+        <section>
+          <h2>About this home</h2>
+          <ul class="checklist">{v.features.map((f) => <li><Icon name="check" size={22} /> <span>{f}</span></li>)}</ul>
+        </section>
+      </div>
+      <div class="aside"><ContactCard heading="Enquire about this home" text="Contact us to ask a question or arrange a visit." event="vacancy_enquiry" /></div>
+    </div>
+  </div>
+</Base>

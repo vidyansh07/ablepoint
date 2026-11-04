@@ -1,0 +1,80 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileCtaBar from '../components/MobileCtaBar.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
+import { SITE_ENV, IS_PRODUCTION, GTM_ID } from '../lib/env';
+import { site } from '../data/site';
+import { graph, organization, website, breadcrumbs, type Crumb } from '../lib/jsonld';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  crumbs?: Crumb[];
+  noindex?: boolean;
+  jsonld?: object[];
+  /** 'off' loads no analytics at all on this page (default for pages that collect personal data). */
+  analytics?: 'on' | 'off';
+  pageEvent?: string;
+  /** Campaign landing pages: wordmark and phone only, no site navigation. */
+  minimalHeader?: boolean;
+}
+const { title, description, path, crumbs = [], noindex = false, jsonld = [], analytics = 'on', pageEvent, minimalHeader = false } = Astro.props;
+const origin = Astro.site?.origin ?? 'http://localhost:4321';
+const canonical = new URL(path, origin).toString();
+const fullTitle = path === '/' ? `${site.name}: ${site.tagline}` : `${title} | ${site.name}`;
+const robots = IS_PRODUCTION && !noindex ? 'index, follow' : 'noindex, nofollow';
+const nodes = [organization(origin), website(origin), ...(crumbs.length ? [breadcrumbs([{ name: 'Home', path: '/' }, ...crumbs], origin)] : []), ...jsonld];
+---
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/atom+xml" title="AblePoint Australia: guides and blog" href="/feed.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_AU" />
+    <meta property="og:image" content={new URL('/og-default.png', origin).toString()} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="AblePoint Australia: disability support built around you" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#1e3553" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script is:inline src="/a11y-init.js"></script>
+    <script type="application/ld+json" set:html={JSON.stringify(graph(...nodes))} />
+  </head>
+  <body data-gtm-id={GTM_ID || undefined} data-analytics={analytics} data-page-event={pageEvent}>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    {!IS_PRODUCTION && (
+      <div class="env-banner" role="note">
+        {SITE_ENV === 'staging' ? 'Staging' : 'Development'} build. Unapproved content is shown and marked as draft. Not for public use.
+      </div>
+    )}
+    <ConsentBanner enabled={analytics === 'on'} />
+    <Header currentPath={path} minimal={minimalHeader} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer analytics={analytics === 'on'} />
+    <MobileCtaBar />
+    <script>
+      import '../scripts/menu';
+      import '../scripts/a11y-tools';
+      import '../scripts/reveal';
+      import '../scripts/analytics';
+    </script>
+  </body>
+</html>

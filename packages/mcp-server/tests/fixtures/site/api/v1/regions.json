@@ -1,0 +1,42 @@
+{
+  "apiVersion": "1",
+  "environment": "production",
+  "generatedAt": "2026-11-03T10:00:00.000Z",
+  "publisher": "FIXTURE Example Provider (not real content)",
+  "data": [
+    {
+      "id": "exampleton",
+      "type": "region",
+      "name": "Exampleton",
+      "url": "https://fixtures.example.invalid/locations/exampleton/",
+      "summary": "FIXTURE ONLY. An invented place used in tests.",
+      "services": [
+        "fixture-sil",
+        "fixture-core"
+      ],
+      "headOfficeRegion": true,
+      "faqs": [
+        {
+          "q": "Is Exampleton the fixture head office region?",
+          "a": "FIXTURE ONLY. Exampleton is an invented place used in tests."
+        }
+      ],
+      "status": "approved",
+      "updatedAt": "2026-10-28T00:00:00Z"
+    },
+    {
+      "id": "sampleville",
+      "type": "region",
+      "name": "Sampleville",
+      "url": "https://fixtures.example.invalid/locations/sampleville/",
+      "summary": "FIXTURE ONLY. Another invented place used in tests.",
+      "services": [
+        "fixture-core"
+      ],
+      "headOfficeRegion": false,
+      "faqs": [],
+      "status": "approved",
+      "updatedAt": "2026-10-27T00:00:00Z"
+    }
+  ]
+}

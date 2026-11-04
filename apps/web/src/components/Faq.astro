@@ -1,0 +1,10 @@
+---
+import type { Faq } from '../data/types';
+const { faqs, heading = 'Frequently asked questions' } = Astro.props as { faqs: Faq[]; heading?: string };
+---
+{faqs.length > 0 && (
+  <section class="faq" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">{heading}</h2>
+    {faqs.map((f) => (<details><summary>{f.q}</summary><div><p>{f.a}</p></div></details>))}
+  </section>
+)}

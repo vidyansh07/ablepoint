@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import BannerArt from '../components/art/BannerArt.astro';
+import { site } from '../data/site';
+---
+<Base title="Contact us" description={`Contact AblePoint Australia on ${site.phoneDisplay} or ${site.email}. Head office in Gosford, NSW.`} path="/contact-us/" crumbs={[{ name: 'Contact us', path: '/contact-us/' }]}>
+  <Hero title="Contact us" lede="Call, email, or send a referral." compact>
+    <BannerArt slot="banner" scene="referral" />
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Contact us', path: '/contact-us/' }]} />
+    <dl class="measure">
+      <dt><strong>Phone</strong></dt><dd><a href={site.phoneHref} data-event="phone_click">{site.phoneDisplay}</a></dd>
+      <dt class="mt-4"><strong>Email</strong></dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+      <dt class="mt-4"><strong>Head office</strong></dt><dd>{site.headOffice}</dd>
+    </dl>
+    <p><a class="btn btn--primary" href="/referral/" data-event="referral_cta">Make a referral</a></p>
+    <p class="muted">Please do not email health or NDIS details. We will ask for those in a secure way if we need them.</p>
+  </div>
+</Base>

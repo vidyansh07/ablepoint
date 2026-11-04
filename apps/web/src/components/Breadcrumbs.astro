@@ -1,0 +1,12 @@
+---
+import type { Crumb } from '../lib/jsonld';
+const { crumbs } = Astro.props as { crumbs: Crumb[] };
+const all = [{ name: 'Home', path: '/' }, ...crumbs];
+---
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {all.map((c, i) => (
+      <li>{i === all.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.path}>{c.name}</a>}</li>
+    ))}
+  </ol>
+</nav>

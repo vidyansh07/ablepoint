@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactCard from '../../components/ContactCard.astro';
+import DraftBanner from '../../components/DraftBanner.astro';
+import { helpFaqs } from '../../data/faqs';
+import { visible } from '../../lib/content';
+import { isShown } from '../../lib/gate';
+import { SITE_ENV } from '../../lib/env';
+
+// Hidden in production until the compliance reviewer approves at least one answer (an empty help page is thin content).
+export function getStaticPaths() {
+  return visible(helpFaqs).length ? [{ params: { rest: undefined } }] : [];
+}
+const list = visible(helpFaqs);
+const topics = [...new Set(list.map((f) => f.topic))];
+const anyDraft = list.some((f) => !isShown(f, 'production'));
+const missing = [...new Set(list.flatMap((f) => f.missingFacts ?? []))];
+---
+<Base title="Help and FAQs" description="Answers to common questions about referrals, housing, money and agreements, and privacy at AblePoint Australia." path="/faq/" crumbs={[{ name: 'Help and FAQs', path: '/faq/' }]}>
+  {anyDraft && SITE_ENV !== 'production' && <DraftBanner doc={{ reviewState: 'draft', updatedAt: '2026-11-03T00:00:00Z', missingFacts: missing }} />}
+  <Hero title="Help and FAQs" lede="Plain-English answers to the questions we are asked most." compact />
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Help and FAQs', path: '/faq/' }]} />
+    <div class="layout-aside">
+      <div class="stack-lg">
+        <div class="field measure">
+          <label for="faq-filter">Search the questions</label>
+          <input id="faq-filter" type="text" autocomplete="off" aria-controls="faq-groups" />
+          <p class="hint" id="faq-count" aria-live="polite"></p>
+        </div>
+        <div id="faq-groups" class="stack-lg">
+          {topics.map((t) => (
+            <section class="faq" aria-labelledby={`t-${t.replace(/\W+/g, '-')}`}>
+              <h2 id={`t-${t.replace(/\W+/g, '-')}`}>{t}</h2>
+              {list.filter((f) => f.topic === t).map((f) => (<details data-faq><summary>{f.q}</summary><div><p>{f.a}</p></div></details>))}
+            </section>
+          ))}
+        </div>
+      </div>
+      <div class="aside"><ContactCard heading="Cannot find your answer?" text="Call us or send a message and we will help." /></div>
+    </div>
+  </div>
+</Base>
+<script>
+  const input = document.getElementById('faq-filter') as HTMLInputElement | null;
+  const count = document.getElementById('faq-count');
+  const items = [...document.querySelectorAll<HTMLDetailsElement>('details[data-faq]')];
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    for (const d of items) { const hit = !q || d.textContent!.toLowerCase().includes(q); d.hidden = !hit; if (hit) shown++; }
+    for (const s of document.querySelectorAll<HTMLElement>('#faq-groups section')) s.hidden = ![...s.querySelectorAll('details')].some((d) => !d.hidden);
+    if (count) count.textContent = q ? `${shown} matching ${shown === 1 ? 'question' : 'questions'}` : '';
+  });
+</script>

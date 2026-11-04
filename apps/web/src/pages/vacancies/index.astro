@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBlock from '../../components/CtaBlock.astro';
+import BannerArt from '../../components/art/BannerArt.astro';
+import VacancyCard from '../../components/VacancyCard.astro';
+import { vacancies } from '../../data/vacancies';
+import { regions } from '../../data/regions';
+import { visible } from '../../lib/content';
+import { vacancyDisplay } from '@ablepoint/schemas';
+
+const now = new Date();
+const list = visible(vacancies).filter((v) => vacancyDisplay(v.status, v.lastVerifiedAt, now) !== 'hidden');
+---
+<Base title="Vacancies" description="Current supported independent living and specialist disability accommodation vacancies from AblePoint Australia." path="/vacancies/" crumbs={[{ name: 'Vacancies', path: '/vacancies/' }]}>
+  <Hero title="Vacancies" lede="Homes with a vacancy, and how to ask about them." compact>
+    <BannerArt slot="banner" scene="vacancies" />
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Vacancies', path: '/vacancies/' }]} />
+    {list.length === 0 ? (
+      <div class="empty-state empty-state--single">
+        <div class="stack">
+          <h2>There are no vacancies listed right now</h2>
+          <p class="lede">This does not always mean nothing is coming up. Please send a referral or call us and ask what is expected to be available.</p>
+          <p><a class="btn btn--primary" href="/referral/">Make a referral</a></p>
+        </div>
+      </div>
+    ) : (
+      <div class="grid grid--cards">{list.map((v) => <VacancyCard vacancy={v} regionName={regions.find((r) => r.slug === v.regionSlug)?.name} level={2} now={now} />)}</div>
+    )}
+  </div>
+  <CtaBlock heading="Ask about a vacancy" text="Tell us what you are looking for and we will let you know what is available or coming up." />
+</Base>

@@ -1,0 +1,6 @@
+# Replace @OWNER with the compliance owner's GitHub handle or team (e.g. @ablepoint/compliance) and turn on
+# "Require review from Code Owners" in branch protection. Until then these paths are NOT protected.
+/apps/web/src/content/            @OWNER
+/apps/web/content-drafts/         @OWNER
+/apps/web/src/data/reviewers.json @OWNER
+/apps/web/src/data/photos.registry.json @OWNER

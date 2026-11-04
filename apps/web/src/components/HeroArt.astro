@@ -1,0 +1,32 @@
+---
+import Ring from './Ring.astro';
+/** Hero illustration: an accessible home in a landscape under the Gathering. Original, geometric, decorative. */
+---
+<div class="hero-art" aria-hidden="true">
+  <svg viewBox="0 0 560 440" role="presentation" focusable="false">
+    <rect width="560" height="440" fill="var(--blue-100)" />
+    <g class="art-sun"><circle cx="96" cy="104" r="54" fill="var(--orange-100)" /><circle cx="96" cy="104" r="34" fill="var(--orange-500)" /></g>
+    <rect class="art-cloud" x="170" y="70" width="86" height="22" rx="11" fill="#fff" opacity=".9" />
+    <rect class="art-cloud art-cloud--2" x="200" y="96" width="64" height="18" rx="9" fill="#fff" opacity=".9" />
+    <path d="M0 322C110 286 210 296 320 318S490 346 560 304V440H0Z" fill="var(--green-100)" />
+    <path d="M0 372C150 334 300 380 560 348V440H0Z" fill="var(--green-500)" opacity=".75" />
+    <g class="art-tree"><rect x="474" y="296" width="12" height="64" rx="6" fill="var(--plum-700)" /><circle cx="480" cy="282" r="44" fill="var(--green-500)" /><circle cx="458" cy="300" r="26" fill="var(--green-700)" opacity=".35" /></g>
+    <g class="art-house">
+    <rect x="196" y="236" width="196" height="132" rx="10" fill="#fff" />
+    <path d="M178 244 294 160 410 244" fill="none" stroke="var(--plum-700)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+    <rect x="266" y="296" width="50" height="72" rx="8" fill="var(--orange-700)" />
+    <circle cx="304" cy="334" r="3.5" fill="#fff" />
+    <rect x="214" y="268" width="38" height="34" rx="8" fill="var(--blue-100)" />
+    <rect x="334" y="268" width="38" height="34" rx="8" fill="var(--blue-100)" />
+    </g>
+    <g class="art-ramp">
+    <path d="M142 368 266 346V368Z" fill="var(--blue-500)" />
+    <path d="M152 340 266 318" stroke="var(--blue-900)" stroke-width="5" stroke-linecap="round" />
+    <path d="M152 340v26M266 318v26" stroke="var(--blue-900)" stroke-width="5" stroke-linecap="round" />
+    </g>
+    <!-- path -->
+    <path d="M276 368H334L372 440H232Z" fill="#fff" opacity=".85" />
+    <g class="art-flowers"><circle cx="120" cy="400" r="9" fill="var(--orange-500)" /><circle cx="150" cy="412" r="7" fill="var(--plum-500)" /><circle cx="420" cy="404" r="8" fill="var(--blue-500)" /></g>
+  </svg>
+  <Ring class="hero-art__ring" size={190} />
+</div>

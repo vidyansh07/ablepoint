@@ -1,0 +1,18 @@
+---
+import { GTM_ID } from '../lib/env';
+const { enabled } = Astro.props as { enabled: boolean };
+---
+{GTM_ID && enabled && (
+  <section id="consent-banner" class="consent" aria-labelledby="consent-heading" hidden>
+    <div class="container consent__inner">
+      <div>
+        <h2 id="consent-heading" tabindex="-1">Help us improve this website?</h2>
+        <p>We would like to use anonymous statistics to see which pages are useful. We never put your name, phone number or health details in these statistics. You can say no and use the whole site.</p>
+      </div>
+      <div class="consent__actions">
+        <button class="btn btn--primary" type="button" data-consent="accept">Yes, allow statistics</button>
+        <button class="btn btn--secondary" type="button" data-consent="decline">No thanks</button>
+      </div>
+    </div>
+  </section>
+)}

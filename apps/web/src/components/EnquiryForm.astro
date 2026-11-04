@@ -1,0 +1,140 @@
+---
+import { REFERRER_TYPES, SERVICE_CATEGORIES, REGION_CHOICES, CONTACT_METHODS } from '@ablepoint/schemas';
+import { INTAKE_ENDPOINT, TURNSTILE_SITEKEY } from '../lib/env';
+import { site } from '../data/site';
+
+const referrerLabels: Record<string, string> = {
+  self: 'I am the person who needs support',
+  family: 'I am a family member or carer',
+  coordinator: 'I am a support coordinator',
+  'plan-manager': 'I am a plan manager',
+  'health-professional': 'I am a health professional',
+  other: 'Other',
+};
+const serviceLabels: Record<string, string> = {
+  'core-support': 'Core support',
+  sil: 'Supported independent living (SIL)',
+  sda: 'Specialist disability accommodation (SDA)',
+  sta: 'Short term accommodation',
+  'support-coordination': 'Support coordination',
+  'community-access': 'Community access',
+  'not-sure': 'I am not sure yet',
+};
+const regionLabels: Record<string, string> = {
+  'central-coast': 'Central Coast',
+  newcastle: 'Newcastle',
+  dubbo: 'Dubbo',
+  orange: 'Orange',
+  tamworth: 'Tamworth',
+  gunnedah: 'Gunnedah',
+  'not-sure': 'I am not sure',
+};
+const contactLabels: Record<string, string> = { phone: 'Phone call', email: 'Email', sms: 'Text message' };
+const demoMode = !INTAKE_ENDPOINT;
+---
+<div id="enquiry-root"
+  data-endpoint={INTAKE_ENDPOINT}
+  data-turnstile={TURNSTILE_SITEKEY}
+  data-notice-version="draft-0">
+  <div id="form-status" tabindex="-1" role="status" aria-live="polite"></div>
+
+  {demoMode && (
+    <div class="notice notice--draft" role="note">
+      <p><strong>Demonstration only.</strong> This form is not connected to AblePoint's secure intake system yet. Nothing you enter here is sent anywhere. To make a real referral now, please call <a href={site.phoneHref}>{site.phoneDisplay}</a>.</p>
+    </div>
+  )}
+
+  <noscript>
+    <div class="notice"><p>This form needs JavaScript. You can call us on <a href={site.phoneHref}>{site.phoneDisplay}</a> instead.</p></div>
+  </noscript>
+
+  <form class="form" id="enquiry-form" novalidate method="post" action="#" aria-describedby="privacy-notice">
+    <div id="error-summary" class="error-summary" role="alert" tabindex="-1" hidden>
+      <h2>There is a problem</h2>
+      <ul id="error-list"></ul>
+    </div>
+
+    <p id="privacy-notice" class="notice">
+      We collect your name and contact details so we can reply to your enquiry. Please do not put health or NDIS details in this form. We will ask for those later in a secure way, if we need them. Our <a href="/privacy-policy/">privacy policy</a> explains how we handle your information.
+    </p>
+
+    <div class="field">
+      <label for="name">Your name</label>
+      <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error" />
+      <span class="error" id="name-error" hidden></span>
+    </div>
+
+    <fieldset class="field" aria-describedby="referrerType-error">
+      <legend>Who is making this enquiry?</legend>
+      {REFERRER_TYPES.map((v) => (
+        <div class="choice"><input type="radio" id={`referrerType-${v}`} name="referrerType" value={v} /><label for={`referrerType-${v}`}>{referrerLabels[v]}</label></div>
+      ))}
+      <span class="error" id="referrerType-error" hidden></span>
+    </fieldset>
+
+    <fieldset class="field" aria-describedby="services-error">
+      <legend>Which services are you asking about?</legend>
+      <span class="hint">Choose all that apply.</span>
+      {SERVICE_CATEGORIES.map((v) => (
+        <div class="choice"><input type="checkbox" id={`services-${v}`} name="services" value={v} /><label for={`services-${v}`}>{serviceLabels[v]}</label></div>
+      ))}
+      <span class="error" id="services-error" hidden></span>
+    </fieldset>
+
+    <div class="field">
+      <label for="region">Which region?</label>
+      <select id="region" name="region" required aria-describedby="region-error">
+        <option value="">Choose a region</option>
+        {REGION_CHOICES.map((v) => <option value={v}>{regionLabels[v]}</option>)}
+      </select>
+      <span class="error" id="region-error" hidden></span>
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone number <span class="muted">(phone or email is needed)</span></label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="phone-error" />
+      <span class="error" id="phone-error" hidden></span>
+    </div>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-error" />
+      <span class="error" id="email-error" hidden></span>
+    </div>
+
+    <fieldset class="field" aria-describedby="contactMethod-error">
+      <legend>How should we contact you?</legend>
+      {CONTACT_METHODS.map((v) => (
+        <div class="choice"><input type="radio" id={`contactMethod-${v}`} name="contactMethod" value={v} /><label for={`contactMethod-${v}`}>{contactLabels[v]}</label></div>
+      ))}
+      <span class="error" id="contactMethod-error" hidden></span>
+    </fieldset>
+
+    <div class="field">
+      <label for="bestTime">Best time to contact you <span class="muted">(optional)</span></label>
+      <input id="bestTime" name="bestTime" type="text" maxlength="80" aria-describedby="bestTime-hint bestTime-error" />
+      <span class="hint" id="bestTime-hint">For example, weekday mornings.</span>
+      <span class="error" id="bestTime-error" hidden></span>
+    </div>
+
+    <div class="field">
+      <div class="choice">
+        <input type="checkbox" id="consent" name="consent" aria-describedby="consent-error" />
+        <label for="consent">I agree that AblePoint Australia can contact me about this enquiry.</label>
+      </div>
+      <span class="error" id="consent-error" hidden></span>
+    </div>
+
+    <div class="hp" aria-hidden="true">
+      <label for="website">Leave this field empty</label>
+      <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    {TURNSTILE_SITEKEY && <div id="turnstile-slot"></div>}
+
+    <button class="btn btn--primary" type="submit" id="submit-btn">Send enquiry</button>
+  </form>
+</div>
+<script>
+  import '../scripts/enquiry-form';
+</script>

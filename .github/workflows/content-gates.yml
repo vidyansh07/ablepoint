@@ -1,0 +1,43 @@
+name: Content gates
+
+# Verification only. Runs when blog drafts, posts or the reviewer list change. Agents (n8n, scripts) open pull requests with
+# draft JSON; these checks run the quality gates, and a named human must review and approve before anything can be published.
+# Branch protection (not configurable from here): require a human review on PRs touching apps/web/src/content/**,
+# apps/web/content-drafts/** and apps/web/src/data/reviewers.json, via CODEOWNERS owned by the compliance owner.
+
+on:
+  pull_request:
+    paths:
+      - 'apps/web/content-drafts/**'
+      - 'apps/web/src/content/**'
+      - 'apps/web/src/data/reviewers.json'
+      - 'packages/schemas/src/blog.ts'
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: Draft quality gates and approval rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Quality gates on every draft file in content-drafts/
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for f in apps/web/content-drafts/*.json; do
+            echo "== $f"
+            pnpm --filter @ablepoint/web content:ingest -- "../../$f" --dry-run
+          done
+      - name: Approval rules (named human, on the reviewer list, not the PR author, hash current)
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: pnpm --filter @ablepoint/web content:verify

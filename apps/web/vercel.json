@@ -1,0 +1,163 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/_astro/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/short-term-accomodation/",
+      "destination": "/short-term-accommodation/",
+      "statusCode": 301
+    },
+    {
+      "source": "/short-term-accomodation-newcastle/",
+      "destination": "/locations/newcastle/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ndis-support-service-providers-newcastle/",
+      "destination": "/locations/newcastle/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ndis-support-service-providers-dubbo/",
+      "destination": "/locations/dubbo/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ndis-support-service-providers-central-coast/",
+      "destination": "/locations/central-coast/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ndis-support-service-providers-orange/",
+      "destination": "/locations/orange/",
+      "statusCode": 301
+    },
+    {
+      "source": "/core-support-central-coast/",
+      "destination": "/locations/central-coast/",
+      "statusCode": 301
+    },
+    {
+      "source": "/core-support-newcastle/",
+      "destination": "/locations/newcastle/",
+      "statusCode": 301
+    },
+    {
+      "source": "/core-support-dubbo/",
+      "destination": "/locations/dubbo/",
+      "statusCode": 301
+    },
+    {
+      "source": "/core-support-orange/",
+      "destination": "/locations/orange/",
+      "statusCode": 301
+    },
+    {
+      "source": "/support-coordinator-central-coast/",
+      "destination": "/locations/central-coast/",
+      "statusCode": 301
+    },
+    {
+      "source": "/support-coordinator-dubbo/",
+      "destination": "/locations/dubbo/",
+      "statusCode": 301
+    },
+    {
+      "source": "/support-coordinator-orange/",
+      "destination": "/locations/orange/",
+      "statusCode": 301
+    },
+    {
+      "source": "/supported-independent-living-central-coast/",
+      "destination": "/locations/central-coast/",
+      "statusCode": 301
+    },
+    {
+      "source": "/supported-independent-living-dubbo/",
+      "destination": "/locations/dubbo/",
+      "statusCode": 301
+    },
+    {
+      "source": "/supported-independent-living-orange/",
+      "destination": "/locations/orange/",
+      "statusCode": 301
+    },
+    {
+      "source": "/news/",
+      "destination": "/guides/",
+      "statusCode": 301
+    },
+    {
+      "source": "/2017/02/01/ndis-core-vs-capacity-building/",
+      "destination": "/guides/",
+      "statusCode": 301
+    },
+    {
+      "source": "/2017/02/01/how-to-choose-ndis-provider-in-sydney/",
+      "destination": "/guides/",
+      "statusCode": 301
+    }
+  ]
+}

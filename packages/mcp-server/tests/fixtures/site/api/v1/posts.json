@@ -1,0 +1,50 @@
+{
+  "apiVersion": "1",
+  "environment": "production",
+  "generatedAt": "2026-11-03T10:00:00.000Z",
+  "publisher": "FIXTURE Example Provider (not real content)",
+  "data": [
+    {
+      "type": "post",
+      "sections": [
+        {
+          "heading": "Fixture heading",
+          "text": "Placeholder paragraph."
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Is this post real?",
+          "a": "FIXTURE ONLY. No."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Example source",
+          "url": "https://example.invalid/source-2"
+        }
+      ],
+      "author": "Fixture Author",
+      "reviewer": "Fixture Reviewer",
+      "reviewedAt": "2026-10-25T00:00:00Z",
+      "publishedAt": "2026-10-26T00:00:00Z",
+      "updatedAt": "2026-10-26T00:00:00Z",
+      "status": "approved",
+      "id": "fixture-post-checklist",
+      "title": "Fixture checklist post",
+      "url": "https://fixtures.example.invalid/blog/fixture-post-checklist/",
+      "answer": "FIXTURE ONLY. A placeholder checklist post used in tests.",
+      "summary": "FIXTURE ONLY. Short placeholder summary.",
+      "category": "fixture-category",
+      "tags": [
+        "fixture",
+        "checklist"
+      ],
+      "regions": [],
+      "services": [
+        "fixture-sil"
+      ],
+      "aiAssisted": false
+    }
+  ]
+}

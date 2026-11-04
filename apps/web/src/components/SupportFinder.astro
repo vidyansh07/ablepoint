@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+import { regions } from '../data/regions';
+import { services } from '../data/services';
+import { visible } from '../lib/content';
+const r = visible(regions);
+const s = visible(services);
+---
+{r.length > 0 && (
+  <section class="section" aria-labelledby="finder-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Find support</p>
+        <h2 id="finder-heading">Find support in your area</h2>
+        <p>Choose a region and the kind of support you are looking for.</p>
+      </div>
+      <form class="finder" id="finder-form" method="get" action="/locations/">
+        <div class="field">
+          <label for="finder-region">Region</label>
+          <select id="finder-region" name="region"><option value="">Any region</option>{r.map((x) => <option value={x.slug}>{x.name}</option>)}</select>
+        </div>
+        <div class="field">
+          <label for="finder-service">Support</label>
+          <select id="finder-service" name="service"><option value="">Any support</option>{s.map((x) => <option value={x.slug}>{x.title}</option>)}</select>
+        </div>
+        <button class="btn btn--primary" type="submit"><Icon name="search" size={20} /> Find support</button>
+      </form>
+      <div id="finder-results" class="finder__results" aria-live="polite"></div>
+    </div>
+  </section>
+)}
+<script>
+  import '../scripts/finder';
+</script>

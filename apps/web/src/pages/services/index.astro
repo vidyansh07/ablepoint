@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import CtaBlock from '../../components/CtaBlock.astro';
+import BannerArt from '../../components/art/BannerArt.astro';
+import { services } from '../../data/services';
+import { visible } from '../../lib/content';
+const list = visible(services);
+---
+<Base title="Services" description="Core support, supported independent living, specialist disability accommodation, short term accommodation, support coordination and community access from AblePoint Australia." path="/services/" crumbs={[{ name: 'Services', path: '/services/' }]}>
+  <Hero title="Our services" lede="Choose a service to find out who it is for and how it works." compact>
+    <BannerArt slot="banner" scene="services" />
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Services', path: '/services/' }]} />
+    {list.length ? (
+      <div class="grid grid--cards">{list.map((s) => <Card href={`/${s.slug}/`} title={s.title} text={s.summary} level={2} icon={s.icon} tint={s.tint} />)}</div>
+    ) : (<p>Service information is being prepared. Please <a href="/contact-us/">contact us</a>.</p>)}
+  </div>
+  <CtaBlock />
+</Base>

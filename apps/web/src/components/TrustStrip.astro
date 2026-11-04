@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+// Renders only verified facts. Registration details appear once supplied (docs/13 B-04). No invented statistics.
+---
+<ul class="trust" aria-label="About AblePoint">
+  {site.registrationNumber && <li><Icon name="shield" size={22} /> Registered NDIS provider (registration {site.registrationNumber})</li>}
+  <li><Icon name="pin" size={22} /> Head office in Gosford, NSW</li>
+  <li><Icon name="users" size={22} /> Supporting people across regional NSW</li>
+</ul>

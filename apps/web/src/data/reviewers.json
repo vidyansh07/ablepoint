@@ -1,0 +1,4 @@
+{
+  "_note": "Named people allowed to approve content for production (docs/21). Empty = nothing can be published. Maintained by the compliance owner; changes need human review (CODEOWNERS).",
+  "complianceReviewers": []
+}

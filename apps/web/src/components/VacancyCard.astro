@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import type { Vacancy } from '../data/types';
+import { vacancyDisplay } from '@ablepoint/schemas';
+interface Props { vacancy: Vacancy; regionName?: string; level?: 2 | 3; now?: Date; href?: string; }
+const { vacancy: v, regionName, level = 3, now = new Date(), href } = Astro.props;
+const link = href ?? `/vacancies/${v.slug}/`;
+const H = `h${level}` as 'h2' | 'h3';
+const d = vacancyDisplay(v.status, v.lastVerifiedAt, now);
+const status = {
+  available: { label: 'Available', icon: 'check', cls: 'status--ok' },
+  unconfirmed: { label: 'Availability unconfirmed: please call us', icon: 'info', cls: 'status--info' },
+  temporarilyUnavailable: { label: 'Temporarily unavailable', icon: 'calendar', cls: 'status--info' },
+  noLongerAvailable: { label: 'No longer available', icon: 'close', cls: 'status--off' },
+  hidden: { label: '', icon: 'info', cls: 'status--info' },
+}[d];
+---
+{d !== 'hidden' && (
+  <article class="card card--link vacancy-card">
+    <div class="vacancy-card__top">
+      <span class="badge">{v.type}</span>
+      <span class="vacancy-card__where"><Icon name="pin" size={18} /> {[regionName, v.suburb].filter(Boolean).join(' · ')}</span>
+    </div>
+    <H><a class="stretched" href={link}>{v.title}</a></H>
+    <p>{v.summary}</p>
+    {v.features.length > 0 && <ul class="checklist checklist--tight">{v.features.slice(0, 3).map((f) => <li><Icon name="check" size={18} /> {f}</li>)}</ul>}
+    <p class:list={['status', status.cls]}><Icon name={status.icon} size={18} /> {status.label}</p>
+  </article>
+)}

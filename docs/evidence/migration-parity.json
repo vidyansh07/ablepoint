@@ -1,0 +1,261 @@
+{
+  "generated": "2026-11-03",
+  "summary": {
+    "legacyUrls": 31,
+    "kept": 11,
+    "redirect": 19,
+    "pendingDecision": 1,
+    "brokenRedirect": 0,
+    "unmapped": 0
+  },
+  "rows": [
+    {
+      "legacy": "/",
+      "words": 1269,
+      "title": "Top NDIS Provider Sydney | Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/2017/02/01/how-to-choose-ndis-provider-in-sydney/",
+      "words": 700,
+      "title": "How to choose an NDIS provider in Sydney - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/guides/",
+      "note": "301 (clean slug pending migrated guide (Sydney framing needs verification)); approved=false"
+    },
+    {
+      "legacy": "/2017/02/01/ndis-core-vs-capacity-building/",
+      "words": 741,
+      "title": "NDIS Core Supports vs Capacity Building: What’s the Difference? (2026 Guide) - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/guides/",
+      "note": "301 (clean slug pending migrated guide (needs owner decision on content + true publication date)); approved=false"
+    },
+    {
+      "legacy": "/thank-you/",
+      "words": 208,
+      "title": "Thank You - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/thank-you/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/core-support-central-coast/",
+      "words": 631,
+      "title": "Personal Care NDIS Central Coast - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/central-coast/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/ndis-support-service-providers-newcastle/",
+      "words": 664,
+      "title": "NDIS Support Services Newcastle - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/newcastle/",
+      "note": "301 (structure); approved=false"
+    },
+    {
+      "legacy": "/ndis-support-service-providers-dubbo/",
+      "words": 611,
+      "title": "Ndis Service Provider Dubbo | Disability Services Dubbo",
+      "outcome": "redirect",
+      "target": "/locations/dubbo/",
+      "note": "301 (structure); approved=false"
+    },
+    {
+      "legacy": "/ndis-support-service-providers-central-coast/",
+      "words": 596,
+      "title": "Ndis Service Provider Central Coast | Disability Services Central Coast",
+      "outcome": "redirect",
+      "target": "/locations/central-coast/",
+      "note": "301 (structure); approved=false"
+    },
+    {
+      "legacy": "/ndis-support-service-providers-orange/",
+      "words": 664,
+      "title": "Ndis Service Provider Orange | Disability Services Orange",
+      "outcome": "redirect",
+      "target": "/locations/orange/",
+      "note": "301 (structure); approved=false"
+    },
+    {
+      "legacy": "/core-support-newcastle/",
+      "words": 679,
+      "title": "NDIS Core Supports Newcastle | Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/newcastle/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/core-support-dubbo/",
+      "words": 602,
+      "title": "NDIS Core Supports Dubbo | Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/dubbo/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/support-coordinator-orange/",
+      "words": 607,
+      "title": "Support Coordinator Orange - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/orange/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/support-coordinator-central-coast/",
+      "words": 589,
+      "title": "Support Coordinator Central Coast - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/central-coast/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/support-coordinator/",
+      "words": 658,
+      "title": "Support Coordinator Sydney - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/support-coordinator/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/supported-independent-living-central-coast/",
+      "words": 652,
+      "title": "Supported Independent Living Central Coast (SIL) - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/central-coast/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/short-term-accomodation-newcastle/",
+      "words": 597,
+      "title": "Short Term Accommodation Newcastle (STA) | Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/newcastle/",
+      "note": "301 (consolidate into region page (D-13)); approved=false"
+    },
+    {
+      "legacy": "/support-coordinator-dubbo/",
+      "words": 619,
+      "title": "Support Coordinator Dubbo - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/dubbo/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/supported-independent-living-orange/",
+      "words": 638,
+      "title": "Supported Independent Living Orange - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/orange/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/supported-independent-living-dubbo/",
+      "words": 650,
+      "title": "Supported Independent Living Orange (SIL) - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/dubbo/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/core-support-orange/",
+      "words": 642,
+      "title": "NDIS Core Supports Orange | Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/locations/orange/",
+      "note": "301 (consolidate (D-13)); approved=false"
+    },
+    {
+      "legacy": "/youth-services/",
+      "words": 1138,
+      "title": "Youth Services - Ablepoint Australia",
+      "outcome": "pending-decision",
+      "target": null,
+      "note": "Not in the approved service inventory; page carries an \"approved NDIS\" claim and has no H1. Owner to confirm whether this service exists, then migrate or redirect."
+    },
+    {
+      "legacy": "/news/",
+      "words": 370,
+      "title": "Blogs - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/guides/",
+      "note": "301 (structure); approved=false"
+    },
+    {
+      "legacy": "/short-term-accomodation/",
+      "words": 1077,
+      "title": "Short Term Accommodation Sydney (STA) - Ablepoint Australia",
+      "outcome": "redirect",
+      "target": "/short-term-accommodation/",
+      "note": "301 (spelling); approved=false"
+    },
+    {
+      "legacy": "/supported-independent-living/",
+      "words": 1075,
+      "title": "Supported Independent Living Sydney (SIL) - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/supported-independent-living/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/our-support-team/",
+      "words": 399,
+      "title": "Our Support Team - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/our-support-team/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/sda/",
+      "words": 771,
+      "title": "Specialist Disability Accommodation Sydney (SDA) - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/sda/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/community-access/",
+      "words": 386,
+      "title": "Community Access - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/community-access/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/core-support/",
+      "words": 566,
+      "title": "NDIS Core Supports Sydney | Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/core-support/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/contact-us/",
+      "words": 265,
+      "title": "Contact us - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/contact-us/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/referral/",
+      "words": 206,
+      "title": "Referral - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/referral/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    },
+    {
+      "legacy": "/about-us/",
+      "words": 555,
+      "title": "About us - Ablepoint Australia",
+      "outcome": "kept",
+      "target": "/about-us/",
+      "note": "URL preserved; content must be re-checked (new copy, draft)"
+    }
+  ]
+}

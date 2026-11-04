@@ -1,0 +1,24 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Hero from '../../../components/Hero.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { posts, CATEGORY_LABELS } from '../../../data/posts';
+import { visible } from '../../../lib/content';
+
+export function getStaticPaths() {
+  const cats = [...new Set(visible(posts).map((p) => p.category))];
+  return cats.map((c) => ({ params: { category: c }, props: { category: c } }));
+}
+const { category } = Astro.props;
+const list = visible(posts).filter((p) => p.category === category);
+const label = CATEGORY_LABELS[category];
+const crumbs = [{ name: 'Blog', path: '/blog/' }, { name: label, path: `/blog/topic/${category}/` }];
+---
+<Base title={label} description={`Articles about ${label.toLowerCase()} from AblePoint Australia.`} path={`/blog/topic/${category}/`} crumbs={crumbs}>
+  <Hero title={label} lede={`Articles filed under ${label.toLowerCase()}.`} compact />
+  <div class="container section">
+    <Breadcrumbs crumbs={crumbs} />
+    <div class="grid grid--cards">{list.map((p) => <PostCard post={p} />)}</div>
+  </div>
+</Base>

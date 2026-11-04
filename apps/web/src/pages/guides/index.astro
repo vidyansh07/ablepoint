@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import CtaBlock from '../../components/CtaBlock.astro';
+import BannerArt from '../../components/art/BannerArt.astro';
+import { guides } from '../../data/guides';
+import { visible } from '../../lib/content';
+const list = visible(guides);
+---
+<Base title="Guides" description="Plain-English guides to the NDIS: changing providers, SIL and SDA, short term accommodation, and support coordination." path="/guides/" crumbs={[{ name: 'Guides', path: '/guides/' }]}>
+  <Hero title="Guides" lede="Plain-English answers to common NDIS questions." compact>
+    <BannerArt slot="banner" scene="guides" />
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Guides', path: '/guides/' }]} />
+    {list.length ? <div class="grid grid--cards">{list.map((g) => <Card href={`/guides/${g.slug}/`} title={g.title} text={g.answer} cta="Read the guide" level={2} icon="book" tint="plum" />)}</div> : <p>Guides are being prepared.</p>}
+  </div>
+  <CtaBlock />
+</Base>

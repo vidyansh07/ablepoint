@@ -1,0 +1,209 @@
+{
+  "name": "Vacancy staleness monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Vacancy staleness monitor (report only)\n\n**NOT imported into or tested on a running n8n instance.** Written from n8n documentation and source.\n\nOnce a day it reads the public vacancies API and lists every vacancy that is shown as unconfirmed, has no verification date, or was last verified more than 14 days ago. The 14 days is VACANCY_STALE_DAYS (packages/schemas/src/content.ts, used by vacancyDisplay and A6 in packages/automation/src/vacancy.ts). Exactly 14 days is not stale.\n\nIt only reports. It never edits a vacancy and never marks one available: only a person who knows the real situation can confirm availability, and publishing stays a human step.\n\nEnvironment variables: SITE_BASE_URL, NOTIFY_FROM_ADDRESS, VACANCY_NOTIFY_ADDRESS.",
+        "height": 360,
+        "width": 760,
+        "color": 4
+      },
+      "id": "f3ec82dc-72b2-40e5-89af-2238e825b791",
+      "name": "Note: purpose",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 8,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "9fa5dd2e-6f49-4161-8abd-97007735fa50",
+      "name": "Daily schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SITE_BASE_URL }}/api/v1/vacancies.json",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "9d872de3-6bdd-4ee2-8775-f917ce826aca",
+      "name": "Fetch vacancies API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Rules mirrored from packages/automation/src/vacancy.ts and packages/schemas/src/content.ts (vacancyDisplay):\n//   - a vacancy shown as available needs a lastVerifiedAt; older than VACANCY_STALE_DAYS (strictly more than 14 days) is shown as unconfirmed\n//   - \"temporarilyUnavailable\" and \"noLongerAvailable\" do not depend on verification age\n// This node only reports. It never edits a vacancy and never marks one as available.\nconst VACANCY_STALE_DAYS = 14;\nconst DAY_MS = 86400000;\nconst nowMs = Date.now();\n\nconst input = $input.first().json || {};\nconst rows = input.apiVersion === '1' && Array.isArray(input.data) ? input.data : null;\n\nif (!rows) {\n  return [{\n    json: {\n      hasIssues: true,\n      count: 0,\n      flagged: [],\n      notifySubject: 'Vacancy monitor could not read the vacancies API',\n      notifyText: 'The daily vacancy check could not read a valid response from the vacancies API, so vacancy freshness was not checked. Check the site and the monitor.',\n    },\n  }];\n}\n\nconst flagged = [];\nfor (const v of rows) {\n  if (!v || (v.availability !== 'available' && v.availability !== 'unconfirmed')) continue;\n  const verifiedMs = v.lastVerifiedAt ? Date.parse(v.lastVerifiedAt) : NaN;\n  const ageDays = Number.isNaN(verifiedMs) ? null : (nowMs - verifiedMs) / DAY_MS;\n  let problem = '';\n  if (!v.lastVerifiedAt) problem = 'never_verified';\n  else if (ageDays === null) problem = 'verification_date_unreadable';\n  else if (ageDays > VACANCY_STALE_DAYS) problem = 'verification_older_than_' + VACANCY_STALE_DAYS + '_days';\n  else if (v.availability === 'unconfirmed') problem = 'shown_as_unconfirmed';\n  if (!problem) continue;\n  flagged.push({\n    id: v.id,\n    suburb: v.suburb,\n    region: v.region,\n    type: v.vacancyType,\n    shownAs: v.availability,\n    lastVerifiedAt: v.lastVerifiedAt || null,\n    ageDays: ageDays === null ? null : Math.floor(ageDays),\n    problem,\n  });\n}\n\nconst lines = flagged.map((f) => '- ' + f.id + ' (' + f.suburb + ', ' + f.region + '): ' + f.problem + (f.ageDays === null ? '' : ', last verified ' + f.ageDays + ' days ago') + ', shown on the site as ' + f.shownAs);\nreturn [{\n  json: {\n    hasIssues: flagged.length > 0,\n    count: flagged.length,\n    flagged,\n    notifySubject: 'Vacancy board: ' + flagged.length + ' vacancy listing(s) need verification',\n    notifyText: [\n      'These vacancy listings are unconfirmed or were last verified more than ' + VACANCY_STALE_DAYS + ' days ago:',\n      ...lines,\n      '',\n      'Only a person who knows the real situation can confirm availability. Update the source record, then the site will show the new state after the next build.',\n      'Note: the site computes \"available\" at build time. A listing that still reads \"available\" above has not been rebuilt since it went stale.',\n    ].join('\\n'),\n  },\n}];"
+      },
+      "id": "b62f2615-8738-4532-87de-4477b64eedc8",
+      "name": "Flag stale or unconfirmed vacancies",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7aa3d44b-c459-4833-896f-2f7252f790b9",
+              "leftValue": "={{ $json.hasIssues }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cfeffd10-eb38-490b-8276-1bcd5bae5a4d",
+      "name": "Any vacancies flagged?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.NOTIFY_FROM_ADDRESS }}",
+        "toEmail": "={{ $env.VACANCY_NOTIFY_ADDRESS }}",
+        "subject": "={{ $json.notifySubject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.notifyText }}",
+        "options": {}
+      },
+      "id": "cdf08316-796d-4f50-8ce4-aae8d7874478",
+      "name": "Notify vacancy owner",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "PLACEHOLDER",
+          "name": "SMTP - internal notifications - PLACEHOLDER"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily schedule": {
+      "main": [
+        [
+          {
+            "node": "Fetch vacancies API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch vacancies API": {
+      "main": [
+        [
+          {
+            "node": "Flag stale or unconfirmed vacancies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flag stale or unconfirmed vacancies": {
+      "main": [
+        [
+          {
+            "node": "Any vacancies flagged?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any vacancies flagged?": {
+      "main": [
+        [
+          {
+            "node": "Notify vacancy owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Australia/Sydney",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  }
+}

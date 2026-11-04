@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import CtaBlock from '../../components/CtaBlock.astro';
+import BannerArt from '../../components/art/BannerArt.astro';
+import RegionArt from '../../components/art/RegionArt.astro';
+import SupportFinder from '../../components/SupportFinder.astro';
+import { regions } from '../../data/regions';
+import { visible } from '../../lib/content';
+const list = visible(regions);
+---
+<Base title="Where we work" description="AblePoint Australia supports people with disability across the Central Coast, Newcastle, Dubbo, Orange, Tamworth and Gunnedah in New South Wales." path="/locations/" crumbs={[{ name: 'Locations', path: '/locations/' }]}>
+  <Hero title="Where we work" lede="Our head office is in Gosford. We support people in these regions of New South Wales." compact>
+    <BannerArt slot="banner" scene="locations" />
+  </Hero>
+  <div class="container section">
+    <Breadcrumbs crumbs={[{ name: 'Locations', path: '/locations/' }]} />
+    <p class="measure">A region is a service area. It is not always a staffed office. Contact us to check what is available near you.</p>
+    <div class="grid grid--cards">{list.map((r) => <Card href={`/locations/${r.slug}/`} title={r.name} text={r.summary} cta="See this region" level={2}><RegionArt slot="art" region={r.slug} /></Card>)}</div>
+  </div>
+  <SupportFinder />
+  <CtaBlock />
+</Base>

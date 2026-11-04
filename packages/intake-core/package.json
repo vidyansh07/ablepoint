@@ -1,0 +1,25 @@
+{
+  "name": "@ablepoint/intake-core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Provider-agnostic core for the restricted participant-intake service (docs/05). Test doubles only: not usable for real participant data.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "check": "tsc --noEmit",
+    "dev:server": "tsx dev/server.ts"
+  },
+  "dependencies": {
+    "@ablepoint/schemas": "workspace:*"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
+    "@types/node": "^24.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.0",
+    "vitest": "latest"
+  }
+}

@@ -1,0 +1,38 @@
+# Dependabot version updates. Not active until the repository exists on GitHub.
+# Updates arrive as pull requests only; nothing merges itself. CI (ci.yml, content-gates.yml, lighthouse.yml) runs on each one.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Australia/Sydney"
+    open-pull-requests-limit: 5
+    groups:
+      # One pull request per week for all minor and patch bumps. Major bumps arrive one at a time.
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # TypeScript must stay on 6.x: @astrojs/check (which runs `astro check` in apps/web) needs it. Move to a new major only by hand.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # vitest majors need a manual review of the test setup. apps/web declares vitest as "latest", which Dependabot cannot bump, so
+      # the other packages should be kept in step by hand when that review is done.
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Australia/Sydney"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

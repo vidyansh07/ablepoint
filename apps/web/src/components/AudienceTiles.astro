@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+// "Who are you?" routing. Targets are pages that always exist; copy makes no promises beyond what the pages do.
+const tiles = [
+  { href: '/services/', icon: 'user', tint: 'blue', title: 'I am looking for support for myself', text: 'See what we offer and how it works.', go: 'See services' },
+  { href: '/referral/', icon: 'family', tint: 'orange', title: 'I am helping a family member', text: 'Tell us a little and we will get in touch.', go: 'Make an enquiry' },
+  { href: '/for-support-coordinators/', icon: 'clipboard', tint: 'plum', title: 'I am a support coordinator or plan manager', text: 'How to refer, what to expect, and current vacancies.', go: 'See how referrals work' },
+  { href: '/referral/', icon: 'stethoscope', tint: 'green', title: 'I am a health professional', text: 'Refer someone you support.', go: 'Refer someone' },
+] as const;
+---
+<div class="grid grid--tiles">
+  {tiles.map((t) => (
+    <a class="tile" href={t.href}>
+      <span class:list={['icon-circle', `tint-${t.tint}`]}><Icon name={t.icon} size={28} /></span>
+      <span class="tile__title">{t.title}</span>
+      <span class="tile__text">{t.text}</span>
+      <span class="tile__go">{t.go} <Icon name="arrow" size={18} /></span>
+    </a>
+  ))}
+</div>

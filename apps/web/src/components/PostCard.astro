@@ -1,0 +1,15 @@
+---
+import Icon from './Icon.astro';
+import type { Post } from '../data/types';
+import { CATEGORY_LABELS } from '../data/posts';
+const { post, level = 2 } = Astro.props as { post: Post; level?: 2 | 3 };
+const H = `h${level}` as 'h2' | 'h3';
+const words = [post.answer, ...post.sections.flatMap((s) => s.body)].join(' ').split(/\s+/).length;
+---
+<article class="card card--link">
+  <p class="eyebrow">{CATEGORY_LABELS[post.category]}</p>
+  <H><a class="stretched" href={`/blog/${post.slug}/`}>{post.title}</a></H>
+  <p>{post.summary}</p>
+  <p class="muted meta-line"><Icon name="clock" size={16} /> {Math.max(1, Math.round(words / 200))} min read{post.publishedAt ? ` · ${post.publishedAt}` : ''}</p>
+  <span class="card__link" aria-hidden="true">Read the post <Icon name="arrow" size={18} /></span>
+</article>

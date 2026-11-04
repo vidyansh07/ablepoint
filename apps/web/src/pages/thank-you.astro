@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import { site } from '../data/site';
+---
+<Base title="Thank you" description="Thank you for your enquiry." path="/thank-you/" noindex pageEvent="referral_submit">
+  <Hero title="Thank you" lede="We have received your enquiry." compact />
+  <div class="container section stack measure">
+    <p>This is an automated confirmation. A member of our team will contact you. If it is urgent, call <a href={site.phoneHref}>{site.phoneDisplay}</a>.</p>
+    <p><a class="btn btn--secondary" href="/">Back to home</a></p>
+  </div>
+</Base>

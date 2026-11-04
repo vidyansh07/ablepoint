@@ -1,0 +1,19 @@
+{
+  "apiVersion": "1",
+  "environment": "production",
+  "generatedAt": "2026-11-03T10:00:00.000Z",
+  "publisher": "FIXTURE Example Provider (not real content)",
+  "data": {
+    "name": "Example Provider (fixture)",
+    "url": "https://fixtures.example.invalid/",
+    "telephone": "+610000000000",
+    "telephoneDisplay": "0000 000 000",
+    "headOffice": "Fixtureville, Exampleland",
+    "regionsServed": [
+      "Exampleton",
+      "Sampleville"
+    ],
+    "registration": null,
+    "notes": "FIXTURE ONLY. Invented organisation used in tests. Not real."
+  }
+}

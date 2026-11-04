@@ -1,0 +1,672 @@
+{
+  "name": "Blog draft to pull request",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Blog draft to pull request (drafts only)\n\n**NOT imported into or tested on a running n8n instance.** Written from n8n documentation and source. Check every node on a real instance before turning it on.\n\nWhat it does: runs weekly (or by hand), screens the topic against the public search index, asks a language model for a draft in the blogDraftSchema shape, runs cheap pre-checks, then creates a branch, writes `apps/web/content-drafts/<slug>.json` and opens a pull request titled \"Draft: <title>\". It then emails the reviewer.\n\nWhat it never does: publish, merge, approve, edit existing content, contact anyone outside the organisation, or read participant data. The CI content gates and a named human reviewer decide what happens next (docs/21 sections 2 and 3).\n\nSetup: see automation/n8n/README.md and credentials.md. Environment variables used: SITE_BASE_URL, BLOG_TOPIC_BRIEF, BLOG_AUTHOR_NAME, LLM_API_URL, LLM_MODEL, GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_BASE_BRANCH, NOTIFY_FROM_ADDRESS, EDITORIAL_NOTIFY_ADDRESS.",
+        "height": 380,
+        "width": 760,
+        "color": 4
+      },
+      "id": "4aafda0c-0ed6-4b29-8cc5-49067c4bfaea",
+      "name": "Note: purpose",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Language model step\n\nThe prompt carries the rules from packages/schemas/src/blog.ts: quality gates, no participant data, a human author (added by the workflow, never by the model), at least 2 sources from the authoritative list, no banned wording.\n\nThe request body shape is a generic messages-style example. It must be adapted to the chosen provider, together with the response extraction in the Pre-checks node. Source URLs come from the model and are NOT fetched or verified here: the reviewer must open each one.",
+        "height": 380,
+        "width": 560,
+        "color": 3
+      },
+      "id": "10f05439-4326-4ef0-8c23-7f683aa1e795",
+      "name": "Note: model request",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "a426e4f7-05fc-4273-8961-0684bfa88d6e",
+      "name": "Weekly schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9ae4e5ec-e6c2-4772-89f8-e5c001cf5735",
+      "name": "Manual trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Scheduled runs use the BLOG_TOPIC_BRIEF environment variable. For a one-off run from the Manual Trigger, type a brief below.\n// The brief must be a short description of a public topic. Never paste participant, enquiry or staff details here.\nconst MANUAL_BRIEF = '';\nconst brief = String(MANUAL_BRIEF || $env.BLOG_TOPIC_BRIEF || '').replace(/\\s+/g, ' ').trim();\nreturn [{ json: { brief, briefProvided: brief.length >= 20 && brief.length <= 300 } }];"
+      },
+      "id": "2731f064-f43f-4de2-8268-145665713c59",
+      "name": "Topic brief",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SITE_BASE_URL }}/api/v1/search-index.json",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "d2292906-90b7-473a-8bf7-97decedc7ba8",
+      "name": "Fetch search index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Cheap screen of the brief against titles already in the public search index.\n// This is NOT the quality gate. CI runs the real shared-phrasing check (assessDraft in packages/schemas/src/blog.ts) on the draft file.\nconst STOP = new Set('a an and are as at be but by for from has have he her his how i if in into is it its more not of on or our she so than that the their them then there these they this to was we were what when which who will with you your can may also about all any been being do does each other some such these those up out new one two'.split(' '));\nconst SIMILAR_OVERLAP = 0.7;\nconst MIN_SHARED_TERMS = 3;\nconst terms = (text) => new Set(String(text).toLowerCase().replace(/[^a-z0-9\\s'-]/g, ' ').split(/\\s+/).filter((w) => w.length > 2 && !STOP.has(w)));\nconst overlap = (a, b) => {\n  if (!a.size || !b.size) return { shared: 0, ratio: 0 };\n  let shared = 0;\n  for (const t of a) if (b.has(t)) shared++;\n  return { shared, ratio: shared / Math.min(a.size, b.size) };\n};\n// Mirrors checkPromptSafety() in packages/automation/src/content.ts: nothing that looks personal may reach the model.\nconst promptProblems = (text) => {\n  const problems = [];\n  if (/[^\\s@]+@[^\\s@]+\\.[^\\s@]+/.test(text)) problems.push('contains_email');\n  if (/(?:\\+?61|0)[\\s-]?[2-478](?:[\\s-]?\\d){8}/.test(text)) problems.push('contains_phone');\n  if (/(?<!\\d)(?:\\d[\\s-]?){8}\\d(?!\\d)/.test(text)) problems.push('contains_ndis_number_like');\n  return problems;\n};\n\nconst { brief, briefProvided } = $('Topic brief').first().json;\nconst api = $input.first().json || {};\nconst rows = api.apiVersion === '1' && Array.isArray(api.data) ? api.data : null;\n\nlet reason = '';\nconst similarTo = [];\nconst existingTitles = [];\nconst existingSlugs = [];\n\nif (!briefProvided) {\n  reason = 'brief_missing_or_wrong_length';\n} else if (!rows) {\n  reason = 'search_index_unreadable_or_unexpected_version';\n} else {\n  for (const r of rows) {\n    if (r && typeof r.title === 'string') existingTitles.push(r.title);\n    if (r && typeof r.id === 'string') existingSlugs.push(r.id);\n  }\n  const briefTerms = terms(brief);\n  for (const r of rows) {\n    if (!r || typeof r.title !== 'string') continue;\n    const o = overlap(briefTerms, terms(r.title));\n    if (o.shared >= MIN_SHARED_TERMS && o.ratio >= SIMILAR_OVERLAP) similarTo.push({ id: r.id, title: r.title });\n  }\n  const problems = promptProblems(brief + '\\n' + existingTitles.join('\\n'));\n  if (similarTo.length) reason = 'similar_content_exists';\n  else if (problems.length) reason = 'prompt_safety:' + problems.join(',');\n}\n\nconst proceed = reason === '';\nreturn [{\n  json: {\n    proceed,\n    reason,\n    brief,\n    similarTo: similarTo.slice(0, 5),\n    existingTitles: existingTitles.slice(0, 300),\n    existingSlugs: existingSlugs.slice(0, 300),\n    notifySubject: 'Blog draft workflow: nothing was opened (' + (reason || 'ok') + ')',\n    notifyText: [\n      'The weekly blog draft workflow stopped before drafting. No branch, file or pull request was created.',\n      'Reason: ' + reason,\n      similarTo.length ? 'Similar existing content: ' + similarTo.slice(0, 5).map((s) => s.title).join(' | ') : '',\n      'Nothing was published and nothing was sent to a language model.',\n    ].filter(Boolean).join('\\n'),\n  },\n}];"
+      },
+      "id": "14f89ac1-9205-421f-87b7-afd35ec53ffa",
+      "name": "Duplicate title check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e07abb85-f17f-4543-81cc-793af9d6254e",
+              "leftValue": "={{ $json.proceed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "186b1630-1af7-4e1d-86ae-caff21596b83",
+      "name": "Proceed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Rules below restate packages/schemas/src/blog.ts (blogDraftSchema, assessDraft, AUTHORITATIVE_DOMAINS) and the banned wording in banned.ts.\n// If those change, change this node too; tests/n8n-exports.test.ts compares the lists that are exported.\nconst CATEGORIES = ['for-coordinators', 'housing', 'funding-explained', 'working-with-us', 'regional', 'news'];\nconst REGIONS = ['central-coast', 'newcastle', 'dubbo', 'orange', 'tamworth', 'gunnedah'];\nconst SERVICES = ['core-support', 'supported-independent-living', 'sda', 'short-term-accommodation', 'support-coordinator', 'community-access'];\nconst AUTHORITATIVE_DOMAINS = ['ndis.gov.au', 'ndiscommission.gov.au', 'dss.gov.au', 'health.gov.au', 'aihw.gov.au', 'legislation.gov.au', 'accc.gov.au', 'oaic.gov.au', 'servicesaustralia.gov.au', 'abs.gov.au', 'nsw.gov.au', 'ombo.nsw.gov.au', 'nds.org.au', 'pwd.org.au', 'stylemanual.gov.au'];\n\nif (!$env.LLM_MODEL) throw new Error('LLM_MODEL is not set');\nconst dup = $('Duplicate title check').first().json;\n\nconst system = [\n  'You write first drafts of plain-English articles for the website of a registered NDIS provider in regional New South Wales, Australia.',\n  'A named human reviewer will fact-check, rewrite and approve your draft before anything is published. Your draft is a starting point only.',\n  '',\n  'Rules you must follow:',\n  '1. Reply with one JSON object and nothing else. No markdown fences and no commentary.',\n  '2. Never include personal information about any participant, family member, worker or enquirer. Do not invent people, quotes, testimonials, case studies or statistics.',\n  '3. Only state facts you are sure of. If you are unsure, leave the claim out. Do not state prices, response times, registration numbers, addresses, vacancies or availability.',\n  '4. Do not use the provider\\'s brand name. Write to the reader as \"you\".',\n  '5. Banned wording: \"NDIS approved\", \"approved NDIS provider\", \"NDIS endorsed\", \"fully covered by the NDIS\", \"best provider\", \"leading NDIS\", \"most trusted\", \"the obvious choice\", guarantees or promises, \"refer a friend\", rewards or vouchers, certainty about eligibility (\"you will definitely get\"), outcome promises, and medical-style claims (\"cure\", \"miracle\", \"breakthrough\").',\n  '6. Plain English at about school grade 8 to 10. Short sentences. Australian spelling. No keyword stuffing: no single term above 3 percent of the words.',\n  '7. Sources: give 2 to 12 sources. At least 2 must be pages on these official domains: ' + AUTHORITATIVE_DOMAINS.join(', ') + '. Use the real page title as the label and a real https URL. Never guess a URL. If you are not sure a specific page exists, use the home page of that organisation.',\n  '8. Do not output author, aiAssisted, aiNotes or publishedAt. The workflow adds them.',\n].join('\\n');\n\nconst schema = [\n  '{',\n  '  \"slug\": \"lowercase words joined by hyphens, at most 80 characters\",',\n  '  \"kind\": \"post\",',\n  '  \"title\": \"20 to 70 characters\",',\n  '  \"summary\": \"80 to 170 characters\",',\n  '  \"answer\": \"180 to 560 characters (about 40 to 90 words). Answer the reader\\'s question first, in one paragraph that ends as a full sentence.\",',\n  '  \"category\": \"one of: ' + CATEGORIES.join(', ') + '\",',\n  '  \"tags\": [\"up to 6 slugs\"],',\n  '  \"regions\": [\"zero or more of: ' + REGIONS.join(', ') + '\"],',\n  '  \"services\": [\"zero or more of: ' + SERVICES.join(', ') + '\"],',\n  '  \"sections\": [ { \"heading\": \"8 to 90 characters, unique\", \"body\": [\"1 to 8 paragraphs, each 40 to 1400 characters\"] } ],',\n  '  \"faqs\": [ { \"q\": \"10 to 160 characters\", \"a\": \"40 to 700 characters\" } ],',\n  '  \"sources\": [ { \"label\": \"5 to 140 characters\", \"url\": \"an https URL\" } ]',\n  '}',\n  'Use 3 to 12 sections and at most 8 faqs. A post needs at least 600 words in total (title, summary, answer, sections and faqs).',\n].join('\\n');\n\nconst user = [\n  'Write one draft that matches the JSON shape below.',\n  '',\n  'Brief: ' + dup.brief,\n  '',\n  'Existing titles on the site. Do not repeat or closely paraphrase them:',\n  ...dup.existingTitles.slice(0, 150).map((t) => '- ' + t),\n  '',\n  'JSON shape:',\n  schema,\n].join('\\n');\n\n// Mirrors checkPromptSafety() in packages/automation/src/content.ts. Fail closed: stop the workflow rather than send anything personal.\nconst prompt = system + '\\n' + user;\nconst problems = [];\nif (/[^\\s@]+@[^\\s@]+\\.[^\\s@]+/.test(prompt)) problems.push('contains_email');\nif (/(?:\\+?61|0)[\\s-]?[2-478](?:[\\s-]?\\d){8}/.test(prompt)) problems.push('contains_phone');\nif (/(?<!\\d)(?:\\d[\\s-]?){8}\\d(?!\\d)/.test(prompt)) problems.push('contains_ndis_number_like');\nif (problems.length) throw new Error('Prompt safety check failed: ' + problems.join(', '));\n\n// Messages-style request body. The exact shape depends on the LLM provider that is chosen: adapt this object and the\n// response extraction in the \"Pre-checks\" node together. Not tested against any provider.\nreturn [{ json: { requestBody: { model: $env.LLM_MODEL, max_tokens: 4096, system, messages: [{ role: 'user', content: user }] }, promptChars: prompt.length } }];"
+      },
+      "id": "6184d431-c8cb-43fb-84c8-712fdf85dedc",
+      "name": "Build prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.LLM_API_URL }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.requestBody) }}",
+        "options": {
+          "timeout": 180000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "600b2c33-0801-4c7e-8b29-43fbddf92d36",
+      "name": "Draft with LLM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1440,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PLACEHOLDER",
+          "name": "LLM API key - PLACEHOLDER"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Cheap checks only. They mirror blogDraftSchema and assessDraft in packages/schemas/src/blog.ts so obviously bad drafts never reach a PR.\n// The real gates still run in CI (content-gates workflow: content:ingest --dry-run and content:verify) and a named human reviews.\nconst CATEGORIES = ['for-coordinators', 'housing', 'funding-explained', 'working-with-us', 'regional', 'news'];\nconst REGIONS = ['central-coast', 'newcastle', 'dubbo', 'orange', 'tamworth', 'gunnedah'];\nconst SERVICES = ['core-support', 'supported-independent-living', 'sda', 'short-term-accommodation', 'support-coordinator', 'community-access'];\nconst AUTHORITATIVE_DOMAINS = ['ndis.gov.au', 'ndiscommission.gov.au', 'dss.gov.au', 'health.gov.au', 'aihw.gov.au', 'legislation.gov.au', 'accc.gov.au', 'oaic.gov.au', 'servicesaustralia.gov.au', 'abs.gov.au', 'nsw.gov.au', 'ombo.nsw.gov.au', 'nds.org.au', 'pwd.org.au', 'stylemanual.gov.au'];\nconst SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;\nconst MIN_WORDS = { post: 600, guide: 450 };\nconst SIMILAR_OVERLAP = 0.7;\nconst MIN_SHARED_TERMS = 3;\nconst STOP = new Set('a an and are as at be but by for from has have he her his how i if in into is it its more not of on or our she so than that the their them then there these they this to was we were what when which who will with you your can may also about all any been being do does each other some such these those up out new one two'.split(' '));\nconst SENSITIVE_TOPICS = [\n  [/\\beligib(le|ility)\\b/i, 'eligibility'],\n  [/\\bfund(ing|ed|s)?\\b/i, 'funding'],\n  [/\\b(plan budget|plan review|access request|reasonable and necessary|price limits?|pricing arrangements?)\\b/i, 'plan_rules'],\n];\n\nconst tokens = (t) => String(t).toLowerCase().replace(/[^a-z0-9\\s'-]/g, ' ').split(/\\s+/).filter(Boolean);\nconst terms = (t) => new Set(tokens(t).filter((w) => w.length > 2 && !STOP.has(w)));\nconst str = (v) => (typeof v === 'string' ? v.trim() : '');\nconst strList = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string').map((x) => x.trim()) : []);\nconst inRange = (s, min, max) => typeof s === 'string' && s.length >= min && s.length <= max;\n\nconst dup = $('Duplicate title check').first().json;\nconst errors = [];\nconst warnings = [];\n\n// 1. Pull the model's text out of the response. Handles a Messages-style response (content blocks) and a chat-completions-style response.\nconst r = $input.first().json || {};\nlet text = '';\nif (Array.isArray(r.content)) text = r.content.filter((b) => b && b.type === 'text' && typeof b.text === 'string').map((b) => b.text).join('');\nelse if (Array.isArray(r.choices) && r.choices[0] && r.choices[0].message && typeof r.choices[0].message.content === 'string') text = r.choices[0].message.content;\nelse if (typeof r.text === 'string') text = r.text;\n\nlet p = null;\nconst start = text.indexOf('{');\nconst end = text.lastIndexOf('}');\nif (start >= 0 && end > start) {\n  try { p = JSON.parse(text.slice(start, end + 1)); } catch (e) { p = null; }\n}\nif (!p || typeof p !== 'object' || Array.isArray(p)) {\n  errors.push('model_output_is_not_a_json_object');\n  p = {};\n}\n\n// 2. Build the draft from known fields only. Anything else the model added is dropped. Author is a human or named role from the environment.\nconst author = String($env.BLOG_AUTHOR_NAME || '').trim();\nconst draft = {\n  slug: str(p.slug),\n  kind: p.kind === 'guide' ? 'guide' : 'post',\n  title: str(p.title),\n  summary: str(p.summary),\n  answer: str(p.answer),\n  category: p.category,\n  tags: strList(p.tags),\n  regions: strList(p.regions),\n  services: strList(p.services),\n  sections: Array.isArray(p.sections) ? p.sections.map((s) => ({ heading: str(s && s.heading), body: strList(s && s.body) })) : [],\n  faqs: Array.isArray(p.faqs) ? p.faqs.map((f) => ({ q: str(f && f.q), a: str(f && f.a) })) : [],\n  sources: Array.isArray(p.sources) ? p.sources.map((s) => ({ label: str(s && s.label), url: str(s && s.url) })) : [],\n  author,\n  aiAssisted: true,\n  aiNotes: 'First draft written by a language model from a one-line brief. Every fact and source needs a human check, and the text needs a human edit, before approval.',\n};\n\n// 3. Required fields and lengths (blogDraftSchema)\nif (!SLUG.test(draft.slug) || draft.slug.length > 80) errors.push('slug_invalid');\nif (dup.existingSlugs.includes(draft.slug)) errors.push('slug_already_exists');\nif (!inRange(draft.title, 20, 70)) errors.push('title_length_20_to_70');\nif (!inRange(draft.summary, 80, 170)) errors.push('summary_length_80_to_170');\nif (!inRange(draft.answer, 180, 560)) errors.push('answer_length_180_to_560');\nif (!CATEGORIES.includes(draft.category)) errors.push('category_invalid');\nif (draft.tags.length > 6 || draft.tags.some((t) => !SLUG.test(t) || t.length > 80)) errors.push('tags_invalid');\nif (draft.regions.length > 6 || draft.regions.some((x) => !REGIONS.includes(x))) errors.push('regions_invalid');\nif (draft.services.length > 6 || draft.services.some((x) => !SERVICES.includes(x))) errors.push('services_invalid');\nif (draft.sections.length < 3 || draft.sections.length > 12) errors.push('sections_need_3_to_12');\nfor (const s of draft.sections) {\n  if (!inRange(s.heading, 8, 90)) errors.push('section_heading_length_8_to_90');\n  if (s.body.length < 1 || s.body.length > 8 || s.body.some((b) => !inRange(b, 40, 1400))) errors.push('section_body_1_to_8_paragraphs_of_40_to_1400_characters');\n}\nif (draft.faqs.length > 8 || draft.faqs.some((f) => !inRange(f.q, 10, 160) || !inRange(f.a, 40, 700))) errors.push('faqs_invalid');\nif (draft.sources.length < 2 || draft.sources.length > 12) errors.push('sources_need_2_to_12');\nif (!inRange(draft.author, 3, 80)) errors.push('author_not_configured');\nif (/\\bai\\b|artificial intelligence|chatgpt|claude|gpt/i.test(draft.author)) errors.push('author_must_be_a_human_or_named_role');\nif (new Set(draft.sections.map((s) => s.heading.toLowerCase())).size !== draft.sections.length) errors.push('duplicate_section_headings');\n\n// 4. Sources: https, and at least two on the authoritative allow-list (assessDraft)\nlet authoritative = 0;\nfor (const s of draft.sources) {\n  if (!inRange(s.label, 5, 140)) errors.push('source_label_length_5_to_140');\n  try {\n    const u = new URL(s.url);\n    if (u.protocol !== 'https:') { errors.push('source_url_not_https'); continue; }\n    const host = u.hostname.replace(/^www\\./, '');\n    if (AUTHORITATIVE_DOMAINS.some((d) => host === d || host.endsWith('.' + d))) authoritative++;\n  } catch (e) {\n    errors.push('source_url_invalid');\n  }\n}\nif (authoritative < 2) errors.push('needs_2_authoritative_sources_found_' + authoritative);\n\n// 5. Thin content, using the same word counting as assessDraft\nconst fullText = [draft.title, draft.summary, draft.answer, ...draft.sections.flatMap((s) => [s.heading, ...s.body]), ...draft.faqs.flatMap((f) => [f.q, f.a])].join('\\n');\nconst words = tokens(fullText).length;\nconst minWords = MIN_WORDS[draft.kind];\nif (words < minWords) errors.push('too_thin_' + words + '_words_minimum_' + minWords);\n\n// 6. Duplicate title against the public search index (cheap screen; CI does the real similarity check)\nconst normalise = (t) => tokens(t).join(' ');\nconst titleTerms = terms(draft.title);\nfor (const existing of dup.existingTitles) {\n  if (normalise(existing) === normalise(draft.title)) { errors.push('title_already_exists'); break; }\n  const et = terms(existing);\n  let shared = 0;\n  for (const t of titleTerms) if (et.has(t)) shared++;\n  if (titleTerms.size && et.size && shared >= MIN_SHARED_TERMS && shared / Math.min(titleTerms.size, et.size) >= SIMILAR_OVERLAP) { errors.push('title_very_similar_to_existing'); break; }\n}\n\n// 7. Nothing that looks like personal data (same patterns as checkPromptSafety in packages/automation/src/content.ts)\nif (/[^\\s@]+@[^\\s@]+\\.[^\\s@]+/.test(fullText)) errors.push('possible_personal_data_email');\nif (/(?:\\+?61|0)[\\s-]?[2-478](?:[\\s-]?\\d){8}/.test(fullText)) errors.push('possible_personal_data_phone');\nif (/(?<!\\d)(?:\\d[\\s-]?){8}\\d(?!\\d)/.test(fullText)) errors.push('possible_personal_data_ndis_number_like');\n\n// 8. Sensitive topics are not blocked, but they are flagged so the PR asks for an NDIS-experienced reviewer (detectSensitiveTopics in content.ts)\nconst sensitive = SENSITIVE_TOPICS.filter(([re]) => re.test(fullText)).map(([, label]) => label);\nif (sensitive.length) warnings.push('sensitive_topics_' + sensitive.join('_'));\n\nconst ok = errors.length === 0;\nconst prBody = [\n  '## Automated first draft: not approved, not published',\n  '',\n  'This pull request was opened by an n8n workflow. A language model wrote the text from a one-line brief. Nothing here is approved. Merging does not publish it: production shows content only when a named reviewer on the reviewer list has approved the exact content (hash lock).',\n  '',\n  '- Brief: ' + dup.brief,\n  '- Kind: ' + draft.kind + ' | Category: ' + draft.category + ' | Words: ' + words,\n  sensitive.length ? '- Sensitive topics detected: ' + sensitive.join(', ') + '. An NDIS-experienced reviewer must check this draft.' : '',\n  warnings.length ? '- Pre-check warnings: ' + warnings.join(', ') : '',\n  '',\n  '### Sources proposed by the model (not fetched or checked by the workflow)',\n  ...draft.sources.map((s) => '- ' + s.label + ': ' + s.url),\n  '',\n  '### Reviewer checklist',\n  '- [ ] Open every source and check each claim against it. Remove anything that cannot be checked.',\n  '- [ ] No participant data, no unverified claims, no banned or promotional wording.',\n  '- [ ] Plain English, correct for NSW, nothing implies eligibility or funding certainty.',\n  '- [ ] CI content gates are green.',\n  '- [ ] Approval is recorded by a named reviewer with the content:approve command.',\n].filter((l, i, a) => l !== '' || a[i - 1] !== '').join('\\n');\n\nreturn [{\n  json: {\n    ok,\n    errors,\n    warnings,\n    slug: draft.slug,\n    branch: 'draft/' + draft.slug,\n    filePath: 'apps/web/content-drafts/' + draft.slug + '.json',\n    fileContent: ok ? JSON.stringify(draft, null, 2) + '\\n' : '',\n    commitMessage: 'Add draft: ' + draft.title,\n    prTitle: 'Draft: ' + draft.title,\n    prBody,\n    wordCount: words,\n    notifySubject: 'Blog draft workflow: the draft was rejected by pre-checks',\n    notifyText: [\n      'The weekly blog draft workflow produced a draft that failed the pre-checks. No branch, file or pull request was created.',\n      'Problems: ' + errors.join(', '),\n      'Nothing was published.',\n    ].join('\\n'),\n  },\n}];"
+      },
+      "id": "c64cea66-09dd-4b73-8668-26a3341890eb",
+      "name": "Pre-checks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "27aa0ff2-0468-4eb4-81fe-9cce50b18019",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f095b90e-66da-429b-8dab-6b645af1409a",
+      "name": "Pre-checks passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO_OWNER }}/{{ $env.GITHUB_REPO_NAME }}/git/ref/heads/{{ $env.GITHUB_BASE_BRANCH }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "35ad10f3-a254-4331-8ac5-b63b44e1ac32",
+      "name": "Get base branch SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2160,
+        100
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "PLACEHOLDER",
+          "name": "GitHub token - draft PRs only - PLACEHOLDER"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO_OWNER }}/{{ $env.GITHUB_REPO_NAME }}/git/refs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ref: 'refs/heads/' + $('Pre-checks').first().json.branch, sha: $json.object.sha }) }}",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "6c875c4e-c519-4461-8948-098a2023f194",
+      "name": "Create branch",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2400,
+        100
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "PLACEHOLDER",
+          "name": "GitHub token - draft PRs only - PLACEHOLDER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "accessToken",
+        "resource": "file",
+        "operation": "create",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $env.GITHUB_REPO_OWNER }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $env.GITHUB_REPO_NAME }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Pre-checks').first().json.filePath }}",
+        "binaryData": false,
+        "fileContent": "={{ $('Pre-checks').first().json.fileContent }}",
+        "commitMessage": "={{ $('Pre-checks').first().json.commitMessage }}",
+        "additionalParameters": {
+          "branch": {
+            "branch": "={{ $('Pre-checks').first().json.branch }}"
+          }
+        }
+      },
+      "id": "1bba982f-c736-408d-8c9d-58d8b2b69a95",
+      "name": "Create draft file",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2640,
+        100
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "PLACEHOLDER",
+          "name": "GitHub token - draft PRs only - PLACEHOLDER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "accessToken",
+        "resource": "pullRequest",
+        "operation": "create",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $env.GITHUB_REPO_OWNER }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $env.GITHUB_REPO_NAME }}",
+          "mode": "name"
+        },
+        "title": "={{ $('Pre-checks').first().json.prTitle }}",
+        "body": "={{ $('Pre-checks').first().json.prBody }}",
+        "head": "={{ $('Pre-checks').first().json.branch }}",
+        "base": "={{ $env.GITHUB_BASE_BRANCH }}",
+        "draft": false
+      },
+      "id": "8d49cc87-2c3d-485c-81e7-ec49f1ca654a",
+      "name": "Open draft pull request",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2880,
+        100
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "PLACEHOLDER",
+          "name": "GitHub token - draft PRs only - PLACEHOLDER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.NOTIFY_FROM_ADDRESS }}",
+        "toEmail": "={{ $env.EDITORIAL_NOTIFY_ADDRESS }}",
+        "subject": "={{ 'Draft pull request ready for review: ' + $('Pre-checks').first().json.prTitle }}",
+        "emailFormat": "text",
+        "text": "={{ 'A first draft has been opened as a pull request for human review: ' + $json.html_url + '\\nNothing is approved or published. CI content gates run on the pull request.' }}",
+        "options": {}
+      },
+      "id": "8f5cba32-7a9a-4f37-84ea-5a4fa37b0d24",
+      "name": "Notify reviewer: draft PR opened",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        3120,
+        100
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "PLACEHOLDER",
+          "name": "SMTP - internal notifications - PLACEHOLDER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.NOTIFY_FROM_ADDRESS }}",
+        "toEmail": "={{ $env.EDITORIAL_NOTIFY_ADDRESS }}",
+        "subject": "={{ $json.notifySubject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.notifyText }}",
+        "options": {}
+      },
+      "id": "13a46d15-2a6b-42e3-874e-bfc9a58b528b",
+      "name": "Notify editor: nothing opened",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2160,
+        420
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "PLACEHOLDER",
+          "name": "SMTP - internal notifications - PLACEHOLDER"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Weekly schedule": {
+      "main": [
+        [
+          {
+            "node": "Topic brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual trigger": {
+      "main": [
+        [
+          {
+            "node": "Topic brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic brief": {
+      "main": [
+        [
+          {
+            "node": "Fetch search index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch search index": {
+      "main": [
+        [
+          {
+            "node": "Duplicate title check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate title check": {
+      "main": [
+        [
+          {
+            "node": "Proceed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Proceed?": {
+      "main": [
+        [
+          {
+            "node": "Build prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify editor: nothing opened",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build prompt": {
+      "main": [
+        [
+          {
+            "node": "Draft with LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft with LLM": {
+      "main": [
+        [
+          {
+            "node": "Pre-checks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pre-checks": {
+      "main": [
+        [
+          {
+            "node": "Pre-checks passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pre-checks passed?": {
+      "main": [
+        [
+          {
+            "node": "Get base branch SHA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify editor: nothing opened",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get base branch SHA": {
+      "main": [
+        [
+          {
+            "node": "Create branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create branch": {
+      "main": [
+        [
+          {
+            "node": "Create draft file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create draft file": {
+      "main": [
+        [
+          {
+            "node": "Open draft pull request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open draft pull request": {
+      "main": [
+        [
+          {
+            "node": "Notify reviewer: draft PR opened",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Australia/Sydney",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false,
+    "executionTimeout": 900
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:4331/",
+        "http://localhost:4331/locations/",
+        "http://localhost:4331/referral/",
+        "http://localhost:4331/supported-independent-living/",
+        "http://localhost:4331/guides/sil-vs-sda/"
+      ],
+      "numberOfRuns": 3,
+      "startServerCommand": "node scripts/serve-dist.mjs dist",
+      "startServerReadyPattern": "serving",
+      "startServerReadyTimeout": 30000,
+      "settings": {
+        "formFactor": "mobile",
+        "chromeFlags": "--no-sandbox"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9, "aggregationMethod": "median" }],
+        "categories:accessibility": ["error", { "minScore": 1, "aggregationMethod": "pessimistic" }],
+        "categories:best-practices": ["error", { "minScore": 0.95, "aggregationMethod": "median" }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500, "aggregationMethod": "median" }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1, "aggregationMethod": "median" }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

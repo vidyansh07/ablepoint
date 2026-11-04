@@ -1,0 +1,18 @@
+---
+import Icon from './Icon.astro';
+import { testimonials } from '../data/testimonials';
+import { visible } from '../lib/content';
+const list = visible(testimonials);
+---
+{list.length > 0 && (
+  <section class="section section--tint" aria-labelledby="say-heading">
+    <div class="container">
+      <div class="section-head"><h2 id="say-heading">What people say</h2><p>Shared with their permission.</p></div>
+      <div class="grid grid--cards">
+        {list.map((t) => (
+          <figure class="card quote"><Icon name="chat" size={28} /><blockquote><p>{t.quote}</p></blockquote><figcaption>{t.attribution}</figcaption></figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
